@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backendData.Models
 {
@@ -10,7 +12,11 @@ namespace backendData.Models
     public string QuotedCurrency { get; set; }
     public double Price { get; set; }
     public double NoCoins { get; set; }
+
+    [Required]
+    [Column(TypeName = "decimal(18,2)")]
     public decimal Value { get; set; }
+
     public CryptoAccountValue CryptoAccountValue { get; set; }
   }
 }
