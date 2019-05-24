@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backendData.Models
 {
-  public abstract class CashAccount
+  public class CashAccount
   {
     public int CashAccountId { get; set; }
     [Required] public string AccountName { get; set; }
