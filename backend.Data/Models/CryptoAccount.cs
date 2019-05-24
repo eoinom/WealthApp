@@ -12,6 +12,6 @@ namespace backendData.Models
     public bool IsActive { get; set; }
     [Required] public Currency QuotedCurrency { get; set; }
     [Required] public User User { get; set; }
-    public virtual IEnumerable<AccountValue> AccountValues { get; set; }
+    public virtual IEnumerable<CryptoAccountValue> CryptoAccountValues { get; set; }
   }
 }
