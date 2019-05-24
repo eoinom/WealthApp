@@ -3,7 +3,6 @@ C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\bin\Debug\netcoreapp2.2
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\bin\Debug\netcoreapp2.2\backend.runtimeconfig.dev.json
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\bin\Debug\netcoreapp2.2\backend.dll
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\bin\Debug\netcoreapp2.2\backend.pdb
-C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\obj\Debug\netcoreapp2.2\backend.csprojAssemblyReference.cache
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\obj\Debug\netcoreapp2.2\backend.csproj.CoreCompileInputs.cache
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\obj\Debug\netcoreapp2.2\backend.RazorAssemblyInfo.cache
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend\obj\Debug\netcoreapp2.2\backend.RazorAssemblyInfo.cs

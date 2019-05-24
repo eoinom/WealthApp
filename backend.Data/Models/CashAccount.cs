@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace backend.Data.Models
+namespace backendData.Models
 {
   public abstract class CashAccount
   {

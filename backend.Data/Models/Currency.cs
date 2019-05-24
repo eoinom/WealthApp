@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace backend.Data.Models
+namespace backendData.Models
 {
   public class Currency
   {

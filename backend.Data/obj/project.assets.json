@@ -3620,9 +3620,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\eoino\\Documents\\GitHub\\FinancialTracker\\backend.Data\\backend.Data.csproj",
-      "projectName": "backend.Data",
-      "projectPath": "C:\\Users\\eoino\\Documents\\GitHub\\FinancialTracker\\backend.Data\\backend.Data.csproj",
+      "projectUniqueName": "C:\\Users\\eoino\\Documents\\GitHub\\FinancialTracker\\backend.Data\\backendData.csproj",
+      "projectName": "backendData",
+      "projectPath": "C:\\Users\\eoino\\Documents\\GitHub\\FinancialTracker\\backend.Data\\backendData.csproj",
       "packagesPath": "C:\\Users\\eoino\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\eoino\\Documents\\GitHub\\FinancialTracker\\backend.Data\\obj\\",
       "projectStyle": "PackageReference",
