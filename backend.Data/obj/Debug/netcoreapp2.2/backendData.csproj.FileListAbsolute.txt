@@ -8,3 +8,4 @@ C:\Users\eoino\Documents\GitHub\FinancialTracker\backend.Data\obj\Debug\netcorea
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend.Data\obj\Debug\netcoreapp2.2\backendData.AssemblyInfo.cs
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend.Data\obj\Debug\netcoreapp2.2\backendData.dll
 C:\Users\eoino\Documents\GitHub\FinancialTracker\backend.Data\obj\Debug\netcoreapp2.2\backendData.pdb
+C:\Users\eoino\Documents\GitHub\FinancialTracker\backend.Data\obj\Debug\netcoreapp2.2\backendData.csprojAssemblyReference.cache
