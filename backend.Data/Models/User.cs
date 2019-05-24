@@ -10,7 +10,7 @@ namespace backendData.Models
     [Required] public string Password { get; set; }
     [Required] public string FirstName { get; set; }
     [Required] public string LastName { get; set; }
-    public string Country { get; set; }
+    public Country Country { get; set; }
     public bool NewsletterSub { get; set; }
     public Currency DisplayCurrency { get; set; }
     public virtual IEnumerable<BankAccount> BankAccounts { get; set; }
