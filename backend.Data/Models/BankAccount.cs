@@ -5,7 +5,7 @@ namespace backendData.Models
 {
   public class BankAccount
   {
-    public int AccountId { get; set; }
+    public int BankAccountId { get; set; }
     [Required] public string AccountName { get; set; }
     public string Description { get; set; }
     public string Type { get; set; }

@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace backendData.Models
 {
   public class Cryptocurrency
   {
-    public string Code { get; set; }
-    public string NameShort { get; set; }
-    public string NameLong { get; set; }
+    [Key] public string Code { get; set; }
+
+    public string Name { get; set; }
+    public string LogoUrl { get; set; }
   }
 }
