@@ -1,4 +1,13 @@
+using backendAPI.Mutations;
+using backendAPI.Queries;
+using backendAPI.Schema;
+using backendAPI.Types;
 using backendData;
+using backendDataAccess.Repositories;
+using backendDataAccess.Repositories.Contracts;
+using GraphiQl;
+using GraphQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,7 +48,16 @@ namespace backendAPI
           });
       });
 
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<UserQuery>();
+            services.AddSingleton<UserMutation>();
+            services.AddSingleton<UserType>();
+            services.AddSingleton<UserInputType>();
+            var sp = services.BuildServiceProvider();
+            services.AddSingleton<ISchema>(new backendSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,8 +76,9 @@ namespace backendAPI
 
       app.UseHttpsRedirection();
       //app.UseStaticFiles();
-      app.UseMvc();
 
+      app.UseGraphiQl();
+      app.UseMvc();
       db.EnsureSeedData();
     }
   }
