@@ -14,7 +14,7 @@ namespace backendAPI.Types
             Field(x => x.LastName);
             Field(x => x.Country, type: typeof(CountryType));
             Field(x => x.NewsletterSub);
-            //Field(x => x.DisplayCurrency);
+            Field(x => x.DisplayCurrency, type: typeof(CurrencyType));
             //Field(x => x.BankAccounts);
             //Field(x => x.CashAccounts);
             //Field(x => x.CreditCards);

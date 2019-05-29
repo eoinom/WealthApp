@@ -13,7 +13,7 @@ namespace backendAPI.Types
             Field<NonNullGraphType<StringGraphType>>("lastName");
             Field<NonNullGraphType<StringGraphType>>("countryIso2Code");
             Field<BooleanGraphType>("newsletterSub");
-            //Field<StringGraphType>("displayCurrency");
+            Field<StringGraphType>("displayCurrency");
         }
     }
 }
