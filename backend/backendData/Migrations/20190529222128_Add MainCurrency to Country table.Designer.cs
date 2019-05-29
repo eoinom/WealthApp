@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backendData;
 
 namespace backendData.Migrations
 {
     [DbContext(typeof(backendDbContext))]
-    partial class backendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190529222128_Add MainCurrency to Country table")]
+    partial class AddMainCurrencytoCountrytable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
