@@ -52,6 +52,7 @@ namespace backendAPI
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
             services.AddSingleton<CountryType>();
+            services.AddSingleton<CurrencyType>();
             services.AddSingleton<UserQuery>();
             services.AddSingleton<UserMutation>();            
             services.AddSingleton<UserType>();
