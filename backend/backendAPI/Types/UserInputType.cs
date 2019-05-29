@@ -1,5 +1,4 @@
-﻿using backendData.Models;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 
 namespace backendAPI.Types
 {
@@ -7,12 +6,12 @@ namespace backendAPI.Types
     {
         public UserInputType()
         {
-            Name = "UserInput";
+            Name = "UserInputType";
             Field<NonNullGraphType<StringGraphType>>("email");
             Field<NonNullGraphType<StringGraphType>>("password");
-            Field<NonNullGraphType<StringGraphType>>("firstname");
-            Field<NonNullGraphType<StringGraphType>>("lastname");
-            //Field<CountryType>("country");
+            Field<NonNullGraphType<StringGraphType>>("firstName");
+            Field<NonNullGraphType<StringGraphType>>("lastName");
+            Field<NonNullGraphType<StringGraphType>>("countryIso2Code");
             Field<BooleanGraphType>("newsletterSub");
             //Field<StringGraphType>("displayCurrency");
         }

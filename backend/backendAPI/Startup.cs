@@ -48,10 +48,12 @@ namespace backendAPI
           });
       });
 
+            services.AddTransient<ICountryRepository, CountryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<CountryType>();
             services.AddSingleton<UserQuery>();
-            services.AddSingleton<UserMutation>();
+            services.AddSingleton<UserMutation>();            
             services.AddSingleton<UserType>();
             services.AddSingleton<UserInputType>();
             var sp = services.BuildServiceProvider();
