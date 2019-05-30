@@ -10,8 +10,7 @@ namespace backendData.Models
     public string Description { get; set; }
     public string Type { get; set; }
     public bool IsActive { get; set; }
-    [Required] public string Institution { get; set; }
-    [Required] public string AccountType { get; set; }
+    public string Institution { get; set; }
     [Required] public Currency QuotedCurrency { get; set; }
     [Required] public User User { get; set; }
     public virtual IEnumerable<AccountValue> AccountValues { get; set; }    
