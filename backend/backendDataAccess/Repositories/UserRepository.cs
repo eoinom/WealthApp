@@ -27,10 +27,12 @@ namespace backendDataAccess.Repositories
 
         public User Add(User user)
         {            
-            Country country = _dbContext.Countries.FirstOrDefault(c => c.Iso2Code == user.Country.Iso2Code);
-            Currency currency = _dbContext.Currencies.FirstOrDefault(c => c.Code == user.DisplayCurrency.Code);
+            Country country = _dbContext.Countries.FirstOrDefault(x => x.Iso2Code == user.Country.Iso2Code);
             user.Country = country;
+
+            Currency currency = _dbContext.Currencies.FirstOrDefault(x => x.Code == user.DisplayCurrency.Code);
             user.DisplayCurrency = currency;
+
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
             return user;

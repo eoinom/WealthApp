@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace backendAPI.Models
 {
-  public class GraphQLQuery
+    public class GraphQLQuery
     {
         public string OperationName { get; set; }
         public string NamedQuery { get; set; }

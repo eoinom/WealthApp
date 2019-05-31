@@ -307,7 +307,7 @@ namespace backendData
                     new Currency { Code = "CLP", NameShort = "Peso", NameLong = "Chilean Peso" },
                     new Currency { Code = "CNY", NameShort = "Renminbi", NameLong = "Yuan Renminbi" },
                     new Currency { Code = "COP", NameShort = "Peso", NameLong = "Colombian Peso" },
-                    new Currency { Code = "KMF", NameShort = "", NameLong = "Comorian Franc " },
+                    new Currency { Code = "KMF", NameShort = "Franc", NameLong = "Comorian Franc " },
                     new Currency { Code = "CRC", NameShort = "Colon", NameLong = "Costa Rican Colon" },
                     new Currency { Code = "HRK", NameShort = "Kuna", NameLong = "Kuna" },
                     new Currency { Code = "CUP", NameShort = "Peso", NameLong = "Cuban Peso" },
@@ -448,6 +448,9 @@ namespace backendData
                     new Currency { Code = "CLF", NameShort = "Fomento", NameLong = "Unidad de Fomento" },
                     new Currency { Code = "XSU", NameShort = "Sucre", NameLong = "Sucre" }
                 };
+
+                db.Currencies.AddRange(currencies);
+                db.SaveChanges();
             }
         }
 

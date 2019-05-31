@@ -20,69 +20,84 @@ using Microsoft.Extensions.Logging;
 
 namespace backendAPI
 {
-  public class Startup
-  {
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-      Configuration = configuration;
-    }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-    readonly string quasarOrigins = "_quasarOrigins";
+        readonly string quasarOrigins = "_quasarOrigins";
 
-    public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddDbContext<backendDbContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddDbContext<backendDbContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
-      services.AddCors(options =>
-      {
-          options.AddPolicy(quasarOrigins,
-          builder =>
-          {
-            builder.WithOrigins("http://localhost:8080")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-          });
-      });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(quasarOrigins,
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:8080")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+                });
+            });
 
+            services.AddTransient<IBankAccountRepository, BankAccountRepository>();
             services.AddTransient<ICountryRepository, CountryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+
+            services.AddSingleton<Query>();
+            services.AddSingleton<Mutation>();
+
+            services.AddSingleton<BankAccountType>();
+            services.AddSingleton<BankAccountInputType>();
+            services.AddSingleton<BankAccountQuery>();
+            services.AddSingleton<BankAccountMutation>();
+
             services.AddSingleton<CountryType>();
+            services.AddSingleton<CountryQuery>();
+
             services.AddSingleton<CurrencyType>();
-            services.AddSingleton<UserQuery>();
-            services.AddSingleton<UserMutation>();            
+
             services.AddSingleton<UserType>();
             services.AddSingleton<UserInputType>();
+            services.AddSingleton<UserQuery>();
+            services.AddSingleton<UserMutation>();
+
             var sp = services.BuildServiceProvider();
             services.AddSingleton<ISchema>(new backendSchema(new FuncDependencyResolver(type => sp.GetService(type))));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, backendDbContext db)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
+
+            app.UseCors(quasarOrigins);
+
+            app.UseHttpsRedirection();
+            //app.UseStaticFiles();
+
+            db.EnsureSeedData();
+            app.UseGraphiQl();
+            app.UseMvc();            
+        }
     }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, backendDbContext db)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-      else
-      {
-        app.UseHsts();
-      }
-
-      app.UseCors(quasarOrigins);
-
-      app.UseHttpsRedirection();
-      //app.UseStaticFiles();
-
-      app.UseGraphiQl();
-      app.UseMvc();
-      db.EnsureSeedData();
-    }
-  }
 }

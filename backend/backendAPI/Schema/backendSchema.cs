@@ -8,8 +8,8 @@ namespace backendAPI.Schema
     {
         public backendSchema(IDependencyResolver resolver) : base(resolver)
         {
-            Query = resolver.Resolve<UserQuery>();
-            Mutation = resolver.Resolve<UserMutation>();
+            Query = resolver.Resolve<Query>();
+            Mutation = resolver.Resolve<Mutation>();
         }
     }
 }

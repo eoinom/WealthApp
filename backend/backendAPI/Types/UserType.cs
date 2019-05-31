@@ -12,7 +12,7 @@ namespace backendAPI.Types
             Field(x => x.Password);
             Field(x => x.FirstName);
             Field(x => x.LastName);
-            Field(x => x.Country, type: typeof(CountryType));
+            Field(x => x.Country, type: typeof(CountryType), nullable: true);
             Field(x => x.NewsletterSub);
             Field(x => x.DisplayCurrency, type: typeof(CurrencyType));
             //Field(x => x.BankAccounts);

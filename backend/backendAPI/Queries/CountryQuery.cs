@@ -18,7 +18,7 @@ namespace backendAPI.Queries
                 resolve: context => countryRepository.GetByIso2Code(context.GetArgument<string>("iso2code")));
 
             Field<CountryType>(
-                "country",
+                "countryIso3",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "iso3code" }),
                 resolve: context => countryRepository.GetByIso3Code(context.GetArgument<string>("iso3code")));
         }
