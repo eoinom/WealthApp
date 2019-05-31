@@ -9,6 +9,7 @@ namespace backendData
         public static void EnsureSeedData(this backendDbContext db)
         {
             EnsureCountriesSeedData(db);
+            EnsureCurrenciesSeedData(db);
             EnsureUsersSeedData(db);
         }
 
