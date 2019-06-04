@@ -71,12 +71,12 @@ module.exports = function (ctx) {
       // port: 8080,
       open: true, // opens browser window automatically
       proxy: {
-        // proxy all requests starting with /api to jsonplaceholder
-        '/api': {
-          target: 'http://localhost:5000/api',
+        // proxy all requests starting with /graphql to jsonplaceholder
+        '/graphql': {
+          target: 'http://localhost:51980/graphql',
           changeOrigin: true,
           pathRewrite: {
-            '^/api': ''
+            '^/graphql': ''
           }
         }
       }

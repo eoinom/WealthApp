@@ -7,7 +7,7 @@
       </div>
       <p></p>
       <div class="row justify-center">
-        {{ textFromApi }}
+        {{ userEmail }}
       </div>    
     </div>
 
@@ -19,16 +19,33 @@
 
 <script>
 export default {
-  name: 'PageIndex',
+  name: 'UserEmail',
   data () {
     return {
-      textFromApi: null
+      userEmail: ''
     }
   },
-
   async created () {
-    var response = await this.$axios.get('/values')
-    this.textFromApi = response.data.text
+    try {
+      var response = await this.$axios({
+        method: "POST",
+        url: "/",
+        data: {
+          query: `
+            {
+              user_queries {
+                user (id: 3) {
+                  email
+                }
+              }
+            }
+          `
+        }
+      });
+      this.userEmail = response.data.data.user_queries.user.email;
+    } catch (error) {
+      console.error(error); 
+    }
   }
 }
 </script>
