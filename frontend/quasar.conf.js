@@ -14,10 +14,10 @@ module.exports = function (ctx) {
 
     extras: [
       'roboto-font',
-      'material-icons' // optional, you are not bound to it
+      'material-icons', // optional, you are not bound to it
       // 'ionicons-v4',
       // 'mdi-v3',
-      // 'fontawesome-v5',
+      'fontawesome-v5',
       // 'eva-icons'
     ],
 
@@ -37,7 +37,14 @@ module.exports = function (ctx) {
         'QList',
         'QItem',
         'QItemSection',
-        'QItemLabel'
+        'QItemLabel',
+
+        'QAvatar',
+        'QFooter',
+        'QTabs',
+        'QTab',
+        'QRouteTab',
+        'QImg'
       ],
 
       directives: [
