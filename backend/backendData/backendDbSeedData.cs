@@ -11,6 +11,8 @@ namespace backendData
             EnsureCountriesSeedData(db);
             EnsureCurrenciesSeedData(db);
             EnsureUsersSeedData(db);
+            EnsureUserBankAccountsSeedData(db);
+            EnsureAccountValuesSeedData(db);
         }
 
         private static void EnsureCountriesSeedData(backendDbContext db)
@@ -473,5 +475,360 @@ namespace backendData
                 db.SaveChanges();
             }
         }
+
+
+        private static void EnsureUserBankAccountsSeedData(backendDbContext db)
+        {
+            if (!db.BankAccounts.Any())
+            {
+                var bankAccounts = new List<BankAccount>
+                {
+                    new BankAccount {
+                        AccountName = "Current A/C",
+                        Description = "Main joint account",
+                        Institution = "Bank of Ireland",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 1)
+                    },
+                    new BankAccount {
+                        AccountName = "Holiday Savings A/C",
+                        Description = "Savings account for family holiday to Australia",
+                        Institution = "Credit Union",
+                        IsActive = true,
+                        Type = "Savings",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 1)
+                    },
+                    new BankAccount {
+                        AccountName = "J1 Current A/C",
+                        Description = "Old bank account from J1 trip to USA",
+                        Institution = "Bank of America",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "USD"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 1)
+                    },
+                    new BankAccount {
+                        AccountName = "Investment A/C",
+                        Description = "Family investment account",
+                        Institution = "JP Morgan",
+                        IsActive = true,
+                        Type = "Investment",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "GBP"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 1)
+                    },
+
+                    new BankAccount {
+                        AccountName = "Current A/C",
+                        Description = "My personal current account",
+                        Institution = "Permanent TSB",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 2)
+                    },
+                    new BankAccount {
+                        AccountName = "Savings A/C",
+                        Description = "Savings account for new car",
+                        Institution = "Permanent TSB",
+                        IsActive = true,
+                        Type = "Savings",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 2)
+                    },
+                    new BankAccount {
+                        AccountName = "Australian Current A/C",
+                        Description = "Old current account from living in Australia",
+                        Institution = "Commonwealth Bank of Australia",
+                        IsActive = false,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "AUD"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 2)
+                    },
+
+                    new BankAccount {
+                        AccountName = "Current A/C",
+                        Description = "General current account",
+                        Institution = "Ulster Bank",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 3)
+                    },
+                    new BankAccount {
+                        AccountName = "Savings A/C",
+                        Description = "Rainy day savings account",
+                        Institution = "Post Office",
+                        IsActive = true,
+                        Type = "Savings",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 3)
+                    },
+
+                    new BankAccount {
+                        AccountName = "Joint Current A/C",
+                        Description = "Joint current account for running the household",
+                        Institution = "Permanent TSB",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 4)
+                    },
+                    new BankAccount {
+                        AccountName = "PTSB Savings A/C",
+                        Description = "Savings account for leftovers at end of month",
+                        Institution = "Permanent TSB",
+                        IsActive = true,
+                        Type = "Savings",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 4)
+                    },
+                    new BankAccount {
+                        AccountName = "My Personal Current A/C",
+                        Description = "My old personal current account for paying credit card",
+                        Institution = "AIB",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 4)
+                    },
+                    new BankAccount {
+                        AccountName = "Wife's Personal Current A/C",
+                        Description = "Her old personal current account",
+                        Institution = "Bank of Ireland",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 4)
+                    },
+                    new BankAccount {
+                        AccountName = "Mortgage Savings A/C",
+                        Description = "Savings account for house deposit",
+                        Institution = "Bank of Ireland",
+                        IsActive = true,
+                        Type = "Current",
+                        QuotedCurrency = db.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                        User = db.Users.FirstOrDefault(x => x.UserId == 4)
+                    }
+                };
+
+                db.BankAccounts.AddRange(bankAccounts);
+                db.SaveChanges();
+            }
+        }
+
+        private static void EnsureAccountValuesSeedData(backendDbContext db)
+        {
+            if (!db.AccountValues.Any())
+            {
+                var accountValues = new List<AccountValue>
+                {
+                    new AccountValue { Date = new System.DateTime(2018, 1, 14), Value = 4121.1m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 20), Value = 3791.41m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 5), Value = 3601.84m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 14), Value = 3277.67m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 27), Value = 3507.11m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 13), Value = 3857.82m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 4), Value = 4243.6m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 18), Value = 4370.91m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 24), Value = 4152.36m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 6), Value = 4235.41m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 26), Value = 3727.16m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 23), Value = 3540.8m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 12), Value = 4036.51m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 19), Value = 3431.03m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 5) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 12), Value = 3165m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 16), Value = 2785.2m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 27), Value = 2478.83m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 3), Value = 2107.01m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 24), Value = 1833.1m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 26), Value = 1888.09m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 4), Value = 2039.14m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 17), Value = 1855.62m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 22), Value = 1818.51m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 17), Value = 1600.29m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 14), Value = 1584.29m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 4), Value = 1726.88m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 17), Value = 1606m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2019, 3, 26), Value = 1750.54m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 6) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 8), Value = 2110.08m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 26), Value = 2236.68m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 30), Value = 2303.78m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 28), Value = 2580.23m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 24), Value = 2425.42m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 13), Value = 2279.89m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 14), Value = 2439.48m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 17), Value = 2268.72m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 30), Value = 2404.84m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 9), Value = 2068.16m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 14), Value = 2171.57m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 7), Value = 1910.98m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 22), Value = 2082.97m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 4), Value = 2437.07m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 7) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 31), Value = 4487.6m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 12), Value = 3993.96m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 9), Value = 3874.14m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 31), Value = 3835.4m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 10), Value = 3835.4m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 25), Value = 4142.23m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 9), Value = 4349.34m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 23), Value = 3696.94m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 12), Value = 3659.97m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 20), Value = 4172.37m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 28), Value = 4965.12m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 12), Value = 5114.07m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 27), Value = 6085.74m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 15), Value = 5477.17m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 8) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 17), Value = 5318.11m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 12), Value = 5903.1m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 27), Value = 5194.73m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 10), Value = 4831.1m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 3), Value = 4831.1m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 2), Value = 5700.7m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 17), Value = 6612.81m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 24), Value = 6612.81m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 10), Value = 6414.43m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 24), Value = 6927.58m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 19), Value = 7966.72m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 21), Value = 6931.05m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 5), Value = 6445.88m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 1), Value = 7670.6m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 9) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 14), Value = 4257.36m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 20), Value = 4172.21m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 10), Value = 4505.99m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 10), Value = 4325.75m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 31), Value = 4715.07m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 12), Value = 5469.48m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 30), Value = 5907.04m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 14), Value = 6674.96m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 8), Value = 6808.46m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 21), Value = 6468.04m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 3), Value = 6015.28m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 19), Value = 5112.99m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 22), Value = 5368.64m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 7), Value = 5422.33m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 10) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 19), Value = 2389.08m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 27), Value = 2627.99m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 12), Value = 3153.59m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 6), Value = 2743.62m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 24), Value = 2798.49m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 27), Value = 3022.37m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 12), Value = 2810.8m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 3), Value = 2895.12m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 22), Value = 2547.71m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 12), Value = 2598.66m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 24), Value = 3040.43m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 6), Value = 3314.07m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 7), Value = 3280.93m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 9), Value = 2985.65m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 11) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 8), Value = 1111.95m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 11), Value = 1223.15m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 7), Value = 1235.38m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 11), Value = 1260.09m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 5), Value = 1512.11m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 21), Value = 1663.32m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 5), Value = 1879.55m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 23), Value = 2011.12m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 24), Value = 1789.9m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 6), Value = 1736.2m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 29), Value = 1718.84m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 11), Value = 1839.16m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 9), Value = 1802.38m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 21), Value = 1586.09m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 12) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 22), Value = 4414.4m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 7), Value = 3928.82m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 25), Value = 4675.3m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 15), Value = 5096.08m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 27), Value = 5503.77m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 13), Value = 5228.58m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 28), Value = 4496.58m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 18), Value = 5350.93m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 7), Value = 4976.36m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 19), Value = 4329.43m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 26), Value = 5108.73m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 8), Value = 5210.9m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 23), Value = 5002.46m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 7), Value = 4602.26m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 13) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 19), Value = 2295.2m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 19), Value = 2111.58m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 26), Value = 2491.66m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 3), Value = 2940.16m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 1), Value = 3116.57m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 10), Value = 3677.55m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 16), Value = 3530.45m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 21), Value = 3636.36m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 26), Value = 3418.18m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 13), Value = 3008m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 27), Value = 3128.32m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 23), Value = 3222.17m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 15), Value = 2899.95m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 29), Value = 2522.96m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 14) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 29), Value = 3159.7m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 15), Value = 3570.46m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 25), Value = 4106.03m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 22), Value = 4393.45m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 24), Value = 5184.27m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 7), Value = 5650.85m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 8), Value = 5142.27m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 29), Value = 4833.73m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 7), Value = 4543.71m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 22), Value = 4998.08m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 11), Value = 4798.16m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 24), Value = 4558.25m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 12), Value = 4740.58m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 17), Value = 4456.15m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 15) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 12), Value = 832.81m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 23), Value = 966.06m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 26), Value = 1053.01m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 9), Value = 1053.01m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 29), Value = 1232.02m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 7), Value = 1330.58m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 30), Value = 1290.66m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 22), Value = 1510.07m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 26), Value = 1525.17m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 14), Value = 1662.44m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 30), Value = 1446.32m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 21), Value = 1648.8m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 5), Value = 1879.63m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 17), Value = 2180.37m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 16) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 28), Value = 2362.92m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 21), Value = 2244.77m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 8), Value = 2446.8m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 17), Value = 2544.67m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 12), Value = 2341.1m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 19), Value = 2575.21m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 31), Value = 2240.43m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 4), Value = 2307.64m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 18), Value = 2676.86m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 17), Value = 2757.17m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 27), Value = 3088.03m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2019, 2, 9), Value = 2686.59m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2019, 3, 26), Value = 2820.92m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2019, 4, 11), Value = 2538.83m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 17) },
+                    new AccountValue { Date = new System.DateTime(2018, 1, 28), Value = 392.94m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 2, 13), Value = 432.23m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 3, 20), Value = 376.04m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 4, 25), Value = 353.48m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 8), Value = 385.29m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 5, 20), Value = 366.03m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 6, 15), Value = 322.11m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 7, 1), Value = 280.24m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 8, 1), Value = 311.07m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 9, 15), Value = 264.41m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 10, 28), Value = 285.56m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 11, 15), Value = 305.55m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2018, 12, 16), Value = 363.6m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+                    new AccountValue { Date = new System.DateTime(2019, 1, 3), Value = 410.87m, BankAccount = db.BankAccounts.FirstOrDefault(x => x.BankAccountId == 18) },
+
+                };
+
+                db.AccountValues.AddRange(accountValues);
+                db.SaveChanges();
+            }
+        }
+
+
     }
 }
