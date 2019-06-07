@@ -11,27 +11,30 @@
           class="xxx"
           style="height: 600px; min-width: 400px; max-width: 600px;">
 
-          <div v-for="n in 10" :key="n" class="q-pa-sm">
+          <div v-for="a in userAccounts" v-bind:key="a.bankAccountId" class="q-pa-sm">
             <q-card
             class="my-card text-white"
             style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" >
               <q-card-section>
-                <div class="text-h6">Main Current Account</div>
-                <div class="text-subtitle2">Bank of Ireland</div>
+                <div class="text-h6">{{ a.accountName }}</div>
+                <div class="text-subtitle2">{{ a.institution }}</div>
               </q-card-section>
               <q-card-section>
-                Type: Current
-                <br />Currency: EUR
+                Type: {{ a.type }}
+                <br />Currency: {{ a.quotedCurrency.code }}
                 <br />Balance: 1324.22
               </q-card-section>
+
+              <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
+                content-class="bg-deep-orange" content-style="font-size: 14px" >
+                {{ a.description }}
+              </q-tooltip>
             </q-card>
           </div>
 
         </q-scroll-area>
       </div>
-    <!-- </div> -->
 
-    <!-- <div class="q-ma-md"> -->
       <div class="col-auto q-ml-sm">
         <h5 class="q-my-md">Account Values</h5>
         
@@ -66,8 +69,12 @@
 
 <script>
   export default {
+    name: 'UserAccounts',
     data () {
       return {
+        // userEmail: "julieomalley2012@gmail.com",
+        userId: 2,
+        userAccounts: [],
         loading: false,
         filter: '',
         rowCount: 10,
@@ -177,6 +184,38 @@
             value: 518
           }
         ]
+      }
+    },
+    async created () {
+      try {
+        var response = await this.$axios({
+          method: "POST",
+          url: "/",
+          data: {
+            query: `
+              {
+                bankAccount_queries {
+                  userBankAccounts(userId: ` + this.userId + `) {
+                    bankAccountId
+                    accountName
+                    description      
+                    type
+                    isActive
+                    institution
+                    quotedCurrency {
+                      code
+                      nameShort
+                      nameLong        
+                    }
+                  }
+                }
+              }
+            `
+          }
+        });
+        this.userAccounts = response.data.data.bankAccount_queries.userBankAccounts;
+      } catch (error) {
+        console.error(error); 
       }
     },
     methods: {
