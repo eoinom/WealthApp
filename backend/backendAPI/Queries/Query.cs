@@ -9,6 +9,7 @@ namespace backendAPI.Queries
         public Query()
         {
             Name = "Query";
+            Field<AccountValueQuery>("accountValue_queries", resolve: context => new {} );
             Field<BankAccountQuery>("bankAccount_queries", resolve: context => new {} );
             Field<CountryQuery>("country_queries", resolve: context => new {} );
             Field<UserQuery>("user_queries", resolve: context => new {} );

@@ -48,6 +48,7 @@ namespace backendAPI
                 });
             });
 
+            services.AddTransient<IAccountValueRepository, AccountValueRepository>();
             services.AddTransient<IBankAccountRepository, BankAccountRepository>();
             services.AddTransient<ICountryRepository, CountryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
@@ -56,6 +57,11 @@ namespace backendAPI
 
             services.AddSingleton<Query>();
             services.AddSingleton<Mutation>();
+
+            services.AddSingleton<AccountValueType>();
+            services.AddSingleton<AccountValueInputType>();
+            services.AddSingleton<AccountValueQuery>();
+            services.AddSingleton<AccountValueMutation>();
 
             services.AddSingleton<BankAccountType>();
             services.AddSingleton<BankAccountInputType>();

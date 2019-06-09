@@ -11,6 +11,7 @@ namespace backendAPI.Mutations
         public Mutation()
         {
             Name = "Mutation";
+            Field<AccountValueMutation>("accountValue_mutations", resolve: context => new { } );
             Field<BankAccountMutation>("bankAccount_mutations", resolve: context => new { } );
             Field<UserMutation>("user_mutations", resolve: context => new { } );
         }
