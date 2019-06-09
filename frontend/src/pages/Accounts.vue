@@ -13,6 +13,10 @@
 
           <div v-for="a in userAccounts" v-bind:key="a.bankAccountId" class="q-pa-sm">
             <q-card
+            v-on:click="
+              selectedAccountId = a.bankAccountId; 
+              columns[1].label = 'Value ' + a.quotedCurrency.code; 
+              "
             class="my-card text-white"
             style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" >
               <q-card-section>
@@ -22,7 +26,7 @@
               <q-card-section>
                 Type: {{ a.type }}
                 <br />Currency: {{ a.quotedCurrency.code }}
-                <br />Balance: 1324.22
+                <br />Balance: {{ getAccountBalance(a.bankAccountId) }}
               </q-card-section>
 
               <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -40,12 +44,13 @@
         
         <div class="q-pa-md">
           <q-table
-            title="Treats"
-            :data="data"
+            title="AccountValues"
+            :data="accountValues[selectedAccountId - firstAccountId]"
             :columns="columns"
             row-key="id"
             :filter="filter"
-            :loading="loading" >
+            :loading="loading"
+            binary-state-sort >
 
             <template v-slot:top>
               <q-btn flat dense color="primary" :disable="loading" label="Add row" @click="addRow" />
@@ -72,9 +77,11 @@
     name: 'UserAccounts',
     data () {
       return {
-        // userEmail: "julieomalley2012@gmail.com",
         userId: 2,
         userAccounts: [],
+        accountValues: [[]],
+        firstAccountId: -1,
+        selectedAccountId: -1,
         loading: false,
         filter: '',
         rowCount: 10,
@@ -88,102 +95,15 @@
             format: val => `${val}`,
             sortable: true
           },
-          { name: 'value', align: 'center', label: 'Value (EUR)', field: 'value', sortable: true }
-        ],
-        data: [
-          {
-            id: 1,
-            date: '2019-05-01',
-            value: 159
-          },
-          {
-            id: 2,
-            date: '2019-04-01',
-            value: 237
-          },
-          {
-            id: 3,
-            date: '2019-03-01',
-            value: 262
-          },
-          {
-            id: 4,
-            date: '2019-02-01',
-            value: 305
-          },
-          {
-            id: 5,
-            date: '2019-01-01',
-            value: 356
-          },
-          {
-            id: 6,
-            date: '2018-12-01',
-            value: 375
-          },
-          {
-            id: 7,
-            date: '2018-11-01',
-            value: 392
-          },
-          {
-            id: 8,
-            date: '2018-10-01',
-            value: 408
-          },
-          {
-            id: 9,
-            date: '2018-09-01',
-            value: 452
-          },
-          {
-            id: 10,
-            date: '2018-08-01',
-            value: 518
+          { 
+            name: 'value', 
+            align: 'center', 
+            label: 'Value (EUR)', 
+            field: 'value',
+            format: val => Number(val).toFixed(2),
+            sortable: true 
           }
-        ],
-        original: [
-          {
-            date: '2019-05-01',
-            value: 159
-          },
-          {
-            date: '2019-04-01',
-            value: 237
-          },
-          {
-            date: '2019-03-01',
-            value: 262
-          },
-          {
-            date: '2019-02-01',
-            value: 305
-          },
-          {
-            date: '2019-01-01',
-            value: 356
-          },
-          {
-            date: '2018-12-01',
-            value: 375
-          },
-          {
-            date: '2018-11-01',
-            value: 392
-          },
-          {
-            date: '2018-10-01',
-            value: 408
-          },
-          {
-            date: '2018-09-01',
-            value: 452
-          },
-          {
-            date: '2018-08-01',
-            value: 518
-          }
-        ]
+        ]        
       }
     },
     async created () {
@@ -214,12 +134,45 @@
           }
         });
         this.userAccounts = response.data.data.bankAccount_queries.userBankAccounts;
+        this.firstAccountId = this.userAccounts[0].bankAccountId;
+        this.selectedAccountId = this.firstAccountId;
+        console.log("selectedAccountId: " + this.selectedAccountId);
       } catch (error) {
         console.error(error); 
       }
+      
+      for (var i = 0; i < this.userAccounts.length; i++) {
+        try {
+          var response = await this.$axios({
+            method: "POST",
+            url: "/",
+            data: {
+              query: `
+                {
+                  accountValue_queries {
+                    accountValues(accountId: ` + this.userAccounts[i].bankAccountId + `) {
+                      date
+                      value
+                    }
+                  }
+                }
+              `
+            }
+          });
+          this.accountValues[i] = response.data.data.accountValue_queries.accountValues.sort(function(a, b) {
+              var dateA = new Date(a.date);
+              var dateB = new Date(b.date);
+              return dateA - dateB;
+          });
+        } catch (error) {
+          console.error(error); 
+        }
+        console.log("i = " + i);
+        console.log(this.accountValues[i]);
+      }
+      
     },
     methods: {
-      // emulate fetching data from server
       addRow () {
         this.loading = true
         setTimeout(() => {
@@ -242,6 +195,54 @@
           this.data = [...this.data.slice(0, index), ...this.data.slice(index + 1)]
           this.loading = false
         }, 500)
+      },
+      testMethod () {
+        console.log(2)
+        populateAccountValues(7)
+      },
+      populateAccountValues: function (accountId) {
+        try {
+          var response = this.$axios({
+            method: "POST",
+            url: "/",
+            data: {
+              query: `
+                {
+                  accountValue_queries {
+                    accountValues(accountId: ` + accountId +`) {
+                      date
+                      value
+                      }
+                    }
+                  }
+                }
+              `
+            }
+          });
+          this.accountValues = response.data.data.accountValue_queries.accountValues;
+        } catch (error) {
+          console.error(error); 
+        }
+      },
+      log: function(str) {
+        console.log(str);
+        var num = 0;
+        num = str;
+        console.log(num);
+        console.log(this.accountValues[num]);
+      },
+      getAccountBalance: function (accountId) {
+        try {
+          console.log("Account Values: ");
+          console.log(accountValues);
+          var numOfValues = accountValues[accountId - firstAccountId].length;
+          console.log(numOfValues);
+          return accountValues[accountId - firstAccountId][ numOfValues - 1 ].value;
+        }
+        catch (error) {
+          console.error(error); 
+          return "";
+        }        
       }
     },
     computed: {
