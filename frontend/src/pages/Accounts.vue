@@ -26,7 +26,8 @@
               <q-card-section>
                 Type: {{ a.type }}
                 <br />Currency: {{ a.quotedCurrency.code }}
-                <br />Balance: {{ getAccountBalance(a.bankAccountId) }}
+                <!-- <br />Balance: {{ getAccountBalance(a.bankAccountId) }} -->
+                <br />Balance: {{ Number( accountBalances[a.bankAccountId - firstAccountId] ).toFixed(2) }}
               </q-card-section>
 
               <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -80,6 +81,7 @@
         userId: 2,
         userAccounts: [],
         accountValues: [[]],
+        accountBalances: [],
         firstAccountId: -1,
         selectedAccountId: -1,
         loading: false,
@@ -164,6 +166,10 @@
               var dateB = new Date(b.date);
               return dateA - dateB;
           });
+
+          var numOfValues = this.accountValues[i].length;
+          this.accountBalances[i] = this.accountValues[i][ numOfValues - 1 ].value;
+
         } catch (error) {
           console.error(error); 
         }
@@ -196,34 +202,40 @@
           this.loading = false
         }, 500)
       },
-      testMethod () {
-        console.log(2)
-        populateAccountValues(7)
-      },
-      populateAccountValues: function (accountId) {
-        try {
-          var response = this.$axios({
-            method: "POST",
-            url: "/",
-            data: {
-              query: `
-                {
-                  accountValue_queries {
-                    accountValues(accountId: ` + accountId +`) {
-                      date
-                      value
-                      }
-                    }
-                  }
-                }
-              `
-            }
-          });
-          this.accountValues = response.data.data.accountValue_queries.accountValues;
-        } catch (error) {
-          console.error(error); 
-        }
-      },
+      // testMethod () {
+      //   console.log(2)
+      //   populateAccountValues(7)
+      // },
+      // populateAccountValues: async function (accountId) {
+      //   try {
+      //     var response = await this.$axios({
+      //       method: "POST",
+      //       url: "/",
+      //       data: {
+      //         query: `
+      //           {
+      //             accountValue_queries {
+      //               accountValues(accountId: ` + accountId +`) {
+      //                 date
+      //                 value
+      //                 }
+      //               }
+      //             }
+      //           }
+      //         `
+      //       }
+      //     });
+      //     this.accountValues = response.data.data.accountValue_queries.accountValues;
+
+      //     for(var i = 0; i < this.accountValues.length; i++) {
+      //       var numOfValues = this.accountValues[i].length;
+      //       this.accountBalances[i] = this.accountValues[i][ numOfValues - 1 ].value;
+      //     }
+          
+      //   } catch (error) {
+      //     console.error(error); 
+      //   }
+      // },
       log: function(str) {
         console.log(str);
         var num = 0;
@@ -234,10 +246,10 @@
       getAccountBalance: function (accountId) {
         try {
           console.log("Account Values: ");
-          console.log(accountValues);
-          var numOfValues = accountValues[accountId - firstAccountId].length;
+          console.log(this.accountValues);
+          var numOfValues = this.accountValues[accountId - this.firstAccountId].length;
           console.log(numOfValues);
-          return accountValues[accountId - firstAccountId][ numOfValues - 1 ].value;
+          return this.accountValues[accountId - this.firstAccountId][ numOfValues - 1 ].value;
         }
         catch (error) {
           console.error(error); 

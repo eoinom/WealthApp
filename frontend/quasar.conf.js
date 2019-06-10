@@ -42,8 +42,10 @@ module.exports = function (ctx) {
         'QAvatar',
         'QFooter',
         'QTabs',
-        'QTab',
+        'QTab',        
         'QRouteTab',
+        'QTabPanels',
+        'QTabPanel',
         'QImg',
         'QScrollArea',
         'QCard',
@@ -55,17 +57,27 @@ module.exports = function (ctx) {
         'QTd',
         'QTooltip',
         'QInput',
-        'QSpace'
+        'QCheckbox',
+        'QSpace',
+        'QMenu',
+        'QToggle',
+        'QSeparator'
       ],
 
       directives: [
-        'Ripple'
+        'Ripple',
+        'ClosePopup',
+        'GoBack'
       ],
 
       // Quasar plugins
       plugins: [
         'Notify'
-      ]
+      ],
+
+      config: {
+        notify: { /* Notify defaults */ }
+      }
 
       // iconSet: 'ionicons-v4'
       // lang: 'de' // Quasar language
