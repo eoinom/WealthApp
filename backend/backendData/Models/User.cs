@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,5 +21,5 @@ namespace backendData.Models
     public virtual IEnumerable<LoanAccount> LoanAccounts { get; set; }
     public virtual IEnumerable<MortgageAccount> MortgageAccounts { get; set; }
     public virtual IEnumerable<Property> Properties { get; set; }
-  }
+    }
 }

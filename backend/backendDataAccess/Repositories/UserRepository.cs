@@ -1,6 +1,7 @@
 ﻿using backendData;
 using backendData.Models;
 using backendDataAccess.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,6 +37,14 @@ namespace backendDataAccess.Repositories
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
             return user;
+        }
+
+        public User CheckCredentials(string email, string password)
+        {
+            return _dbContext.Users                
+                .Include(x => x.Country)
+                .Include(x => x.DisplayCurrency)
+                .SingleOrDefault(x => x.Email == email && x.Password == password);
         }
 
     }

@@ -16,6 +16,11 @@ namespace backendAPI.Queries
                 "user",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "id" }),
                 resolve: context => userRepository.GetById(context.GetArgument<int>("id")));
+
+            Field<UserType>(
+                "userLogin",
+                arguments: new QueryArguments(new QueryArgument<StringGraphType> { Name = "email" }, new QueryArgument<StringGraphType> { Name = "password" }),
+                resolve: context => userRepository.CheckCredentials(context.GetArgument<string>("email"), context.GetArgument<string>("password")));
         }
     }
 }
