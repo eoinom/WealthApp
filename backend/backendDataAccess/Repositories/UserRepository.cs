@@ -23,7 +23,10 @@ namespace backendDataAccess.Repositories
 
         public User GetById(int id)
         {
-            return _dbContext.Users.SingleOrDefault(x => x.UserId == id);
+            return _dbContext.Users
+                .Include(x => x.Country)
+                .Include(x => x.DisplayCurrency)
+                .SingleOrDefault(x => x.UserId == id);
         }
 
         public User Add(User user)
