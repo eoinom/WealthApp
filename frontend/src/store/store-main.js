@@ -111,6 +111,12 @@ const getters = {
     user: (state) => {
         return state.user
     },
+    userFullName: (state) => {
+        return state.user.firstName + ' ' + state.user.lastName
+    },
+    userEmail: (state) => {
+        return state.user.email
+    },
     bankAccounts: (state) => {
         return state.bankAccounts
     },

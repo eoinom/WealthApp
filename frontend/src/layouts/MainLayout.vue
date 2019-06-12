@@ -34,7 +34,8 @@
                     <img src="https://cdn.quasar.dev/img/avatar1.jpg">
                   </q-avatar>
 
-                  <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+                  <div class="text-subtitle1 text-center q-mt-sm">{{ userFullName }}</div>
+                  <div class="text-subtitle2 text-center q-mb-sm">{{ userEmail }}</div>
 
                   <q-btn
                     v-go-back=" '/login' "
@@ -99,46 +100,50 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+  import { openURL } from 'quasar'
+  import { mapGetters } from 'vuex'
 
-export default {
-  name: 'MyLayout',
-  data () {
-    return {
-      leftDrawerOpen: this.$q.platform.is.desktop,
-      navs: [
-        {
-          label: 'Dashboard',
-          icon: 'fas fa-chart-bar',
-          to: '/dashboard'
-        },
-        {
-          label: 'Accounts',
-          icon: 'account_balance_wallet',
-          to: '/accounts'
-        },
-        {
-          label: 'Crypto',
-          icon: 'fab fa-bitcoin',
-          to: '/crypto'
-        },
-        {
-          label: 'Property',
-          icon: 'home',
-          to: '/properties'
-        },
-        {
-          label: 'Liabilities',
-          icon: 'credit_card',
-          to: '/liabilities'
-        }
-      ]
+  export default {
+    name: 'MyLayout',
+    data () {
+      return {
+        leftDrawerOpen: this.$q.platform.is.desktop,
+        navs: [
+          {
+            label: 'Dashboard',
+            icon: 'fas fa-chart-bar',
+            to: '/dashboard'
+          },
+          {
+            label: 'Accounts',
+            icon: 'account_balance_wallet',
+            to: '/accounts'
+          },
+          {
+            label: 'Crypto',
+            icon: 'fab fa-bitcoin',
+            to: '/crypto'
+          },
+          {
+            label: 'Property',
+            icon: 'home',
+            to: '/properties'
+          },
+          {
+            label: 'Liabilities',
+            icon: 'credit_card',
+            to: '/liabilities'
+          }
+        ]
+      }
+    },
+    computed: {
+      ...mapGetters('main', ['userFullName', 'userEmail'])
+    },
+    methods: {
+      openURL
     }
-  },
-  methods: {
-    openURL
   }
-}
 </script>
 
 <style lang="scss">
