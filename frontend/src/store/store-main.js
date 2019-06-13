@@ -20,16 +20,17 @@ const getDefaultState = () => {
                 institution: 'institution',
                 type: 'type',
                 isActive: false,
-                currencyCode: 'EUR',
+                quotedCurrency: {},
                 balance: 0.00
             }
         },
-        accountValues: {
+        bankAccountValues: {
             '0': {
-                accountValueId: 0,
-                date: "2000-01-01",
-                value: 1000.00,
-                bankAccountId: 0
+                '0': {
+                    accountValueId: 0,
+                    date: "2000-01-01",
+                    value: 1000.00
+                }
             }
         }
     }
@@ -72,16 +73,23 @@ const mutations = {
     updateBankAccountBalance(state, bankAccountId) {
         // To do
     },
-    initialiseAccountValues(state, accountValues) {
-        commit('deleteAccountValue', 0)
-        Object.assign(state.accountValues, accountValues)
+    updateBankAccountValues(state, payload) {
+        // commit('deleteValuesForBankAccount', 0)
+        console.log('In updateBankAccountValues')
+        console.log('bankAccountId: ' + payload.bankAccountId)
+        console.log('bankAccountValues: ')
+        console.log(payload.bankAccountValues)
+        state.bankAccountValues[payload.bankAccountId] = payload.bankAccountValues
     },
-    addAccountValue(state, accountValue) {
-        Object.assign(state.accountValues[accountValue.accountValueId], accountValue)
+    addBankAccountValue(state, accountValue) {
+        Object.assign(state.bankAccountValues[accountValue.accountValueId], accountValue)
     },
-    deleteAccountValue(state, accountValueId) {
+    deleteValuesForBankAccount(state, accountId) {
         // Vue.delete(state.bankAccounts, { where: bankAccountId = accountId })
-        Vue.delete(state.accountValues, accountValueId)
+        Vue.delete(state.bankAccountValues, accountId)
+    },
+    deleteBankAccountValue(state, accountId, accountValueId) {
+        Vue.delete(state.bankAccountValues[accountId], accountValueId)
     },
 }
 
@@ -101,6 +109,9 @@ const actions = {
     },
     initialiseBankAccounts({ commit }, bankAccounts) {
         commit('initialiseBankAccounts', bankAccounts)
+    },
+    updateBankAccountValues({ commit }, payload) {
+        commit('updateBankAccountValues', payload)
     },
 }
 
@@ -123,14 +134,14 @@ const getters = {
     bankAccountById: (state) => (id) => {
         return state.bankAccounts.find(x => x.bankAccountId === id)
     },
-    accountValues: (state) => {
-        return state.accountValues
+    bankAccountValues: (state) => {
+        return state.bankAccountValues
     },
-    accountValueById: (state) => (id) => {
-        return state.accountValues.find(x => x.accountValueId === id)
+    bankAccountValueById: (state) => (id) => {
+        return state.bankAccountValues.find(x => x.accountValueId === id)
     },
-    accountValuesByAccountId: (state) => (id) => {
-        return state.accountValues.where(x => x.bankAccountId === id)
+    bankAccountValuesByAccountId: (state) => (id) => {
+        return state.bankAccountValues[id]
     },
 }
 

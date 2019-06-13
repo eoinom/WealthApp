@@ -199,11 +199,11 @@
       }
     },
     methods: {
-      ...mapGetters('main', ['authenticated', 'user', 'bankAccounts', 'accountValues']),
-      ...mapActions('main', ['login', 'updateUser', 'initialiseBankAccounts']),
+      ...mapGetters('main', ['authenticated', 'user', 'bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
+      ...mapActions('main', ['login', 'updateUser', 'initialiseBankAccounts', 'updateBankAccountValues']),
 
       onSubmitLogin () {  
-        this.checkAuth(this.email, this.password).then(authorised => {
+        this.checkAuth(this.email, this.password).then(authorised => {          
           if (authorised) {
             console.log("user:");
             console.log(this.user());
@@ -213,6 +213,56 @@
               icon: 'fas fa-check-circle',
               message: 'Welcome back ' + this.user().firstName + '!'
             });
+
+            this.getBankAccounts(this.user().userId).then(successful => {
+              if (successful) {
+                console.log("bankAccounts:");
+                console.log(this.bankAccounts());  
+                var numBankAccounts = Object.keys(this.bankAccounts()).length;
+
+                for (var i = 0; i < numBankAccounts; i++) {
+                  console.log("accountId: " + this.bankAccounts()[i].bankAccountId)
+                  this.sleep(2000)
+
+                  // setInterval(() => {
+                  //   this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
+                  //     if (gotAccountValues) {
+                  //       console.log("AccountValues for accountId: " + this.bankAccounts()[i].bankAccountId)
+                  //       console.log(this.bankAccountValuesByAccountId(this.bankAccounts()[i].bankAccountId)) 
+                  //     }
+                  //     else {
+                  //       console.log("Getting account values failed");
+                  //     }
+                  //   }).catch(error => {
+                  //       console.log(error)
+                  //   });
+                  // }, 1000)
+
+                  this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
+                    if (gotAccountValues) {
+                      console.log("AccountValues for accountId: " + this.bankAccounts()[i].bankAccountId)
+                      console.log(this.bankAccountValuesByAccountId(this.bankAccounts()[i].bankAccountId)) 
+                    }
+                    else {
+                      console.log("Getting account values failed");
+                    }
+                  }).catch(error => {
+                      console.log(error)
+                  }); 
+                  
+                  // this.sleep(500)
+                }
+
+              }
+              else {
+                console.log("bankAccounts failed");
+              }
+            }).catch(error => {
+                console.log(error)
+            });     
+            
+            this.sleep(7000)
+
             this.$router.push('/accounts')                                        
           }
           else {
@@ -224,21 +274,51 @@
             })
             this.$router.push('/login')
           }
-          if (authorised) {
-            this.getBankAccounts(this.user().userId).then(successful => {
-              if (successful) {
-                console.log("bankAccounts:");
-                console.log(this.bankAccounts());                                   
-              }
-              else {
-                console.log("bankAccounts failed");
-              }
-            }).catch(error => {
-                console.log(error)
-            });
+        });        
+      },
+
+      sleep (milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+          if ((new Date().getTime() - start) > milliseconds){
+            break;
           }
-        });
-        
+        }
+      },
+
+      onResetLogin () {
+        this.email = null
+        this.password = null
+        this.confirmPassword = false
+      },
+
+      onSubmitRegister () {
+        if (this.agreeTerms !== true) {
+          this.$q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'fas fa-exclamation-triangle',
+          message: 'You need to accept the terms and conditions first'
+          })
+        }
+        else {
+          this.$q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'fas fa-check-circle',
+          message: 'Submitted'
+          })
+        }
+      },
+
+      onResetRegister () {
+        this.firstName = null
+        this.surname = null
+        this.email = null
+        this.password = null
+        this.confirmPassword = null
+        this.subscribed = true
+        this.agreeTerms = false
       },
 
       async checkAuth(email, password) {                
@@ -327,40 +407,53 @@
         return false
       },
 
-      onSubmitRegister () {
-        if (this.agreeTerms !== true) {
-          this.$q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'fas fa-exclamation-triangle',
-          message: 'You need to accept the terms and conditions first'
-          })
+      async getAccountValues(accountId) {                
+        const axios = require("axios")
+        try {
+          var response = await axios({
+            method: "POST",
+            url: "/",
+            data: {
+              query: `                    
+              {
+                accountValue_queries {
+                  accountValues(accountId: ` + accountId + `) {
+                    accountValueId
+                    date
+                    value
+                  }
+                }
+              }
+              `
+            }
+          });  
+          var accountVals = response.data.data.accountValue_queries.accountValues.sort(function(a, b) {
+              var dateA = new Date(a.date);
+              var dateB = new Date(b.date);
+              return dateA - dateB;
+          });
+
+          console.log('accountVals:')
+          console.log(accountVals)
+
+          this.updateBankAccountValues({ bankAccountId: accountId, bankAccountValues: accountVals })
+          
+          if (this.bankAccountValuesByAccountId(accountId) != null) {
+            console.log("bankAccountValuesByAccountId for accountId: " + accountId)
+            console.log(this.bankAccountValuesByAccountId(accountId))
+            return true
+          }
+          else {
+            console.log("Account values retrieval failed or none present on server")
+            return false
+          }
+        } catch (error) {
+            console.error(error); 
         }
-        else {
-          this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'fas fa-check-circle',
-          message: 'Submitted'
-          })
-        }
+        return false
       },
 
-      onResetLogin () {
-        this.email = null
-        this.password = null
-        this.confirmPassword = false
-      },
-
-      onResetRegister () {
-        this.firstName = null
-        this.surname = null
-        this.email = null
-        this.password = null
-        this.confirmPassword = null
-        this.subscribed = true
-        this.agreeTerms = false
-      },
+      
     //   startAnimation () {
     //     this.vivus = new Vivus('logo', {
     //         duration: 400,

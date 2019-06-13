@@ -11,7 +11,12 @@
           class="xxx"
           style="height: 600px; min-width: 400px; max-width: 600px;">
 
-          <div v-for="a in userAccounts" v-bind:key="a.bankAccountId" class="q-pa-sm">
+          <!-- <div v-for="a in bankAccounts" 
+            v-bind:key="a.bankAccountId" 
+            class="q-pa-sm"> -->
+          <div v-for="(a, key) in bankAccounts" 
+            v-bind:key="key"
+            class="q-pa-sm">
             <q-card
             v-on:click="
               selectedAccountId = a.bankAccountId; 
@@ -27,7 +32,7 @@
                 Type: {{ a.type }}
                 <br />Currency: {{ a.quotedCurrency.code }}
                 <!-- <br />Balance: {{ getAccountBalance(a.bankAccountId) }} -->
-                <br />Balance: {{ Number( accountBalances[a.bankAccountId - firstAccountId] ).toFixed(2) }}
+                <!-- <br />Balance: {{ Number( accountBalances[a.bankAccountId - firstAccountId] ).toFixed(2) }} -->
               </q-card-section>
 
               <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -46,12 +51,13 @@
         <div class="q-pa-md">
           <q-table
             title="AccountValues"
-            :data="accountValues[selectedAccountId - firstAccountId]"
+            :data="bankAccountValuesByAccountId(selectedAccountId)"
             :columns="columns"
-            row-key="id"
+            row-key="id"            
             :filter="filter"
             :loading="loading"
-            binary-state-sort >
+            :pagination.sync="pagination"
+            >
 
             <template v-slot:top>
               <q-btn flat dense color="primary" :disable="loading" label="Add row" @click="addRow" />
@@ -63,30 +69,54 @@
                 </template>
               </q-input>
             </template>
+
           </q-table>
         </div>
 
-      </div>
-    </div>
+      </div> 
 
+    </div>
   </q-page>
 </template>
 
 
 <script>
-  export default {
+  import { mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
+
+  export default { 
     name: 'UserAccounts',
     data () {
       return {
-        userId: 2,
-        userAccounts: [],
-        accountValues: [[]],
+        // userId: 2,
+        // userAccounts: [],
+        // bankAccounts: {
+        //     '0': {
+        //         bankAccountId: 0,
+        //         accountName: 'accountName',
+        //         description: 'description',
+        //         institution: 'institution',
+        //         type: 'type',
+        //         isActive: false,
+        //         quotedCurrency: {
+        //           code: 'EUR'
+        //         },
+        //         balance: 0.00
+        //     }
+        // },
+        // accountValues: [[]],
         accountBalances: [],
-        firstAccountId: -1,
+        // firstAccountId: -1,
         selectedAccountId: -1,
         loading: false,
         filter: '',
         rowCount: 10,
+        pagination: {
+          sortBy: 'date',
+          descending: true,
+          rowsPerPage: 10
+        },
         columns: [
           {
             name: 'date',
@@ -109,73 +139,73 @@
       }
     },
     async created () {
-      try {
-        var response = await this.$axios({
-          method: "POST",
-          url: "/",
-          data: {
-            query: `
-              {
-                bankAccount_queries {
-                  userBankAccounts(userId: ` + this.userId + `) {
-                    bankAccountId
-                    accountName
-                    description      
-                    type
-                    isActive
-                    institution
-                    quotedCurrency {
-                      code
-                      nameShort
-                      nameLong        
-                    }
-                  }
-                }
-              }
-            `
-          }
-        });
-        this.userAccounts = response.data.data.bankAccount_queries.userBankAccounts;
-        this.firstAccountId = this.userAccounts[0].bankAccountId;
-        this.selectedAccountId = this.firstAccountId;
-        console.log("selectedAccountId: " + this.selectedAccountId);
-      } catch (error) {
-        console.error(error); 
-      }
+      // try {
+      //   var response = await this.$axios({
+      //     method: "POST",
+      //     url: "/",
+      //     data: {
+      //       query: `
+      //         {
+      //           bankAccount_queries {
+      //             userBankAccounts(userId: ` + this.userId + `) {
+      //               bankAccountId
+      //               accountName
+      //               description      
+      //               type
+      //               isActive
+      //               institution
+      //               quotedCurrency {
+      //                 code
+      //                 nameShort
+      //                 nameLong        
+      //               }
+      //             }
+      //           }
+      //         }
+      //       `
+      //     }
+      //   });
+      //   this.userAccounts = response.data.data.bankAccount_queries.userBankAccounts;
+      //   this.firstAccountId = this.userAccounts[0].bankAccountId;
+      //   this.selectedAccountId = this.firstAccountId;
+      //   console.log("selectedAccountId: " + this.selectedAccountId);
+      // } catch (error) {
+      //   console.error(error); 
+      // }
       
-      for (var i = 0; i < this.userAccounts.length; i++) {
-        try {
-          var response = await this.$axios({
-            method: "POST",
-            url: "/",
-            data: {
-              query: `
-                {
-                  accountValue_queries {
-                    accountValues(accountId: ` + this.userAccounts[i].bankAccountId + `) {
-                      date
-                      value
-                    }
-                  }
-                }
-              `
-            }
-          });
-          this.accountValues[i] = response.data.data.accountValue_queries.accountValues.sort(function(a, b) {
-              var dateA = new Date(a.date);
-              var dateB = new Date(b.date);
-              return dateA - dateB;
-          });
+      // for (var i = 0; i < this.userAccounts.length; i++) {
+      //   try {
+      //     var response = await this.$axios({
+      //       method: "POST",
+      //       url: "/",
+      //       data: {
+      //         query: `
+      //           {
+      //             accountValue_queries {
+      //               accountValues(accountId: ` + this.userAccounts[i].bankAccountId + `) {
+      //                 date
+      //                 value
+      //               }
+      //             }
+      //           }
+      //         `
+      //       }
+      //     });
+      //     this.accountValues[i] = response.data.data.accountValue_queries.accountValues.sort(function(a, b) {
+      //         var dateA = new Date(a.date);
+      //         var dateB = new Date(b.date);
+      //         return dateA - dateB;
+      //     });
 
-          var numOfValues = this.accountValues[i].length;
-          this.accountBalances[i] = this.accountValues[i][ numOfValues - 1 ].value;
+      //     var numOfValues = this.accountValues[i].length;
+      //     this.accountBalances[i] = this.accountValues[i][ numOfValues - 1 ].value;
 
-        } catch (error) {
-          console.error(error); 
-        }
-        console.log("i = " + i);
-        console.log(this.accountValues[i]);
-      }
+      //   } catch (error) {
+      //     console.error(error); 
+      //   }
+      //   console.log("i = " + i);
+      //   console.log(this.accountValues[i]);
+      // }
       
     },
     methods: {
@@ -194,6 +224,7 @@
           this.loading = false
         }, 500)
       },
+
       removeRow () {
         this.loading = true
         setTimeout(() => {
@@ -202,40 +233,7 @@
           this.loading = false
         }, 500)
       },
-      // testMethod () {
-      //   console.log(2)
-      //   populateAccountValues(7)
-      // },
-      // populateAccountValues: async function (accountId) {
-      //   try {
-      //     var response = await this.$axios({
-      //       method: "POST",
-      //       url: "/",
-      //       data: {
-      //         query: `
-      //           {
-      //             accountValue_queries {
-      //               accountValues(accountId: ` + accountId +`) {
-      //                 date
-      //                 value
-      //                 }
-      //               }
-      //             }
-      //           }
-      //         `
-      //       }
-      //     });
-      //     this.accountValues = response.data.data.accountValue_queries.accountValues;
 
-      //     for(var i = 0; i < this.accountValues.length; i++) {
-      //       var numOfValues = this.accountValues[i].length;
-      //       this.accountBalances[i] = this.accountValues[i][ numOfValues - 1 ].value;
-      //     }
-          
-      //   } catch (error) {
-      //     console.error(error); 
-      //   }
-      // },
       log: function(str) {
         console.log(str);
         var num = 0;
@@ -243,6 +241,7 @@
         console.log(num);
         console.log(this.accountValues[num]);
       },
+
       getAccountBalance: function (accountId) {
         try {
           console.log("Account Values: ");
@@ -257,7 +256,10 @@
         }        
       }
     },
+
     computed: {
+      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId']),
+
       contentStyle () {
         return {
           backgroundColor: 'rgba(0,0,0,0.02)',
