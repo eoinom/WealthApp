@@ -9,7 +9,7 @@
           :content-style="contentStyle"
           :content-active-style="contentActiveStyle"
           class="xxx"
-          style="height: 600px; min-width: 400px; max-width: 600px;">
+          style="height: 800px; min-width: 400px; max-width: 600px;">
 
           <!-- <div v-for="a in bankAccounts" 
             v-bind:key="a.bankAccountId" 
@@ -20,7 +20,7 @@
             <q-card
             v-on:click="
               selectedAccountId = a.bankAccountId; 
-              columns[1].label = 'Value ' + a.quotedCurrency.code; 
+              columns['value'].label = 'Value ' + a.quotedCurrency.code; 
               "
             class="my-card text-white"
             style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" >
@@ -31,7 +31,7 @@
               <q-card-section>
                 Type: {{ a.type }}
                 <br />Currency: {{ a.quotedCurrency.code }}
-                <!-- <br />Balance: {{ getAccountBalance(a.bankAccountId) }} -->
+                <br />Balance: {{ getAccountBalance(a.bankAccountId) }}
                 <!-- <br />Balance: {{ Number( accountBalances[a.bankAccountId - firstAccountId] ).toFixed(2) }} -->
               </q-card-section>
 
@@ -246,9 +246,9 @@
         try {
           console.log("Account Values: ");
           console.log(this.accountValues);
-          var numOfValues = this.accountValues[accountId - this.firstAccountId].length;
-          console.log(numOfValues);
-          return this.accountValues[accountId - this.firstAccountId][ numOfValues - 1 ].value;
+          var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
+          console.log("No. of account values for accountId " + accountId + ": " + numOfValues);
+          return this.bankAccountValuesByAccountId(accountId)[ numOfValues - 1 ].value;
         }
         catch (error) {
           console.error(error); 
