@@ -138,7 +138,7 @@
       }
     },
     computed: {
-      ...mapGetters('main', ['userFullName', 'userEmail', 'bankAccounts'])
+      ...mapGetters('main', ['userFullName', 'userEmail'])
     },
     methods: {
       openURL

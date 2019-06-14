@@ -202,7 +202,11 @@
       ...mapGetters('main', ['authenticated', 'user', 'bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
       ...mapActions('main', ['login', 'updateUser', 'initialiseBankAccounts', 'updateBankAccountValues']),
 
-      onSubmitLogin () {  
+      onSubmitLogin () { 
+        this.$q.loading.show({
+          // delay: 400 // ms
+          message: 'Loading accounts<br/><span class="text-white">Hang on...</span>'
+        })
         this.checkAuth(this.email, this.password).then(authorised => {          
           if (authorised) {
             console.log("user:");
@@ -222,7 +226,7 @@
 
                 for (var i = 0; i < numBankAccounts; i++) {
                   console.log("accountId: " + this.bankAccounts()[i].bankAccountId)
-                  this.sleep(2000)
+                  this.sleep(1000)
 
                   // setInterval(() => {
                   //   this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
@@ -261,9 +265,17 @@
                 console.log(error)
             });     
             
-            this.sleep(7000)
+            // this.sleep(2000)
+            // this.$q.loading.hide()
 
-            this.$router.push('/accounts')                                        
+            // hiding in 3s
+            this.timer = setTimeout(() => {
+              this.$q.loading.hide()
+              this.timer = void 0
+              this.$router.push('/accounts')
+            }, 3000)
+
+            // this.$router.push('/accounts')                                        
           }
           else {
             this.$q.notify({
@@ -272,6 +284,7 @@
               icon: 'fas fa-exclamation-triangle',
               message: 'Invalid credentials, please try again.'
             })
+            this.$q.loading.hide()
             this.$router.push('/login')
           }
         });        
@@ -453,7 +466,12 @@
         return false
       },
 
-      
+      beforeDestroy () {
+        if (this.timer !== void 0) {
+          clearTimeout(this.timer)
+          this.$q.loading.hide()
+        }
+      }
     //   startAnimation () {
     //     this.vivus = new Vivus('logo', {
     //         duration: 400,
