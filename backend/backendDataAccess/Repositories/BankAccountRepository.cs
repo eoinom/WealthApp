@@ -34,12 +34,17 @@ namespace backendDataAccess.Repositories
             return _dbContext.BankAccounts
                 .Where(x => x.User.UserId == userId)
                 .Include(x => x.QuotedCurrency)
-                .Include(x => x.User);
+                .Include(x => x.User)
+                .Include(x => x.AccountValues);
         }
 
         public BankAccount GetById(int id)
         {
-            return _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == id);
+            return _dbContext.BankAccounts
+                .Include(x => x.QuotedCurrency)
+                .Include(x => x.User)
+                .Include(x => x.AccountValues)
+                .SingleOrDefault(x => x.BankAccountId == id);
         }        
     }
 }
