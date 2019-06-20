@@ -27,6 +27,8 @@ namespace backendDataAccess.Repositories
                 .Include(x => x.Country)
                 .Include(x => x.DisplayCurrency)
                 .Include(x => x.BankAccounts)
+                    .ThenInclude(acc => acc.QuotedCurrency)
+                .Include(x => x.BankAccounts)
                     .ThenInclude(acc => acc.AccountValues)
                 .SingleOrDefault(x => x.UserId == id);
         }
@@ -49,6 +51,8 @@ namespace backendDataAccess.Repositories
             return _dbContext.Users                
                 .Include(x => x.Country)
                 .Include(x => x.DisplayCurrency)
+                .Include(x => x.BankAccounts)
+                    .ThenInclude(acc => acc.QuotedCurrency)
                 .Include(x => x.BankAccounts)
                     .ThenInclude(acc => acc.AccountValues)
                 .SingleOrDefault(x => x.Email == email && x.Password == password);
