@@ -11,37 +11,37 @@
           class="xxx"
           style="height: 800px; min-width: 400px; max-width: 600px;">
 
-          <!-- <div v-for="a in bankAccounts" 
-            v-bind:key="a.bankAccountId" 
-            class="q-pa-sm"> -->
-          <div v-for="(a, key) in bankAccounts" 
-            v-bind:key="key"
-            class="q-pa-sm">
-            <q-card
-            v-on:click="
-              selectedAccountId = a.bankAccountId; 
-              columns['value'].label = 'Value ' + a.quotedCurrency.code; 
-              "
-            class="my-card text-white"
-            style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" >
-              <q-card-section>
-                <div class="text-h6">{{ a.accountName }}</div>
-                <div class="text-subtitle2">{{ a.institution }}</div>
-              </q-card-section>
-              <q-card-section>
-                Type: {{ a.type }}
-                <br />Currency: {{ a.quotedCurrency.code }}
-                <br />Balance: {{ getAccountBalance(a.bankAccountId) }}
-                <!-- <br />Balance: {{ Number( accountBalances[a.bankAccountId - firstAccountId] ).toFixed(2) }} -->
-              </q-card-section>
+          <template v-if="Object.keys(bankAccounts).length > 0">
+            <div v-for="(a, key) in bankAccounts" 
+              v-bind:key="key"             
+              class="q-pb-md q-px-sm">
 
-              <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
-                content-class="bg-deep-orange" content-style="font-size: 14px" >
-                {{ a.description }}
-              </q-tooltip>
-            </q-card>
-          </div>
+                <q-card               
+                  v-on:click="
+                    selectedAccountId = a.bankAccountId; 
+                    columns[1].label = 'Value (' + a.quotedCurrency.code + ' ' + getCurrencySymbol(a.quotedCurrency.nameShort) + ')'; 
+                    "
+                  class="my-card text-white"
+                  style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" 
+                  >
+                  <q-card-section>
+                    <div class="text-h6">{{ a.accountName }}</div>
+                    <div class="text-subtitle2">{{ a.institution }}</div>
+                  </q-card-section>
+                  <q-card-section>
+                    Type: {{ a.type }}
+                    <br />Currency: {{ a.quotedCurrency.code }}
+                    <br />Balance: {{ getCurrencySymbol(a.quotedCurrency.nameShort) + getAccountBalance(a.bankAccountId).toFixed(2) }}
+                    <!-- <br />Balance: {{ getCurrencySymbol(a.quotedCurrency.nameShort) }} -->
+                  </q-card-section>
 
+                  <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
+                    content-class="bg-deep-orange" content-style="font-size: 14px" >
+                    {{ a.description }}
+                  </q-tooltip>
+                </q-card>
+            </div>
+          </template>
         </q-scroll-area>
       </div>
 
@@ -87,28 +87,11 @@
 
   export default { 
     name: 'UserAccounts',
+
     data () {
       return {
-        // userId: 2,
-        // userAccounts: [],
-        // bankAccounts: {
-        //     '0': {
-        //         bankAccountId: 0,
-        //         accountName: 'accountName',
-        //         description: 'description',
-        //         institution: 'institution',
-        //         type: 'type',
-        //         isActive: false,
-        //         quotedCurrency: {
-        //           code: 'EUR'
-        //         },
-        //         balance: 0.00
-        //     }
-        // },
-        // accountValues: [[]],
         accountBalances: [],
-        // firstAccountId: -1,
-        selectedAccountId: -1,
+        selectedAccountId: 0,
         loading: false,
         filter: '',
         rowCount: 10,
@@ -130,85 +113,18 @@
           { 
             name: 'value', 
             align: 'center', 
-            label: 'Value (EUR)', 
+            label: 'Value (EUR €)', 
             field: 'value',
             format: val => Number(val).toFixed(2),
             sortable: true 
           }
         ]        
       }
-    },
-    async created () {
-      // try {
-      //   var response = await this.$axios({
-      //     method: "POST",
-      //     url: "/",
-      //     data: {
-      //       query: `
-      //         {
-      //           bankAccount_queries {
-      //             userBankAccounts(userId: ` + this.userId + `) {
-      //               bankAccountId
-      //               accountName
-      //               description      
-      //               type
-      //               isActive
-      //               institution
-      //               quotedCurrency {
-      //                 code
-      //                 nameShort
-      //                 nameLong        
-      //               }
-      //             }
-      //           }
-      //         }
-      //       `
-      //     }
-      //   });
-      //   this.userAccounts = response.data.data.bankAccount_queries.userBankAccounts;
-      //   this.firstAccountId = this.userAccounts[0].bankAccountId;
-      //   this.selectedAccountId = this.firstAccountId;
-      //   console.log("selectedAccountId: " + this.selectedAccountId);
-      // } catch (error) {
-      //   console.error(error); 
-      // }
-      
-      // for (var i = 0; i < this.userAccounts.length; i++) {
-      //   try {
-      //     var response = await this.$axios({
-      //       method: "POST",
-      //       url: "/",
-      //       data: {
-      //         query: `
-      //           {
-      //             accountValue_queries {
-      //               accountValues(accountId: ` + this.userAccounts[i].bankAccountId + `) {
-      //                 date
-      //                 value
-      //               }
-      //             }
-      //           }
-      //         `
-      //       }
-      //     });
-      //     this.accountValues[i] = response.data.data.accountValue_queries.accountValues.sort(function(a, b) {
-      //         var dateA = new Date(a.date);
-      //         var dateB = new Date(b.date);
-      //         return dateA - dateB;
-      //     });
+    },  
 
-      //     var numOfValues = this.accountValues[i].length;
-      //     this.accountBalances[i] = this.accountValues[i][ numOfValues - 1 ].value;
-
-      //   } catch (error) {
-      //     console.error(error); 
-      //   }
-      //   console.log("i = " + i);
-      //   console.log(this.accountValues[i]);
-      // }
-      
-    },
-    methods: {
+    methods: {           
+      ...mapGetters('main', ['firstBankAccountId', 'getInitialFirstBankAccountId']),
+      ...mapActions('main', ['sortBankAccountValues']),
       addRow () {
         this.loading = true
         setTimeout(() => {
@@ -244,22 +160,47 @@
 
       getAccountBalance: function (accountId) {
         try {
-          console.log("Account Values: ");
-          console.log(this.accountValues);
           var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
-          console.log("No. of account values for accountId " + accountId + ": " + numOfValues);
-          return this.bankAccountValuesByAccountId(accountId)[ numOfValues - 1 ].value;
+          var accountValsSorted = this.bankAccountValuesByAccountId(accountId).slice().sort(function(a, b) {
+              var dateA = new Date(a.date);
+              var dateB = new Date(b.date);
+              return dateA - dateB;
+          });
+          return accountValsSorted[ numOfValues - 1 ].value;
         }
         catch (error) {
           console.error(error); 
           return "";
         }        
-      }
+      },
+
+      getCurrencySymbol: function (shortName) {
+        try {
+          switch ( shortName.toLowerCase() ) {
+            case 'euro':
+              return '€';
+              break;
+            case 'dollar':
+            case 'peso':
+              return '$';
+              break;
+            case 'pound':
+              return '£';
+              break;
+            default:
+              return '';
+          }
+        }
+        catch (error) {
+          console.error(error); 
+          return "";
+        } 
+      },
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId']),
-
+      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance']),
+      
       contentStyle () {
         return {
           backgroundColor: 'rgba(0,0,0,0.02)',
@@ -283,6 +224,24 @@
           opacity: 0.75
         }
       }
+    },
+
+    mounted () {
+      this.selectedAccountId = this.getInitialFirstBankAccountId()
+      // console.log('in mounted')
+      // var initialSelectedAccountId = this.selectedAccountId
+      // console.log('initialSelectedAccountId= ' + initialSelectedAccountId)
+      // var firstAcc = firstBankAccountId()
+      // // var firstAcc = this.firstBankAccountId(() => {
+      // //   console.log('firstAcc= ' + firstAcc)
+      // //   this.selectedAccountId = firstAcc
+      // //   console.log('new selectedAccountId = ' + this.selectedAccountId)
+      // //   this.deleteBankAccount(initialSelectedAccountId)
+      // // })
+      // console.log('firstAcc= ' + firstAcc)
+      // // this.selectedAccountId = firstAcc
+      // // console.log('new selectedAccountId = ' + this.selectedAccountId)
+      // // this.deleteBankAccount(initialSelectedAccountId)
     }
   }
 </script>
