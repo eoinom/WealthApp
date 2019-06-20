@@ -400,7 +400,7 @@ namespace backendData
                     new Currency { Code = "UGX", NameShort = "Shilling", NameLong = "Uganda Shilling" },
                     new Currency { Code = "MKD", NameShort = "Denar", NameLong = "Denar" },
                     new Currency { Code = "EGP", NameShort = "Pound", NameLong = "Egyptian Pound" },
-                    new Currency { Code = "GBP", NameShort = "Sterling", NameLong = "Pound Sterling" },
+                    new Currency { Code = "GBP", NameShort = "Pound", NameLong = "Pound Sterling" },
                     new Currency { Code = "TZS", NameShort = "Shilling", NameLong = "Tanzanian Shilling" },
                     new Currency { Code = "USD", NameShort = "Dollar", NameLong = "US Dollar" },
                     new Currency { Code = "UYU", NameShort = "Uruguayo", NameLong = "Peso Uruguayo" },
