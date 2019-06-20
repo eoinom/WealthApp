@@ -207,7 +207,7 @@
           // delay: 400 // ms
           message: 'Loading accounts<br/><span class="text-white">Hang on...</span>'
         })
-        this.checkAuth(this.email, this.password).then(authorised => {          
+        this.login(this.email, this.password).then(authorised => {          
           if (authorised) {
             console.log("user:");
             console.log(this.user());
@@ -218,52 +218,52 @@
               message: 'Welcome back ' + this.user().firstName + '!'
             });
 
-            this.getBankAccounts(this.user().userId).then(successful => {
-              if (successful) {
-                console.log("bankAccounts:");
-                console.log(this.bankAccounts());  
-                var numBankAccounts = Object.keys(this.bankAccounts()).length;
+            // this.getBankAccounts(this.user().userId).then(successful => {
+            //   if (successful) {
+            //     console.log("bankAccounts:");
+            //     console.log(this.bankAccounts());  
+            //     var numBankAccounts = Object.keys(this.bankAccounts()).length;
 
-                for (var i = 0; i < numBankAccounts; i++) {
-                  console.log("accountId: " + this.bankAccounts()[i].bankAccountId)
-                  this.sleep(1000)
+            //     for (var i = 0; i < numBankAccounts; i++) {
+            //       console.log("accountId: " + this.bankAccounts()[i].bankAccountId)
+            //       this.sleep(1000)
 
-                  // setInterval(() => {
-                  //   this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
-                  //     if (gotAccountValues) {
-                  //       console.log("AccountValues for accountId: " + this.bankAccounts()[i].bankAccountId)
-                  //       console.log(this.bankAccountValuesByAccountId(this.bankAccounts()[i].bankAccountId)) 
-                  //     }
-                  //     else {
-                  //       console.log("Getting account values failed");
-                  //     }
-                  //   }).catch(error => {
-                  //       console.log(error)
-                  //   });
-                  // }, 1000)
+            //       // setInterval(() => {
+            //       //   this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
+            //       //     if (gotAccountValues) {
+            //       //       console.log("AccountValues for accountId: " + this.bankAccounts()[i].bankAccountId)
+            //       //       console.log(this.bankAccountValuesByAccountId(this.bankAccounts()[i].bankAccountId)) 
+            //       //     }
+            //       //     else {
+            //       //       console.log("Getting account values failed");
+            //       //     }
+            //       //   }).catch(error => {
+            //       //       console.log(error)
+            //       //   });
+            //       // }, 1000)
 
-                  this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
-                    if (gotAccountValues) {
-                      console.log("AccountValues for accountId: " + this.bankAccounts()[i].bankAccountId)
-                      console.log(this.bankAccountValuesByAccountId(this.bankAccounts()[i].bankAccountId)) 
-                    }
-                    else {
-                      console.log("Getting account values failed");
-                    }
-                  }).catch(error => {
-                      console.log(error)
-                  }); 
+            //       this.getAccountValues(this.bankAccounts()[i].bankAccountId).then(gotAccountValues => {
+            //         if (gotAccountValues) {
+            //           console.log("AccountValues for accountId: " + this.bankAccounts()[i].bankAccountId)
+            //           console.log(this.bankAccountValuesByAccountId(this.bankAccounts()[i].bankAccountId)) 
+            //         }
+            //         else {
+            //           console.log("Getting account values failed");
+            //         }
+            //       }).catch(error => {
+            //           console.log(error)
+            //       }); 
                   
-                  // this.sleep(500)
-                }
+            //       // this.sleep(500)
+            //     }
 
-              }
-              else {
-                console.log("bankAccounts failed");
-              }
-            }).catch(error => {
-                console.log(error)
-            });     
+            //   }
+            //   else {
+            //     console.log("bankAccounts failed");
+            //   }
+            // }).catch(error => {
+            //     console.log(error)
+            // });     
             
             // this.sleep(2000)
             // this.$q.loading.hide()
@@ -332,6 +332,85 @@
         this.confirmPassword = null
         this.subscribed = true
         this.agreeTerms = false
+      },
+
+
+      async login(email, password) {                
+        const axios = require("axios")
+        try {
+          var response = await axios({
+            method: "POST",
+            url: "/",
+            data: {
+              query: `                    
+              {
+                user_queries {
+                  userLogin(email: "` + email + `", password:"` + password + `") {
+                    userId
+                    firstName
+                    lastName
+                    email
+                    newsletterSub
+                    country {
+                      iso2Code
+                      name
+                    }
+                    displayCurrency {
+                      code
+                      nameShort
+                      nameLong 
+                    }
+                    bankAccounts {
+                      bankAccountId
+                      accountName
+                      description      
+                      type
+                      isActive
+                      institution
+                      quotedCurrency {
+                        code
+                        nameShort
+                        nameLong        
+                      }
+                      accountValues {
+                        accountValueId
+                        date
+                        value
+                      }
+                    }
+                  }
+                }  
+              }
+              `
+            }
+          });            
+          
+          if (response.data.data.user_queries.userLogin != null) {
+            this.updateUser(response.data.data.user_queries.userLogin);
+            this.initialiseBankAccounts(response.data.data.user_queries.userLogin.bankAccounts);
+
+            // var accountVals = response.data.data.user_queries.userLogin.bankAccounts.accountValues.sort(function(a, b) {
+            //   var dateA = new Date(a.date);
+            //   var dateB = new Date(b.date);
+            //   return dateA - dateB;
+            // });
+
+            // console.log('accountVals:')
+            // console.log(accountVals)
+
+            // this.updateBankAccountValues({ bankAccountId: accountId, bankAccountValues: accountVals })
+
+            if (this.user() != null) {
+              return true
+            }
+          }          
+          console.log("Login failed")
+          return false
+            
+        } catch (error) {
+            console.error(error); 
+        }
+        return false
       },
 
       async checkAuth(email, password) {                
