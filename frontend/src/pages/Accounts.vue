@@ -8,39 +8,19 @@
           :thumb-style="thumbStyle"
           :content-style="contentStyle"
           :content-active-style="contentActiveStyle"
-          class="xxx"
-          style="height: 800px; min-width: 400px; max-width: 600px;">
+          class=""
+          style="height: 600px; min-width: 400px; max-width: 600px;">
 
           <template v-if="Object.keys(bankAccounts).length > 0">
-            <div v-for="(a, key) in bankAccounts" 
-              v-bind:key="key"             
-              class="q-pb-md q-px-sm">
+            
+            <account
+              v-for="(account, key) in bankAccounts"
+              :key="key"
+              :account="account"
+              :id="key"
+              class="q-mb-md q-mx-sm">
+            </account>
 
-                <q-card               
-                  v-on:click="
-                    selectedAccountId = a.bankAccountId; 
-                    columns[1].label = 'Value (' + a.quotedCurrency.code + ' ' + getCurrencySymbol(a.quotedCurrency.nameShort) + ')'; 
-                    "
-                  class="my-card text-white"
-                  style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" 
-                  >
-                  <q-card-section>
-                    <div class="text-h6">{{ a.accountName }}</div>
-                    <div class="text-subtitle2">{{ a.institution }}</div>
-                  </q-card-section>
-                  <q-card-section>
-                    Type: {{ a.type }}
-                    <br />Currency: {{ a.quotedCurrency.code }}
-                    <br />Balance: {{ getCurrencySymbol(a.quotedCurrency.nameShort) + getAccountBalance(a.bankAccountId).toFixed(2) }}
-                    <!-- <br />Balance: {{ getCurrencySymbol(a.quotedCurrency.nameShort) }} -->
-                  </q-card-section>
-
-                  <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
-                    content-class="bg-deep-orange" content-style="font-size: 14px" >
-                    {{ a.description }}
-                  </q-tooltip>
-                </q-card>
-            </div>
           </template>
         </q-scroll-area>
       </div>
@@ -51,8 +31,8 @@
         <div class="q-pa-md">
           <q-table
             title="AccountValues"
-            :data="bankAccountValuesByAccountId(selectedAccountId)"
-            :columns="columns"
+            :data="bankAccountValuesByAccountId( selectedAccountId() )"
+            :columns="tableColumns()"
             row-key="id"            
             :filter="filter"
             :loading="loading"
@@ -83,15 +63,13 @@
 <script>
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
-  import { mapMutations } from 'vuex'
+  // import { mapMutations } from 'vuex'
 
   export default { 
     name: 'UserAccounts',
 
     data () {
       return {
-        accountBalances: [],
-        selectedAccountId: 0,
         loading: false,
         filter: '',
         rowCount: 10,
@@ -100,31 +78,14 @@
           descending: true,
           rowsPerPage: 10
         },
-        columns: [
-          {
-            name: 'date',
-            required: true,
-            label: 'Date',
-            align: 'left',
-            field: row => row.date,
-            format: val => `${val}`,
-            sortable: true
-          },
-          { 
-            name: 'value', 
-            align: 'center', 
-            label: 'Value (EUR €)', 
-            field: 'value',
-            format: val => Number(val).toFixed(2),
-            sortable: true 
-          }
-        ]        
       }
     },  
 
     methods: {           
-      ...mapGetters('main', ['firstBankAccountId', 'getInitialFirstBankAccountId']),
-      ...mapActions('main', ['sortBankAccountValues']),
+      ...mapGetters('main', ['getInitialFirstBankAccountId']),
+      ...mapGetters('accounts', ['selectedAccountId', 'tableColumns']),
+      ...mapActions('accounts', ['updateSelectedAccountId']),
+
       addRow () {
         this.loading = true
         setTimeout(() => {
@@ -157,49 +118,10 @@
         console.log(num);
         console.log(this.accountValues[num]);
       },
-
-      getAccountBalance: function (accountId) {
-        try {
-          var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
-          var accountValsSorted = this.bankAccountValuesByAccountId(accountId).slice().sort(function(a, b) {
-              var dateA = new Date(a.date);
-              var dateB = new Date(b.date);
-              return dateA - dateB;
-          });
-          return accountValsSorted[ numOfValues - 1 ].value;
-        }
-        catch (error) {
-          console.error(error); 
-          return "";
-        }        
-      },
-
-      getCurrencySymbol: function (shortName) {
-        try {
-          switch ( shortName.toLowerCase() ) {
-            case 'euro':
-              return '€';
-              break;
-            case 'dollar':
-            case 'peso':
-              return '$';
-              break;
-            case 'pound':
-              return '£';
-              break;
-            default:
-              return '';
-          }
-        }
-        catch (error) {
-          console.error(error); 
-          return "";
-        } 
-      },
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance']),
+      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId']),
       
       contentStyle () {
         return {
@@ -226,22 +148,12 @@
       }
     },
 
+    components : {
+      'account' : require('components/Accounts/Account.vue').default,
+    },
+
     mounted () {
-      this.selectedAccountId = this.getInitialFirstBankAccountId()
-      // console.log('in mounted')
-      // var initialSelectedAccountId = this.selectedAccountId
-      // console.log('initialSelectedAccountId= ' + initialSelectedAccountId)
-      // var firstAcc = firstBankAccountId()
-      // // var firstAcc = this.firstBankAccountId(() => {
-      // //   console.log('firstAcc= ' + firstAcc)
-      // //   this.selectedAccountId = firstAcc
-      // //   console.log('new selectedAccountId = ' + this.selectedAccountId)
-      // //   this.deleteBankAccount(initialSelectedAccountId)
-      // // })
-      // console.log('firstAcc= ' + firstAcc)
-      // // this.selectedAccountId = firstAcc
-      // // console.log('new selectedAccountId = ' + this.selectedAccountId)
-      // // this.deleteBankAccount(initialSelectedAccountId)
+      this.updateSelectedAccountId( this.getInitialFirstBankAccountId() )
     }
   }
 </script>
