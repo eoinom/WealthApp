@@ -47,14 +47,16 @@
       return {
         accountToSubmit: {
           name: '',          
-          dueDate: '',
-          dueTime: '',
-          completed: false
+          description: '',
+          type: '',
+          institution: '',
+          currency: '',
+          active: false
         }
       }
     },
     methods: {
-      ...mapActions('accounts', ['addAccount']),
+      ...mapActions('main', ['addAccount']),
       submitForm() {
         this.$refs.modalAccountName.$refs.name.validate()
         if (!this.$refs.modalAccountName.$refs.name.hasError) {

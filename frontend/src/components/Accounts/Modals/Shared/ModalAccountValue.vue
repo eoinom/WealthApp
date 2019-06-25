@@ -1,21 +1,22 @@
 <template>
   <div class="row q-mb-sm">        
     <q-input 
-      outlined 
-      :value="institution" 
-      @input="$emit('update:institution', $event)"
+      outlined
+      type="number"  
+      :value="accountValue" 
+      @input="$emit('update:accountValue', $event)"
       :rules="[val => !!val || 'Field is required']"
-      ref="institution"
-      label="Account institution" 
+      ref="accountValue"
+      label="Value" 
       class="col"
-      clearable 
+      clearable
       autogrow />
   </div>    
 </template>
 
 <script>
   export default {
-      props: ['institution']
+      props: ['accountValue']
   }
 </script>
 

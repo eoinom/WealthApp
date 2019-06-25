@@ -1,52 +1,52 @@
 import Vue from 'vue'
 
 const getDefaultState = () => {
-    return {
-        authenticated: false,
-        user: {
-            userId: 0,
-            email: '',
-            firstName: '',
-            lastName: '',
-            newsletterSub: false,
-            country: {},
-            displayCurrency: {},
-            bankAccounts: {}
+  return {
+    authenticated: false,
+    user: {
+      userId: 0,
+      email: '',
+      firstName: '',
+      lastName: '',
+      newsletterSub: false,
+      country: {},
+      displayCurrency: {},
+      bankAccounts: {}
+    },
+    bankAccounts: {
+      '0': {
+        bankAccountId: 0,
+        accountName: '',
+        description: '',
+        institution: '',
+        type: '',
+        isActive: false,
+        quotedCurrency: {
+          code: '',
+          nameLong: '',
+          nameShort: ''
         },
-        bankAccounts: {
-            '0': {
-                bankAccountId: 0,
-                accountName: '',
-                description: '',
-                institution: '',
-                type: '',
-                isActive: false,
-                quotedCurrency: {
-                    code: '',
-                    nameLong: '',
-                    nameShort: ''
-                },
-                accountValues: [
-                    {
-                        accountValueId: 0,
-                        date: '',
-                        value: 0.00
-                    }
-                ],
-                balance: 0.00
-            }
-        },
-        initialFirstBankAccountId: 0,
-        bankAccountValues: {
-            '0': {
-                '0': {
-                    accountValueId: 0,
-                    date: '',
-                    value: 0.00
-                }
-            }
+        accountValues: [
+          {
+            accountValueId: 0,
+            date: '',
+            value: 0.00
+          }
+        ],
+        balance: 0.00
+      }
+    },
+    initialFirstBankAccountId: 0,
+    bankAccountValues: {
+      '0': {
+        '0': {
+          accountValueId: 0,
+          date: '',
+          value: 0.00
         }
+      }
     }
+  }
 }
 
 // initial state (ref: https://tahazsh.com/vuebyte-reset-module-state)
@@ -54,68 +54,79 @@ const getDefaultState = () => {
 const state = getDefaultState()
 
 const mutations = {    
-    resetState (state) {
-        Object.assign(state, getDefaultState())
-    },
-    updateUser(state, user) {
-        Object.assign(state.user, user)
-    },
-    updateAuth(state, authenticated) {
-        state.authenticated = authenticated
-    },
-    initialiseBankAccounts(state, bankAccounts) {
-        console.log(bankAccounts)
-        for (var i = 0; i < Object.keys(bankAccounts).length; i++) {
-            console.log('i = ' + i)
-            console.log(bankAccounts[i])
-            var id = bankAccounts[i].bankAccountId
-            if (i == 0) {
-                state.initialFirstBankAccountId = id
-            }
-            // Object.assign(state.bankAccounts[bankAccounts[i].bankAccountId], bankAccounts[i])
-            state.bankAccounts[id] = bankAccounts[i]
-        }
-        if (Object.keys(bankAccounts).length > 0) {
-            Vue.delete(state.bankAccounts, 0)
-        }
-    },
-    addBankAccount(state, bankAccount) {
-        Object.assign(state.bankAccounts[bankAccount.bankAccountId], bankAccount)
-    },
-    deleteBankAccount(state, bankAccountId) {        
-        console.log('bankAccountId for deletion= ' + bankAccountId)
-        Vue.delete(state.bankAccounts, bankAccountId)
-    },
-    updateBankAccountBalances(state) {
-        // To do
-    },
-    updateBankAccountBalance(state, bankAccountId) {
-        // To do
-    },
-    updateBankAccountValues(state, payload) {
-        console.log('In updateBankAccountValues')
-        console.log('bankAccountId: ' + payload.bankAccountId)
-        console.log('bankAccountValues: ')
-        console.log(payload.bankAccountValues)
-        state.bankAccountValues[payload.bankAccountId] = payload.bankAccountValues
-    },
-    addBankAccountValue(state, accountValue) {
-        Object.assign(state.bankAccountValues[accountValue.accountValueId], accountValue)
-    },
-    deleteValuesForBankAccount(state, accountId) {
-        // Vue.delete(state.bankAccounts, { where: bankAccountId = accountId })
-        Vue.delete(state.bankAccountValues, accountId)
-    },
-    deleteBankAccountValue(state, accountId, accountValueId) {
-        Vue.delete(state.bankAccountValues[accountId], accountValueId)
-    },
-    sortBankAccountValues(state, accountId) {
-        state.bankAccounts[accountId].accountValues.sort(function(a, b) {
-            var dateA = new Date(a.date);
-            var dateB = new Date(b.date);
-            return dateA - dateB;
-        });
+  resetState (state) {
+    Object.assign(state, getDefaultState())
+  },
+  updateUser(state, user) {
+    Object.assign(state.user, user)
+  },
+  updateAuth(state, authenticated) {
+    state.authenticated = authenticated
+  },
+  initialiseBankAccounts(state, bankAccounts) {
+    console.log(bankAccounts)
+    for (var i = 0; i < Object.keys(bankAccounts).length; i++) {
+      console.log('i = ' + i)
+      console.log(bankAccounts[i])
+      var id = bankAccounts[i].bankAccountId
+      if (i == 0) {
+        state.initialFirstBankAccountId = id
+      }
+      // Object.assign(state.bankAccounts[bankAccounts[i].bankAccountId], bankAccounts[i])
+      state.bankAccounts[id] = bankAccounts[i]
     }
+    if (Object.keys(bankAccounts).length > 0) {
+      Vue.delete(state.bankAccounts, 0)
+    }
+  },
+  addBankAccount(state, bankAccount) {
+    Object.assign(state.bankAccounts[bankAccount.bankAccountId], bankAccount)
+  },
+  deleteBankAccount(state, bankAccountId) {        
+    Vue.delete(state.bankAccounts, bankAccountId)
+  },
+  updateBankAccountBalances(state) {
+    // To do
+  },
+  updateBankAccountBalance(state, bankAccountId) {
+    // To do
+  },
+  updateBankAccountValues(state, payload) {
+    state.bankAccountValues[payload.bankAccountId] = payload.bankAccountValues
+  },
+  addBankAccountValue(state, accountValue) {
+    Object.assign(state.bankAccountValues[accountValue.accountValueId], accountValue)
+  },
+  deleteValuesForBankAccount(state, accountId) {
+    // Vue.delete(state.bankAccounts, { where: bankAccountId = accountId })
+    Vue.delete(state.bankAccountValues, accountId)
+  },
+  deleteBankAccountValue(state, accountId, accountValueId) {
+    Vue.delete(state.bankAccountValues[accountId], accountValueId)
+  },
+  deleteBankAccountValues(state, payload) {
+    console.log('deleteBankAccountValues mutation payload:')
+    console.log(payload)
+    for (var i = 0; i < Object.keys(payload.valueIds).length; i++) {
+      var valueId = payload.valueIds[i].accountValueId;
+      console.log('valueId:' + valueId);
+      var accValuesArr = state.bankAccounts[payload.accountId].accountValues;
+      console.log('accValuesArr length:' + accValuesArr.length);
+      for (var j = 0; j < accValuesArr.length; j++) {
+        if (accValuesArr[j].accountValueId == valueId) {
+          Vue.delete(accValuesArr, j)
+          break;
+        } 
+      }
+    }
+  },
+  sortBankAccountValues(state, accountId) {
+    state.bankAccounts[accountId].accountValues.sort(function(a, b) {
+      var dateA = new Date(a.date);
+      var dateB = new Date(b.date);
+      return dateA - dateB;
+    });
+  }
 }
 
 const actions = {
@@ -145,6 +156,11 @@ const actions = {
     sortBankAccountValues({ commit }, accountId) {
         commit('sortBankAccountValues', accountId)
     },
+    deleteBankAccountValues({ commit }, payload) {
+        console.log('deleteBankAccountValues actions payload:')
+        console.log(payload)
+        commit('deleteBankAccountValues', payload)
+    },
 }
 
 const getters = {
@@ -161,18 +177,13 @@ const getters = {
         return state.user.email
     },
     getInitialFirstBankAccountId: (state) => {
-        // return state.initialFirstBankAccountId
-        console.log('keys array:')
-        console.log(Object.keys(state.bankAccounts))
-        console.log('first key:')
-        console.log(Object.keys(state.bankAccounts)[0])
         return Object.keys(state.bankAccounts)[0]
     },
     firstBankAccountId: (state) => {
-        console.log('in firstBankAccountId')
-        var firstaccID = 14
-        var accounts = state.bankAccounts
-        return firstaccID
+        // console.log('in firstBankAccountId')
+        // var firstaccID = 14
+        // var accounts = state.bankAccounts
+        // return firstaccID
         // return Object.keys(state.bankAccounts)[0]
     },
     bankAccounts: (state) => {
@@ -188,16 +199,7 @@ const getters = {
         return state.bankAccountValues.find(x => x.accountValueId === id)
     },
     bankAccountValuesByAccountId: (state) => (id) => {
-        // return state.bankAccountValues[id]
-        // return state.bankAccounts[id].accountValues
-        // return state.bankAccounts.find(x => x.bankAccountId === id).accountValues
-        // let account = state.bankAccounts.find(x => x.bankAccountId === id)
-        let account = state.bankAccounts[id]
-        // console.log('account:')
-        // console.log(account)
-        // console.log('accountValues:')
-        // console.log(account.accountValues)
-        return account.accountValues
+        return state.bankAccounts[id].accountValues
     },
     getBankAccountBalance: (state) => (accountId) => {
         try {

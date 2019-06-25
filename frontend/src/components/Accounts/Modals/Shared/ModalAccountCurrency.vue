@@ -7,7 +7,6 @@
       :value="currency" 
       @input="$emit('update:currency', $event)"
       :rules="[val => !!val || 'Field is required']"
-      autofocus
       ref="currency"
       label="Account currency" 
       class="col"

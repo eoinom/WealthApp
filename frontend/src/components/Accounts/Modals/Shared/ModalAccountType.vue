@@ -7,7 +7,6 @@
       :value="type" 
       @input="$emit('update:type', $event)"
       :rules="[val => !!val || 'Field is required']"
-      autofocus
       ref="type"
       label="Account type" 
       class="col"

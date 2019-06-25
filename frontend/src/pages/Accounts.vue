@@ -7,7 +7,7 @@
 
         <div class="q-mb-sm">
           <q-btn
-          @click="showAddAccount = true"
+            @click="showAddAccount = true"
             color="primary"
             icon="add"
             label="Add Account"
@@ -51,21 +51,34 @@
             :pagination.sync="pagination"
             :selected-rows-label="getSelectedString"
             selection="multiple"
-            :selected.sync="selected"
+            :selected.sync="selectedValues"
             >
             <template v-slot:top>
-              <q-btn flat dense color="primary" :disable="loading" label="Add row" @click="addRow" />
-              <q-btn class="on-right" flat dense color="primary" :disable="loading" label="Remove row" @click="removeRow" />
+              <!-- <q-btn flat dense color="primary" :disable="loading" label="Add row" @click="addRow" /> -->
+              <q-btn 
+                color="red" 
+                :disable="loading" 
+                label="Delete selected" 
+                @click="promptToDeleteAccountValue()" 
+              />
+
               <q-space />
-              <q-input borderless dense debounce="300" color="primary" v-model="filter">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
+
+              <q-btn 
+                round 
+                icon="add" 
+                dense 
+                color="primary" 
+                :disable="loading" 
+                @click="showAddAccountValue = true" 
+              />
             </template>            
 
             <template v-slot:body="props">
               <q-tr :props="props">
+                <q-td auto-width>
+                  <q-checkbox v-model="props.selected" />
+                </q-td>
                 <q-td key="date">
                   {{ props.row.date }}
                   <q-popup-edit v-model="props.row.date">
@@ -77,7 +90,7 @@
                 </q-td>
 
                 <q-td key="value" :props="props">
-                  {{ props.row.value }}
+                  {{ props.row.value.toFixed(2) }}
                   <q-popup-edit v-model="props.row.value" title="Update value" buttons>
                     <q-input 
                       type="number" 
@@ -93,22 +106,12 @@
       </div> 
     </div>
 
-    <div class="q-mt-md">
-      Selected: {{ JSON.stringify(selected) }}
-    </div>
-
-    <!-- <div class="absolute-bottom text-center q-mb-lg">
-      <q-btn
-      @click="showAddAccount = true"
-        round
-        color="primary"
-        size="24px"
-        icon="add"
-      />
-    </div> -->
-
     <q-dialog v-model="showAddAccount">
       <add-account @close="showAddAccount = false" />
+    </q-dialog>
+
+    <q-dialog v-model="showAddAccountValue">
+      <add-account-value @close="showAddAccountValue = false" />
     </q-dialog>
   </q-page>
 </template>
@@ -125,7 +128,8 @@
     data () {
       return {
         showAddAccount: false,
-        selected: [],
+        showAddAccountValue: false,
+        selectedValues: [],
         loading: false,
         filter: '',
         rowCount: 10,
@@ -140,40 +144,47 @@
     methods: {           
       ...mapGetters('main', ['getInitialFirstBankAccountId']),
       ...mapGetters('accounts', ['selectedAccountId', 'tableColumns']),
+      ...mapActions('main', ['deleteBankAccountValues']),
       ...mapActions('accounts', ['updateSelectedAccountId']),
 
-      addRow () {
-        this.loading = true
-        setTimeout(() => {
-          const
-            index = Math.floor(Math.random() * (this.data.length + 1)),
-            row = this.original[Math.floor(Math.random() * this.original.length)]
-          if (this.data.length === 0) {
-            this.rowCount = 0
-          }
-          row.id = ++this.rowCount
-          const addRow = { ...row } // extend({}, row, { name: `${row.name} (${row.__count})` })
-          this.data = [...this.data.slice(0, index), addRow, ...this.data.slice(index)]
-          this.loading = false
-        }, 500)
-      },
-
-      removeRow () {
-        this.loading = true
-        setTimeout(() => {
-          const index = Math.floor(Math.random() * this.data.length)
-          this.data = [...this.data.slice(0, index), ...this.data.slice(index + 1)]
-          this.loading = false
-        }, 500)
+      promptToDeleteAccountValue() {
+        var numSelectedRows = this.selectedValues.length;
+        if (numSelectedRows === 0) {
+          this.$q.dialog({
+            title: '',
+            message: `No rows selected. Please check the boxes next to the rows which you want to delete.`,
+            ok: {
+              label: 'Ok'
+            },
+            persistent: true
+          })
+        }
+        else {
+          this.$q.dialog({
+            title: 'Confirm',
+            message: `Are you sure you want to delete the ${this.selectedValues.length} selected account value(s)? This cannot be undone.`,
+            ok: {
+              label: 'Yes'
+            },
+            cancel: {
+              color: 'negative'
+            },
+            persistent: true
+          }).onOk(() => {
+            this.deleteBankAccountValues({ accountId: this.selectedAccountId(), valueIds: this.selectedValues }); 
+            this.selectedValues = [];
+          })
+        }
+        
       },
 
       getSelectedString () {
-        if (this.selected.length === 0 )
+        if (this.selectedValues.length === 0 )
           return ''
-        else if (this.selected.length === 1 )
+        else if (this.selectedValues.length === 1 )
           return `1 record selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
         else
-          return `${this.selected.length} records selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
+          return `${this.selectedValues.length} records selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
       },
 
       log: function(str) {
@@ -215,7 +226,8 @@
 
     components : {
       'account' : require('components/Accounts/Account.vue').default,
-      'add-account' : require('components/Accounts/Modals/AddAccount.vue').default
+      'add-account' : require('components/Accounts/Modals/AddAccount.vue').default,
+      'add-account-value' : require('components/Accounts/Modals/AddAccountValue.vue').default
     },
 
     mounted () {

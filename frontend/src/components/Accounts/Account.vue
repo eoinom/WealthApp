@@ -22,7 +22,7 @@
               color="cyan-2" 
               icon="edit" /> 
             <q-btn 
-              @click.stop="promptToDelete(id)"
+              @click.stop="promptToDeleteAccount(id)"
               flat 
               round 
               dense
@@ -70,7 +70,7 @@
       ...mapActions('main', ['deleteBankAccount']),
     //   ...mapActions('tasks', ['updateTask', 'deleteTask']),
     //   ...mapGetters('tasks', 'tasks'),
-      promptToDelete(id) {
+      promptToDeleteAccount(id) {
         this.$q.dialog({
           title: 'Confirm',
           message: 'Are you sure you want to delete this account and all associated data? This cannot be undone.',

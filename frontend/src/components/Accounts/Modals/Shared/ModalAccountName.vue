@@ -1,16 +1,17 @@
 <template>
   <div class="row q-mb-sm">        
     <q-input 
-      outlined 
-      :value="name" 
-      @input="$emit('update:name', $event)"
-      :rules="[val => !!val || 'Field is required']"
       autofocus
-      ref="name"
-      label="Account name" 
-      class="col"
+      outlined 
       clearable
-      autogrow />
+      autogrow
+      :value="name" 
+      ref="name" 
+      class="col"
+      label="Account name"
+      @input="$emit('update:name', $event)"
+      :rules="[val => !!val || 'Field is required']" 
+    />
   </div>    
 </template>
 

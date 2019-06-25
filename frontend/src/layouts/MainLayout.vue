@@ -41,7 +41,6 @@
                     v-go-back=" '/login' "
                     color="primary"
                     label="Logout"
-                    push
                     size="sm"
                     v-close-popup
                   />
