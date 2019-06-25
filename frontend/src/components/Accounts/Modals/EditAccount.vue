@@ -1,0 +1,92 @@
+<template>
+  <q-card>
+    
+    <modal-header>Edit Account</modal-header>
+
+    <form @submit.prevent="submitForm">
+      <q-card-section>
+
+        <modal-account-name 
+          :name.sync="accountToSubmit.name" 
+          ref="modalAccountName"/>  
+
+        <modal-account-description 
+          :name.sync="accountToSubmit.description" 
+          ref="modalAccountDescription"/>    
+
+        <modal-account-type 
+          :name.sync="accountToSubmit.type" 
+          ref="modalAccountType"/>   
+
+        <modal-account-institution 
+          :name.sync="accountToSubmit.institution" 
+          ref="modalAccountInstitution"/>  
+
+        <modal-account-currency 
+          :name.sync="accountToSubmit.currency" 
+          ref="modalAccountCurrency"/>   
+
+        <modal-account-isActive
+          :name.sync="accountToSubmit.active" 
+          ref="modalAccountIsActive"/>  
+
+      </q-card-section>
+
+      <modal-buttons />
+
+    </form>
+    
+  </q-card>
+</template>
+
+<script>
+  import { mapActions } from 'vuex'
+
+  export default {
+    props: ['account', 'id'],
+    data() {
+      return {
+        accountToSubmit: {
+        }
+      }
+    },
+    methods: {
+      ...mapActions('accounts', ['updateAccount']),
+      submitForm() {
+        this.$refs.modalAccountName.$refs.name.validate()
+        if (!this.$refs.modalAccountName.$refs.name.hasError) {
+          this.submitAccount()
+        }
+      },
+      submitAccount() {
+        this.updateAccount({
+          id: this.id,
+          updates: this.accountToSubmit
+        })
+        this.$emit('close')
+      },
+      clearDueDate() {
+        this.accountToSubmit.dueDate = ''
+        this.accountToSubmit.dueTime = ''
+      }
+    },
+    components: {
+      'modal-header': require('components/Accounts/Modals/Shared/ModalHeader.vue').default,
+      'modal-account-name': require('components/Accounts/Modals/Shared/ModalAccountName.vue').default,
+      'modal-account-description': require('components/Accounts/Modals/Shared/ModalAccountDescription.vue').default,
+      'modal-account-type': require('components/Accounts/Modals/Shared/ModalAccountType.vue').default,
+      'modal-account-institution': require('components/Accounts/Modals/Shared/ModalAccountInstitution.vue').default,
+      'modal-account-currency': require('components/Accounts/Modals/Shared/ModalAccountCurrency.vue').default,
+      'modal-account-isActive': require('components/Accounts/Modals/Shared/ModalAccountIsActive.vue').default,
+      'modal-buttons': require('components/Accounts/Modals/Shared/ModalButtons.vue').default,
+    },
+    mounted() {
+      this.accountToSubmit = Object.assign({}, this.account) 
+    } 
+  }
+</script>
+
+<style>
+
+</style>
+

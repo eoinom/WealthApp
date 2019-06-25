@@ -61,7 +61,13 @@ module.exports = function (ctx) {
         'QSpace',
         'QMenu',
         'QToggle',
-        'QSeparator'
+        'QSeparator',
+        'QDate',
+        'QDialog',
+        'QPopupProxy',
+        'QPopupEdit',
+        'QTime',
+        'QSelect'
       ],
 
       directives: [
@@ -72,8 +78,9 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
+        'Dialog',
+        'Loading',
         'Notify',
-        'Loading'
       ],
 
       config: {

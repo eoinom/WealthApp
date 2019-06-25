@@ -8,7 +8,30 @@
     style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" 
     >
     <q-card-section>
-      <div class="text-h6">{{ account.accountName }}</div>
+      <div class="row">
+        
+        <div class="col text-h6">{{ account.accountName }}</div>
+
+        <div class="col">
+          <div class="float-right">
+            <q-btn 
+              @click.stop="showEditAccount = true"
+              flat 
+              round 
+              dense
+              color="cyan-2" 
+              icon="edit" /> 
+            <q-btn 
+              @click.stop="promptToDelete(id)"
+              flat 
+              round 
+              dense
+              color="red-5" 
+              icon="delete" />  
+          </div>        
+        </div>
+      </div>
+
       <div class="text-subtitle2">{{ account.institution }}</div>
     </q-card-section>
     <q-card-section>
@@ -21,6 +44,13 @@
       content-class="bg-deep-orange" content-style="font-size: 14px" >
       {{ account.description }}
     </q-tooltip>
+
+    <q-dialog v-model="showEditAccount">
+      <edit-account 
+        @close="showEditAccount = false" 
+        :account="account"
+        :id="id" />
+    </q-dialog>
   </q-card>
 </template>
 
@@ -32,29 +62,29 @@
     props: ['account', 'id'],
     data() {
       return {
-        // showEditTask: false
+        showEditAccount: false
       }      
     },
     methods: {
       ...mapActions('accounts', ['updateSelectedAccountId', 'updateTableColumn']),
+      ...mapActions('main', ['deleteBankAccount']),
     //   ...mapActions('tasks', ['updateTask', 'deleteTask']),
     //   ...mapGetters('tasks', 'tasks'),
-    //   promptToDelete(id) {
-    //     this.$q.dialog({
-    //       title: 'Confirm',
-    //       message: 'Really delete?',
-    //       ok: {
-    //         push: true
-    //       },
-    //       cancel: {
-    //         color: 'negative'
-    //       },
-    //       persistent: true
-    //     }).onOk(() => {
-    //       this.deleteTask(id)
-    //     })
-    //   }
-    // },
+      promptToDelete(id) {
+        this.$q.dialog({
+          title: 'Confirm',
+          message: 'Are you sure you want to delete this account and all associated data? This cannot be undone.',
+          ok: {
+            label: 'Yes'
+          },
+          cancel: {
+            color: 'negative'
+          },
+          persistent: true
+        }).onOk(() => {
+          this.deleteBankAccount(id)
+        })
+      },
       log: function(str) {
         console.log(str);
       },
@@ -104,6 +134,7 @@
     },
 
     components: {
+      'edit-account': require('components/Accounts/Modals/EditAccount.vue').default
     }
   }
 </script>

@@ -4,6 +4,18 @@
     <div class="row justify-center q-ma-md">
       <div class="col-6 q-mb-lg q-mr-sm">
         <h5 class="q-my-md">Accounts</h5>
+
+        <div class="q-mb-sm">
+          <q-btn
+          @click="showAddAccount = true"
+            color="primary"
+            icon="add"
+            label="Add Account"
+            class="q-mb-sm"
+            rounded
+          />
+        </div>
+
         <q-scroll-area 
           :thumb-style="thumbStyle"
           :content-style="contentStyle"
@@ -18,7 +30,7 @@
               :key="key"
               :account="account"
               :id="key"
-              class="q-mb-md q-mx-sm">
+              class="q-mb-md q-mr-sm">
             </account>
 
           </template>
@@ -33,12 +45,14 @@
             title="AccountValues"
             :data="bankAccountValuesByAccountId( selectedAccountId() )"
             :columns="tableColumns()"
-            row-key="id"            
+            row-key="date"            
             :filter="filter"
             :loading="loading"
             :pagination.sync="pagination"
+            :selected-rows-label="getSelectedString"
+            selection="multiple"
+            :selected.sync="selected"
             >
-
             <template v-slot:top>
               <q-btn flat dense color="primary" :disable="loading" label="Add row" @click="addRow" />
               <q-btn class="on-right" flat dense color="primary" :disable="loading" label="Remove row" @click="removeRow" />
@@ -48,14 +62,54 @@
                   <q-icon name="search" />
                 </template>
               </q-input>
+            </template>            
+
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="date">
+                  {{ props.row.date }}
+                  <q-popup-edit v-model="props.row.date">
+                    <q-date
+                      v-model="props.row.date"
+                      mask="YYYY-MM-DD"
+                    />
+                  </q-popup-edit>
+                </q-td>
+
+                <q-td key="value" :props="props">
+                  {{ props.row.value }}
+                  <q-popup-edit v-model="props.row.value" title="Update value" buttons>
+                    <q-input 
+                      type="number" 
+                      v-model="props.row.value" 
+                      dense 
+                      autofocus />
+                  </q-popup-edit>
+                </q-td>                
+              </q-tr>              
             </template>
-
           </q-table>
-        </div>
-
+        </div> 
       </div> 
-
     </div>
+
+    <div class="q-mt-md">
+      Selected: {{ JSON.stringify(selected) }}
+    </div>
+
+    <!-- <div class="absolute-bottom text-center q-mb-lg">
+      <q-btn
+      @click="showAddAccount = true"
+        round
+        color="primary"
+        size="24px"
+        icon="add"
+      />
+    </div> -->
+
+    <q-dialog v-model="showAddAccount">
+      <add-account @close="showAddAccount = false" />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -70,6 +124,8 @@
 
     data () {
       return {
+        showAddAccount: false,
+        selected: [],
         loading: false,
         filter: '',
         rowCount: 10,
@@ -111,6 +167,15 @@
         }, 500)
       },
 
+      getSelectedString () {
+        if (this.selected.length === 0 )
+          return ''
+        else if (this.selected.length === 1 )
+          return `1 record selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
+        else
+          return `${this.selected.length} records selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
+      },
+
       log: function(str) {
         console.log(str);
         var num = 0;
@@ -150,6 +215,7 @@
 
     components : {
       'account' : require('components/Accounts/Account.vue').default,
+      'add-account' : require('components/Accounts/Modals/AddAccount.vue').default
     },
 
     mounted () {
