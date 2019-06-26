@@ -10,9 +10,9 @@
     <q-card-section>
       <div class="row">
         
-        <div class="col text-h6">{{ account.accountName }}</div>
+        <div class="col-9 text-h6">{{ account.accountName }}</div>
 
-        <div class="col">
+        <div class="col-3">
           <div class="float-right">
             <q-btn 
               @click.stop="showEditAccount = true"
@@ -37,7 +37,7 @@
     <q-card-section>
       Type: {{ account.type }}
       <br />Currency: {{ account.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.bankAccountId).toFixed(2) }}
+      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.bankAccountId) }}
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -68,8 +68,6 @@
     methods: {
       ...mapActions('accounts', ['updateSelectedAccountId', 'updateTableColumn']),
       ...mapActions('main', ['deleteBankAccount']),
-    //   ...mapActions('tasks', ['updateTask', 'deleteTask']),
-    //   ...mapGetters('tasks', 'tasks'),
       promptToDeleteAccount(id) {
         this.$q.dialog({
           title: 'Confirm',
@@ -91,16 +89,22 @@
       getAccountBalance: function (accountId) {
         try {
           var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
-          var accountValsSorted = this.bankAccountValuesByAccountId(accountId).slice().sort(function(a, b) {
+          if (numOfValues == 0) {
+            console.log('No account values for accountId: ' + accountId);
+            return " No account values";
+          }
+          else {
+            var accountValsSorted = this.bankAccountValuesByAccountId(accountId).slice().sort(function(a, b) {
               var dateA = new Date(a.date);
               var dateB = new Date(b.date);
               return dateA - dateB;
-          });
-          return accountValsSorted[ numOfValues - 1 ].value;
+            });
+            return accountValsSorted[ numOfValues - 1 ].value.toFixed(2);
+          }          
         }
         catch (error) {
           console.error(error); 
-          return "";
+          return " Not available";
         }        
       },
       

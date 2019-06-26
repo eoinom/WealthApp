@@ -24,9 +24,14 @@ namespace backendDataAccess.Repositories
             Currency currency = _dbContext.Currencies.FirstOrDefault(x => x.Code == bankAccount.QuotedCurrency.Code);
             bankAccount.QuotedCurrency = currency;
 
-            _dbContext.BankAccounts.Add(bankAccount);
+            addBankAccountAsync(bankAccount);
             _dbContext.SaveChanges();
             return bankAccount;
+        }
+
+        async public void addBankAccountAsync(BankAccount bankAccount)
+        {
+            await _dbContext.BankAccounts.AddAsync(bankAccount);
         }
 
         public IEnumerable<BankAccount> GetAllForUser(int userId)

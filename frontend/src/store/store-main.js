@@ -72,15 +72,14 @@ const mutations = {
       if (i == 0) {
         state.initialFirstBankAccountId = id
       }
-      // Object.assign(state.bankAccounts[bankAccounts[i].bankAccountId], bankAccounts[i])
-      state.bankAccounts[id] = bankAccounts[i]
+      Vue.set(state.bankAccounts, id, bankAccounts[i])
     }
     if (Object.keys(bankAccounts).length > 0) {
       Vue.delete(state.bankAccounts, 0)
     }
   },
   addBankAccount(state, bankAccount) {
-    Object.assign(state.bankAccounts[bankAccount.bankAccountId], bankAccount)
+    Vue.set(state.bankAccounts, bankAccount.bankAccountId, bankAccount)
   },
   deleteBankAccount(state, bankAccountId) {        
     Vue.delete(state.bankAccounts, bankAccountId)
@@ -98,7 +97,6 @@ const mutations = {
     Object.assign(state.bankAccountValues[accountValue.accountValueId], accountValue)
   },
   deleteValuesForBankAccount(state, accountId) {
-    // Vue.delete(state.bankAccounts, { where: bankAccountId = accountId })
     Vue.delete(state.bankAccountValues, accountId)
   },
   deleteBankAccountValue(state, accountId, accountValueId) {
@@ -145,6 +143,58 @@ const actions = {
     },
     initialiseBankAccounts({ commit }, bankAccounts) {
         commit('initialiseBankAccounts', bankAccounts)
+    },
+    async addBankAccount({ commit }, account) {
+      console.log('account to add:')
+      console.log(account)
+
+      //sent mutation to graphql with account to add to db
+      const axios = require("axios");
+      try {
+        var response = await axios({
+          method: "POST",
+          url: "/",
+          data: {
+            query: `                    
+              mutation ($account: BankAccountInputType!){
+                bankAccount_mutations {
+                  addBankAccount(bankAccount: $account) {
+                    bankAccountId
+                    accountName
+                    description
+                    type
+                    institution
+                    isActive
+                    quotedCurrency {
+                      code
+                      nameLong
+                      nameShort
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              account: {
+                accountName: account.accountName,
+                description: account.description,
+                type: account.type,
+                institution: account.institution,
+                isActive: account.isActive,                
+                quotedCurrency: account.currencyCode,
+                userId: state.user.userId
+              }
+            },
+          }
+        });            
+        
+        // get back details of new account from database and add to local store
+        if (response.data.data.bankAccount_mutations.addBankAccount != null) {          
+          commit('addBankAccount', response.data.data.bankAccount_mutations.addBankAccount)
+        }   
+      } catch (error) {
+          console.error(error); 
+      }
     },
     deleteBankAccount({ commit }, accountId) {
         console.log('accountId for deletion= ' + accountId)

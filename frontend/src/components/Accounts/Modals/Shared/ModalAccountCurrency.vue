@@ -4,11 +4,11 @@
       outlined 
       v-model="model"
       :options="options"
-      :value="currency" 
-      @input="$emit('update:currency', $event)"
+      :value="currencyCode" 
+      @input="$emit('update:currencyCode', $event)"
       :rules="[val => !!val || 'Field is required']"
-      ref="currency"
-      label="Account currency" 
+      ref="currencyCode"
+      label="Currency" 
       class="col"
       clearable />
   </div>    
@@ -16,7 +16,7 @@
 
 <script>
   export default {
-      props: ['currency'],
+      props: ['currencyCode'],
       data () {
       return {
         model: null,

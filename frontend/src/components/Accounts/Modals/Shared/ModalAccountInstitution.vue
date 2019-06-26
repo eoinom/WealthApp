@@ -6,7 +6,7 @@
       @input="$emit('update:institution', $event)"
       :rules="[val => !!val || 'Field is required']"
       ref="institution"
-      label="Account institution" 
+      label="Institution" 
       class="col"
       clearable 
       autogrow />

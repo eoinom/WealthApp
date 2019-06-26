@@ -1,8 +1,8 @@
 <template>
   <div class="row q-mb-sm">  
     <q-checkbox
-      v-model="isActive"
-      @input="$emit('update:active', $event)"
+      :value="isActive"
+      @input="$emit('update:isActive', $event)"
       color="primary"
       label="Account active?"
       class="col"

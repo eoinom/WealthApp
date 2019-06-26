@@ -7,27 +7,27 @@
       <q-card-section>
 
         <modal-account-name 
-          :name.sync="accountToSubmit.name" 
+          :accountName.sync="accountToSubmit.accountName" 
           ref="modalAccountName"/>  
 
         <modal-account-description 
-          :name.sync="accountToSubmit.description" 
+          :description.sync="accountToSubmit.description" 
           ref="modalAccountDescription"/>    
 
         <modal-account-type 
-          :name.sync="accountToSubmit.type" 
+          :type.sync="accountToSubmit.type" 
           ref="modalAccountType"/>   
 
         <modal-account-institution 
-          :name.sync="accountToSubmit.institution" 
+          :institution.sync="accountToSubmit.institution" 
           ref="modalAccountInstitution"/>  
 
         <modal-account-currency 
-          :name.sync="accountToSubmit.currency" 
+          :currencyCode.sync="accountToSubmit.currencyCode" 
           ref="modalAccountCurrency"/>   
 
         <modal-account-isActive
-          :name.sync="accountToSubmit.active" 
+          :isActive.sync="accountToSubmit.isActive" 
           ref="modalAccountIsActive"/>  
 
       </q-card-section>
@@ -46,25 +46,25 @@
     data() {
       return {
         accountToSubmit: {
-          name: '',          
+          accountName: '',          
           description: '',
           type: '',
           institution: '',
-          currency: '',
-          active: false
+          currencyCode: '',
+          isActive: false
         }
       }
     },
     methods: {
-      ...mapActions('main', ['addAccount']),
+      ...mapActions('main', ['addBankAccount']),
       submitForm() {
-        this.$refs.modalAccountName.$refs.name.validate()
-        if (!this.$refs.modalAccountName.$refs.name.hasError) {
+        this.$refs.modalAccountName.$refs.accountName.validate()
+        if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
           this.submitAccount()
         }
       },
       submitAccount() {
-        this.addAccount(this.accountToSubmit)
+        this.addBankAccount(this.accountToSubmit)
         this.$emit('close')
       }
     },
