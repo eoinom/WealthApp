@@ -190,13 +190,17 @@ const getters = {
         return state.bankAccounts
     },
     bankAccountById: (state) => (id) => {
-        return state.bankAccounts.find(x => x.bankAccountId === id)
+        return state.bankAccounts[id]
+    },
+    bankAccountName: (state) => (id) => {
+      var account = state.bankAccounts[id]
+      return account.accountName
     },
     bankAccountValues: (state) => {
         return state.bankAccountValues
     },
     bankAccountValueById: (state) => (id) => {
-        return state.bankAccountValues.find(x => x.accountValueId === id)
+        return state.bankAccountValues[id]
     },
     bankAccountValuesByAccountId: (state) => (id) => {
         return state.bankAccounts[id].accountValues

@@ -54,24 +54,33 @@
             :selected.sync="selectedValues"
             >
             <template v-slot:top>
-              <!-- <q-btn flat dense color="primary" :disable="loading" label="Add row" @click="addRow" /> -->
-              <q-btn 
-                color="red" 
-                :disable="loading" 
-                label="Delete selected" 
-                @click="promptToDeleteAccountValue()" 
-              />
+              <div class="col-2">
+                <q-btn 
+                  round 
+                  icon="remove" 
+                  dense 
+                  color="red" 
+                  class="q-mr-md"
+                  :disable="loading" 
+                  @click="promptToDeleteAccountValue()" 
+                />
+              </div>
 
-              <q-space />
+              <div class="col">
+                <div class="text-h6 text-primary text-center q-pb-md">{{ bankAccountName( selectedAccountId() ) }}</div>
+              </div>
 
-              <q-btn 
-                round 
-                icon="add" 
-                dense 
-                color="primary" 
-                :disable="loading" 
-                @click="showAddAccountValue = true" 
-              />
+              <div class="col-2">
+                <q-btn 
+                  round 
+                  icon="add" 
+                  dense 
+                  class="q-ml-md"
+                  color="primary" 
+                  :disable="loading" 
+                  @click="showAddAccountValue = true" 
+                />
+              </div>
             </template>            
 
             <template v-slot:body="props">
@@ -197,7 +206,7 @@
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId']),
+      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName']),
       
       contentStyle () {
         return {
