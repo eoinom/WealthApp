@@ -60,14 +60,14 @@
                   icon="remove" 
                   dense 
                   color="red" 
-                  class="q-mr-md"
+                  class="q-mr-md q-my-md"
                   :disable="loading" 
                   @click="promptToDeleteAccountValue()" 
                 />
               </div>
 
               <div class="col">
-                <div class="text-h6 text-primary text-center q-pb-md">{{ bankAccountName( selectedAccountId() ) }}</div>
+                <div class="text-h6 text-primary text-center">{{ bankAccountName( selectedAccountId() ) }}</div>
               </div>
 
               <div class="col-2">
@@ -75,7 +75,7 @@
                   round 
                   icon="add" 
                   dense 
-                  class="q-ml-md"
+                  class="q-ml-md q-my-md"
                   color="primary" 
                   :disable="loading" 
                   @click="showAddAccountValue = true" 
