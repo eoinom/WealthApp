@@ -81,6 +81,15 @@ const mutations = {
   addBankAccount(state, bankAccount) {
     Vue.set(state.bankAccounts, bankAccount.bankAccountId, bankAccount)
   },
+  updateBankAccount(state, bankAccount) {    
+    var id = bankAccount.bankAccountId
+    Vue.set(state.bankAccounts[id], "accountName", bankAccount.accountName)
+    Vue.set(state.bankAccounts[id], "description", bankAccount.description)
+    Vue.set(state.bankAccounts[id], "institution", bankAccount.institution)
+    Vue.set(state.bankAccounts[id], "type", bankAccount.type)
+    Vue.set(state.bankAccounts[id], "isActive", bankAccount.isActive)
+    Vue.set(state.bankAccounts[id], "quotedCurrency", bankAccount.quotedCurrency)
+  },
   deleteBankAccount(state, bankAccountId) {        
     Vue.delete(state.bankAccounts, bankAccountId)
   },
@@ -144,6 +153,7 @@ const actions = {
     initialiseBankAccounts({ commit }, bankAccounts) {
         commit('initialiseBankAccounts', bankAccounts)
     },
+
     async addBankAccount({ commit }, account) {
       console.log('account to add:')
       console.log(account)
@@ -196,6 +206,61 @@ const actions = {
           console.error(error); 
       }
     },
+
+    async updateBankAccount({ commit }, account) {
+      console.log('account to update:')
+      console.log(account)
+
+      //sent mutation to graphql with account to update in db
+      const axios = require("axios");
+      try {
+        var response = await axios({
+          method: "POST",
+          url: "/",
+          data: {
+            query: `                    
+              mutation ($account: BankAccountInputType!){
+                bankAccount_mutations {
+                  updateBankAccount(bankAccount: $account) {
+                    bankAccountId
+                    accountName
+                    description
+                    type
+                    institution
+                    isActive
+                    quotedCurrency {
+                      code
+                      nameLong
+                      nameShort
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              account: {
+                bankAccountId: account.bankAccountId,
+                accountName: account.accountName,
+                description: account.description,
+                type: account.type,
+                institution: account.institution,
+                isActive: account.isActive,                
+                quotedCurrency: account.currencyCode,
+                userId: state.user.userId
+              }
+            },
+          }
+        });            
+        
+        // get back details of amended account from database and update in local store
+        if (response.data.data.bankAccount_mutations.updateBankAccount != null) {          
+          commit('updateBankAccount', response.data.data.bankAccount_mutations.updateBankAccount)
+        }   
+      } catch (error) {
+          console.error(error); 
+      }
+    },
+
     deleteBankAccount({ commit }, accountId) {
         console.log('accountId for deletion= ' + accountId)
         commit('deleteBankAccount', accountId)

@@ -49,7 +49,7 @@
       <edit-account 
         @close="showEditAccount = false" 
         :account="account"
-        :id="id" />
+        :accountId="account.bankAccountId" />
     </q-dialog>
   </q-card>
 </template>
@@ -59,7 +59,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['account', 'id'],
+    props: ['account', 'accountId'],
     data() {
       return {
         showEditAccount: false

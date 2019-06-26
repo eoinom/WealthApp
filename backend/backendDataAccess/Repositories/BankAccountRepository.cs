@@ -18,10 +18,10 @@ namespace backendDataAccess.Repositories
 
         public BankAccount Add(BankAccount bankAccount)
         {
-            User user = _dbContext.Users.FirstOrDefault(x => x.UserId == bankAccount.User.UserId);
+            User user = _dbContext.Users.SingleOrDefault(x => x.UserId == bankAccount.User.UserId);
             bankAccount.User = user;
 
-            Currency currency = _dbContext.Currencies.FirstOrDefault(x => x.Code == bankAccount.QuotedCurrency.Code);
+            Currency currency = _dbContext.Currencies.SingleOrDefault(x => x.Code == bankAccount.QuotedCurrency.Code);
             bankAccount.QuotedCurrency = currency;
 
             addBankAccountAsync(bankAccount);
@@ -50,6 +50,30 @@ namespace backendDataAccess.Repositories
                 .Include(x => x.User)
                 .Include(x => x.AccountValues)
                 .SingleOrDefault(x => x.BankAccountId == id);
-        }        
+        }
+
+        public BankAccount Update(BankAccount accountUpdates)
+        {
+            User user = _dbContext.Users.SingleOrDefault(x => x.UserId == accountUpdates.User.UserId);
+            accountUpdates.User = user;
+
+            Currency currency = _dbContext.Currencies.FirstOrDefault(x => x.Code == accountUpdates.QuotedCurrency.Code);
+            accountUpdates.QuotedCurrency = currency;
+            
+            var account = _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == accountUpdates.BankAccountId);
+
+            if (account != null)
+            {
+                account.AccountName = accountUpdates.AccountName;
+                account.Description = accountUpdates.Description;
+                account.Type = accountUpdates.Type;
+                account.Institution = accountUpdates.Institution;
+                account.QuotedCurrency = accountUpdates.QuotedCurrency;
+                account.IsActive = accountUpdates.IsActive;
+                _dbContext.SaveChanges();
+            }
+
+            return account;
+        }
     }
 }

@@ -7,27 +7,27 @@
       <q-card-section>
 
         <modal-account-name 
-          :name.sync="accountToSubmit.name" 
+          :accountName.sync="accountToSubmit.accountName" 
           ref="modalAccountName"/>  
 
         <modal-account-description 
-          :name.sync="accountToSubmit.description" 
+          :description.sync="accountToSubmit.description" 
           ref="modalAccountDescription"/>    
 
         <modal-account-type 
-          :name.sync="accountToSubmit.type" 
+          :type.sync="accountToSubmit.type" 
           ref="modalAccountType"/>   
 
         <modal-account-institution 
-          :name.sync="accountToSubmit.institution" 
+          :institution.sync="accountToSubmit.institution" 
           ref="modalAccountInstitution"/>  
 
         <modal-account-currency 
-          :name.sync="accountToSubmit.currency" 
+          :currencyCode.sync="accountToSubmit.currencyCode" 
           ref="modalAccountCurrency"/>   
 
         <modal-account-isActive
-          :name.sync="accountToSubmit.active" 
+          :isActive.sync="accountToSubmit.isActive" 
           ref="modalAccountIsActive"/>  
 
       </q-card-section>
@@ -43,31 +43,33 @@
   import { mapActions } from 'vuex'
 
   export default {
-    props: ['account', 'id'],
+    props: ['account', 'accountId'],
     data() {
       return {
         accountToSubmit: {
+          bankAccountId: 0,
+          accountName: '',          
+          description: '',
+          type: '',
+          institution: '',
+          currencyCode: '',
+          isActive: false
         }
       }
     },
     methods: {
-      ...mapActions('accounts', ['updateAccount']),
+      ...mapActions('main', ['updateBankAccount']),
       submitForm() {
-        this.$refs.modalAccountName.$refs.name.validate()
-        if (!this.$refs.modalAccountName.$refs.name.hasError) {
+        this.$refs.modalAccountName.$refs.accountName.validate()
+        if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
           this.submitAccount()
         }
       },
       submitAccount() {
-        this.updateAccount({
-          id: this.id,
-          updates: this.accountToSubmit
-        })
+        console.log('in submitAccount, this.accountToSubmit:')
+        console.log(this.accountToSubmit)
+        this.updateBankAccount(this.accountToSubmit)
         this.$emit('close')
-      },
-      clearDueDate() {
-        this.accountToSubmit.dueDate = ''
-        this.accountToSubmit.dueTime = ''
       }
     },
     components: {
@@ -81,7 +83,14 @@
       'modal-buttons': require('components/Accounts/Modals/Shared/ModalButtons.vue').default,
     },
     mounted() {
-      this.accountToSubmit = Object.assign({}, this.account) 
+      // this.accountToSubmit = Object.assign({}, this.account) 
+      this.accountToSubmit.bankAccountId = this.account.bankAccountId
+      this.accountToSubmit.accountName = this.account.accountName 
+      this.accountToSubmit.description = this.account.description
+      this.accountToSubmit.type = this.account.type
+      this.accountToSubmit.institution = this.account.institution
+      this.accountToSubmit.currencyCode = this.account.quotedCurrency.code
+      this.accountToSubmit.isActive = this.account.isActive
     } 
   }
 </script>
