@@ -81,6 +81,26 @@ namespace backendAPI.Mutations
 
                     return bankAccountRepository.Update(newBankAccount);
                 });
+
+            Field<StringGraphType>(
+                "deleteBankAccount",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "bankAccountId" }),
+                resolve: context =>
+                {
+                    int bankAccountId = context.GetArgument<int>("bankAccountId");
+                    try
+                    {
+                        bankAccountRepository.Delete(bankAccountId);
+                        return $"The bank account with the id: {bankAccountId} has been successfully deleted from the database.";
+                    }
+                    catch (System.Exception ex)
+                    {
+                        //return ex.ToString();     // for testing purposes
+                        return null;
+                    }                    
+                });
+
         }
     }
 }

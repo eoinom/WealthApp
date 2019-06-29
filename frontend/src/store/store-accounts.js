@@ -17,7 +17,6 @@ const getDefaultState = () => {
         name: 'value', 
         align: 'center', 
         label: 'Value (EUR €)', 
-        // field: 'value',
         field: row => row.value,
         // format: val => Number(val).toFixed(2),
         sortable: true 

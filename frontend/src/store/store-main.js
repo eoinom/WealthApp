@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { isContext } from 'vm';
 
 const getDefaultState = () => {
   return {
@@ -37,6 +38,7 @@ const getDefaultState = () => {
       }
     },
     initialFirstBankAccountId: 0,
+    bankAccountIds: [],
     bankAccountValues: {
       '0': {
         '0': {
@@ -64,22 +66,26 @@ const mutations = {
     state.authenticated = authenticated
   },
   initialiseBankAccounts(state, bankAccounts) {
-    console.log(bankAccounts)
-    for (var i = 0; i < Object.keys(bankAccounts).length; i++) {
-      console.log('i = ' + i)
-      console.log(bankAccounts[i])
-      var id = bankAccounts[i].bankAccountId
-      if (i == 0) {
-        state.initialFirstBankAccountId = id
-      }
-      Vue.set(state.bankAccounts, id, bankAccounts[i])
-    }
-    if (Object.keys(bankAccounts).length > 0) {
-      Vue.delete(state.bankAccounts, 0)
-    }
+    // console.log(bankAccounts)
+    // for (var i = 0; i < Object.keys(bankAccounts).length; i++) {
+    //   console.log('i = ' + i)
+    //   console.log(bankAccounts[i])
+    //   var id = bankAccounts[i].bankAccountId
+    //   if (i === 0) {
+    //     state.initialFirstBankAccountId = id
+    //   }      
+    //   Vue.set(state.bankAccounts, id, bankAccounts[i])
+    //   Vue.set(state.bankAccountIds, state.bankAccountIds.length, id)
+    // }    
+    // if (Object.keys(bankAccounts).length > 0) {
+    //   state.bankAccountIds.sort(function(a, b){return a - b});
+    //   Vue.delete(state.bankAccounts, 0)
+    // }
   },
   addBankAccount(state, bankAccount) {
     Vue.set(state.bankAccounts, bankAccount.bankAccountId, bankAccount)
+    Vue.set(state.bankAccountIds, state.bankAccountIds.length, bankAccount.bankAccountId)
+    state.bankAccountIds.sort(function(a, b){return a - b});
   },
   updateBankAccount(state, bankAccount) {    
     var id = bankAccount.bankAccountId
@@ -90,8 +96,16 @@ const mutations = {
     Vue.set(state.bankAccounts[id], "isActive", bankAccount.isActive)
     Vue.set(state.bankAccounts[id], "quotedCurrency", bankAccount.quotedCurrency)
   },
-  deleteBankAccount(state, bankAccountId) {        
+  deleteBankAccount(state, bankAccountId) {     
     Vue.delete(state.bankAccounts, bankAccountId)
+
+    // remove id from state.bankAccountIds array
+    for (var i=0; i < state.bankAccountIds.length; i++) {
+      if (state.bankAccountIds[i] === bankAccountId) {
+        Vue.delete(state.bankAccountIds, i)
+        break
+      }
+    }
   },
   updateBankAccountBalances(state) {
     // To do
@@ -132,7 +146,10 @@ const mutations = {
       var dateA = new Date(a.date);
       var dateB = new Date(b.date);
       return dateA - dateB;
-    });
+    });    
+  },
+  setInitialFirstBankAccountId(state, accountId) {
+    state.initialFirstBankAccountId = accountId
   }
 }
 
@@ -151,7 +168,13 @@ const actions = {
         commit('updateAuth', true)
     },
     initialiseBankAccounts({ commit }, bankAccounts) {
-        commit('initialiseBankAccounts', bankAccounts)
+        for (var i = 0; i < Object.keys(bankAccounts).length; i++) {
+          var id = bankAccounts[i].bankAccountId
+          if (i === 0) {
+            commit('setInitialFirstBankAccountId', id)
+          }      
+          commit('addBankAccount', bankAccounts[i])
+        } 
     },
 
     async addBankAccount({ commit }, account) {
@@ -261,10 +284,48 @@ const actions = {
       }
     },
 
-    deleteBankAccount({ commit }, accountId) {
-        console.log('accountId for deletion= ' + accountId)
-        commit('deleteBankAccount', accountId)
+    async deleteBankAccount({ commit, state, rootState, dispatch }, bankAccountId) {
+      console.log('bankAccountId for deletion= ' + bankAccountId)
+
+      //sent mutation to graphql with bankAccountId to delete from db
+      const axios = require("axios");
+      try {
+        var response = await axios({
+          method: "POST",
+          url: "/",
+          data: {
+            query: `                    
+              mutation ($bankAccountId: ID!){
+                bankAccount_mutations {
+                  deleteBankAccount(bankAccountId: $bankAccountId)
+                }
+              }
+            `,
+            variables: {
+              bankAccountId: bankAccountId
+            },
+          }
+        });            
+        
+        // if delete from db was successful then delete also from local store
+        if (response.data.data.bankAccount_mutations.deleteBankAccount != null) {          
+          commit('deleteBankAccount', bankAccountId)
+        }   
+      } catch (error) {
+          console.error(error); 
+      }
+      
+      // update the selectedAccountId
+      var newSelectedAccId = 0
+      if (state.bankAccountIds.length > 0) {
+        newSelectedAccId = state.bankAccountIds[0]
+      }
+      var selectedId = rootState.accounts.selectedAccountId
+      if (selectedId == bankAccountId) {
+        dispatch('accounts/updateSelectedAccountId', newSelectedAccId, {root:true})
+      }
     },
+
     updateBankAccountValues({ commit }, payload) {
         commit('updateBankAccountValues', payload)
     },
@@ -292,17 +353,17 @@ const getters = {
         return state.user.email
     },
     getInitialFirstBankAccountId: (state) => {
-        return Object.keys(state.bankAccounts)[0]
-    },
-    firstBankAccountId: (state) => {
-        // console.log('in firstBankAccountId')
-        // var firstaccID = 14
-        // var accounts = state.bankAccounts
-        // return firstaccID
-        // return Object.keys(state.bankAccounts)[0]
+        return Object.keys(state.bankAccounts)[1]
     },
     bankAccounts: (state) => {
-        return state.bankAccounts
+      var filtered = {}
+      Object.assign(filtered, state.bankAccounts)
+      for (var key in filtered) {
+        if (key == 0) {
+            delete filtered[key];
+        }
+      }
+      return filtered
     },
     bankAccountById: (state) => (id) => {
         return state.bankAccounts[id]
@@ -323,17 +384,12 @@ const getters = {
     getBankAccountBalance: (state) => (accountId) => {
         try {
             var numOfValues = state.bankAccounts[accountId].accountValues.length;
-            console.log('numOfValues: ' + numOfValues )
             var accountValsArray = state.bankAccounts[accountId].accountValues;
-            console.log('accountValsArray: ')
-            console.log(accountValsArray)
             var accountValsSorted = accountValsArray.sort(function(a, b) {
                 var dateA = new Date(a.date);
                 var dateB = new Date(b.date);
                 return dateA - dateB;
             });
-            console.log('accountValsSorted: ')
-            console.log(accountValsSorted)
             return accountValsSorted[ numOfValues - 1 ].value;
         }
         catch (error) {

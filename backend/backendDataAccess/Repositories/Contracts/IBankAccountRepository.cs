@@ -9,5 +9,6 @@ namespace backendDataAccess.Repositories.Contracts
         IEnumerable<BankAccount> GetAllForUser(int userId);
         BankAccount Add(BankAccount bankAccount);
         BankAccount Update(BankAccount bankAccount);
+        void Delete(int bankAccountId);
     }
 }

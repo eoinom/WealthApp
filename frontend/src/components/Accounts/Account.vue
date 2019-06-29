@@ -22,7 +22,7 @@
               color="cyan-2" 
               icon="edit" /> 
             <q-btn 
-              @click.stop="promptToDeleteAccount(id)"
+              @click.stop="promptToDeleteAccount(account.bankAccountId)"
               flat 
               round 
               dense
