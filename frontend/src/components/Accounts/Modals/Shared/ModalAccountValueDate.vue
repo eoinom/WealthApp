@@ -4,21 +4,23 @@
       outlined 
       label="Date"
       autofocus
-      :value="valueDate"
-      @input="$emit('update:valueDate', $event)"
+      clearable
+      :value="accountValueDate"
+      @input="$emit('update:accountValueDate', $event)"
       class="col" >
       <template v-slot:append> 
-        <q-icon 
+        <!-- <q-icon 
           name="cancel" 
-          v-if="valueDate"
+          v-if="accountValueDate"
           @click="$emit('clear')" 
-          class="cursor-pointer" />               
+          class="cursor-pointer" />                -->
 
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
             <q-date 
-              :value="valueDate" 
-              @input="$refs.qDateProxy.hide(); $emit('update:valueDate', $event)" />
+              :value="accountValueDate" 
+              :mask="getDateFormat"
+              @input="$refs.qDateProxy.hide(); $emit('update:accountValueDate', $event)" />
           </q-popup-proxy>
         </q-icon>              
       </template>
@@ -27,9 +29,12 @@
 </template>
 
 <script>
-  export default {
-    props: ['valueDate'],
-    methods: {    
+  import { mapGetters } from 'vuex'
+
+  export default {    
+    props: ['accountValueDate'],
+    computed: {   
+      ...mapGetters('main', ['getDateFormat']),
       
     }
   }

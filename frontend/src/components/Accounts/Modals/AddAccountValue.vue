@@ -7,12 +7,12 @@
       <q-card-section>
 
         <modal-account-value-date 
-          :name.sync="accountValueToSubmit.date" 
+          :accountValueDate.sync="accountValueToSubmit.date"           
           ref="modalAccountValueDate"
           />  
 
         <modal-account-value 
-          :name.sync="accountValueToSubmit.value" 
+          :accountValue.sync="accountValueToSubmit.value" 
           ref="modalAccountValue"/>    
 
       </q-card-section>
@@ -26,27 +26,101 @@
 
 <script>
   import { mapActions } from 'vuex'
+  import { mapGetters } from 'vuex'
+import { constants } from 'crypto';
 
   export default {
+    props: ['accountId'],
     data() {
       return {
         accountValueToSubmit: {
-          date: '',
+          date: this.getTodaysDate(),
           value: '',
+          accountId: this.accountId,
         }
       }
     },
     methods: {
-      ...mapActions('main', ['addAccountValue']),
+      ...mapActions('main', ['addBankAccountValue']),
+      ...mapGetters('main', ['getDateFormat']),
       submitForm() {
-        this.$refs.modalAccountName.$refs.name.validate()
-        if (!this.$refs.modalAccountName.$refs.name.hasError) {
-          this.submitAccount()
+        // this.$refs.modalAccountValueDate.$refs.accountValueDate.validate()
+        // Need to install Moment.js and do date validation
+        this.$refs.modalAccountValue.$refs.accountValue.validate()
+        if (!this.$refs.modalAccountValue.$refs.accountValue.hasError) {
+          this.submitAccountValue()
         }
       },
-      submitAccount() {
-        this.addAccount(this.accountToSubmit)
+      submitAccountValue() {
+        this.accountValueToSubmit.date = this.convertDateToIso(this.accountValueToSubmit.date)
+        console.log(this.accountValueToSubmit)
+        this.addBankAccountValue(this.accountValueToSubmit)
         this.$emit('close')
+      },
+      getTodaysDate() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1;  // As January is 0
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) 
+          dd = '0' + dd;
+        if (mm < 10) 
+          mm = '0' + mm;
+    
+        switch(this.getDateFormat()) {
+          case "DD-MM-YYYY":
+            return (dd + '-' + mm + '-' + yyyy);
+            break;
+          case "DD/MM/YYYY":
+            return (dd + '/' + mm + '/' + yyyy);
+            break;
+          case "MM-DD-YYYY":
+            return (mm + '-' + dd + '-' + yyyy);
+            break;
+          case "MM/DD/YYYY":
+            return (mm + '/' + dd + '/' + yyyy);
+            break;
+          case "YYYY-MM-DD":
+            return (yyyy + '-' + mm + '-' + dd);
+            break;
+          case "YYYY/MM/DD":
+            return (yyyy + '/' + mm + '/' + dd);
+            break;
+          default:
+            return (yyyy + '-' + mm + '-' + dd);
+        }
+      },
+      convertDateToIso(strDate) {        
+        var date = new Date();
+        var dd = '';
+        var mm = '';
+        var yyyy = '';
+        
+        switch(this.getDateFormat()) {
+          case "YYYY-MM-DD":
+            return strDate;
+          case "DD-MM-YYYY":
+          case "DD/MM/YYYY":
+            dd = strDate.slice(0,2)
+            mm = strDate.slice(3,5)
+            yyyy = strDate.slice(6,10)
+            return yyyy + '-' + mm + '-' + dd;
+          case "MM-DD-YYYY":
+          case "MM/DD/YYYY":
+            mm = strDate.slice(0,2)
+            dd = strDate.slice(3,5)
+            yyyy = strDate.slice(6,10)
+            return yyyy + '-' + mm + '-' + dd;
+          case "YYYY/MM/DD":
+            yyyy = strDate.slice(0,4)
+            mm = strDate.slice(5,7)
+            dd = strDate.slice(8,10)
+            return yyyy + '-' + mm + '-' + dd;
+          default:
+            console.log('Could not convert date string ' + strDate + ' to Iso')
+            return strDate
+        }
       }
     },
     components: {

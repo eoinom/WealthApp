@@ -3,6 +3,7 @@ import Vue from 'vue'
 const getDefaultState = () => {
   return {
     selectedAccountId: 0,
+    selectedAccountCurrencySymbol: '€',
     tableColumns: [
       {
         name: 'date',
@@ -34,6 +35,9 @@ const mutations = {
   updateSelectedAccountId(state, accountId) {
     state.selectedAccountId = accountId
   },
+  updateSelectedAccountCurrencySymbol(state, symbol) {
+    state.selectedAccountCurrencySymbol = symbol
+  },
   updateTableColumn(state, payload) {
     Object.assign(state.tableColumns[payload.columnNo], payload.columnObj)
   },
@@ -42,6 +46,9 @@ const mutations = {
 const actions = {
   updateSelectedAccountId({ commit }, accountId) {
     commit('updateSelectedAccountId', accountId)
+  },
+  updateSelectedAccountCurrencySymbol({ commit }, symbol) {
+    commit('updateSelectedAccountCurrencySymbol', symbol)
   },
   updateTableColumn({ commit }, payload) {
     commit('updateTableColumn', payload)
@@ -52,10 +59,14 @@ const getters = {
   selectedAccountId: (state) => {
     return state.selectedAccountId
   },
+  selectedAccountCurrencySymbol: (state) => {
+    return state.selectedAccountCurrencySymbol
+  },
   tableColumns: (state) => {
     return state.tableColumns
   },
 }
+
 
 export default {
   namespaced: true,

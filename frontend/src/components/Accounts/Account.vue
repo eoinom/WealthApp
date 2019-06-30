@@ -2,7 +2,9 @@
   <q-card               
     @click="
       updateSelectedAccountId(account.bankAccountId);
-      updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + account.quotedCurrency.code + ' ' + getCurrencySymbol(account.quotedCurrency.nameShort) + ')' } });
+      var symbol = getCurrencySymbol(account.quotedCurrency.nameShort);
+      updateSelectedAccountCurrencySymbol(symbol);
+      updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + account.quotedCurrency.code + ' ' + symbol + ')' } });
       "
     class="my-card text-white"
     style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" 
@@ -37,7 +39,7 @@
     <q-card-section>
       Type: {{ account.type }}
       <br />Currency: {{ account.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.bankAccountId) }}
+      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getBankAccountBalance(account.bankAccountId) }}
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -59,14 +61,14 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['account', 'accountId'],
+    props: ['account'],
     data() {
       return {
         showEditAccount: false
       }      
     },
     methods: {
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateTableColumn']),
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn']),
       ...mapActions('main', ['deleteBankAccount']),
       promptToDeleteAccount(id) {
         this.$q.dialog({
@@ -85,27 +87,6 @@
       },
       log: function(str) {
         console.log(str);
-      },
-      getAccountBalance: function (accountId) {
-        try {
-          var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
-          if (numOfValues == 0) {
-            console.log('No account values for accountId: ' + accountId);
-            return " No account values";
-          }
-          else {
-            var accountValsSorted = this.bankAccountValuesByAccountId(accountId).slice().sort(function(a, b) {
-              var dateA = new Date(a.date);
-              var dateB = new Date(b.date);
-              return dateA - dateB;
-            });
-            return accountValsSorted[ numOfValues - 1 ].value.toFixed(2);
-          }          
-        }
-        catch (error) {
-          console.error(error); 
-          return " Not available";
-        }        
       },
       
       getCurrencySymbol: function (shortName) {
@@ -133,7 +114,7 @@
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId']),
+      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance']),
       ...mapGetters('accounts', ['selectedAccountId']),
     },
 

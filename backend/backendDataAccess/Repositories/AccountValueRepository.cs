@@ -18,8 +18,29 @@ namespace backendDataAccess.Repositories
 
         public AccountValue Add(AccountValue accountValue)
         {
-            BankAccount bankAccount = _dbContext.BankAccounts.FirstOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
-            accountValue.BankAccount = bankAccount;
+            if (accountValue.BankAccount != null)
+            {
+                BankAccount bankAccount = _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
+                accountValue.BankAccount = bankAccount;
+            }
+
+            if (accountValue.CashAccount != null)
+            {
+                CashAccount cashAccount = _dbContext.CashAccounts.SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
+                accountValue.CashAccount = cashAccount;
+            }
+
+            if (accountValue.LoanAccount != null)
+            {
+                LoanAccount loanAccount = _dbContext.LoanAccounts.SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
+                accountValue.LoanAccount = loanAccount;
+            }
+
+            if (accountValue.MortgageAccount != null)
+            {
+                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts.SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
+                accountValue.MortgageAccount = mortgageAccount;
+            }
 
             _dbContext.AccountValues.Add(accountValue);
             _dbContext.SaveChanges();
