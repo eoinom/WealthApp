@@ -21,7 +21,7 @@
           :content-style="contentStyle"
           :content-active-style="contentActiveStyle"
           class=""
-          style="height: 600px; min-width: 400px; max-width: 600px;">
+          style="height: 540px; min-width: 400px; max-width: 600px;">
 
           <template v-if="Object.keys(bankAccounts).length > 0">
             
@@ -69,7 +69,7 @@
               </div>
 
               <div class="col">
-                <div class="text-h6 text-primary text-center">{{ bankAccountName( selectedAccountId() ) }}</div>
+                <div class="text-h6 text-primary text-center">{{ selectedAccountName }}</div>
               </div>
 
               <div class="col-2">
@@ -117,6 +117,12 @@
       </div> 
     </div>
 
+    <div class="row justify-center q-ma-md">
+      <div class="col-12 q-ml-sm">
+        <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
+      </div>
+    </div>
+
     <q-dialog v-model="showAddAccount">
       <add-account @close="showAddAccount = false" />
     </q-dialog>
@@ -134,10 +140,16 @@
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
   // import { mapMutations } from 'vuex'
+  // import VueApexCharts from 'vue-apexcharts'
+  // Vue.component('apexchart', VueApexCharts)
 
-  export default { 
+  // export default ({ app, router, store, Vue }) => {
+    // Vue.use(VueApexCharts)
+  //   Vue.component('apexcharts', VueApexCharts)
+  // }
+
+  export default {
     name: 'UserAccounts',
-
     data () {
       return {
         showAddAccount: false,
@@ -145,11 +157,10 @@
         selectedValues: [],
         loading: false,
         filter: '',
-        rowCount: 10,
         pagination: {
           sortBy: 'date',
           descending: true,
-          rowsPerPage: 10
+          rowsPerPage: 7
         },
       }
     },  
@@ -230,7 +241,7 @@
                 case "YYYY-MM-DD":
                 case "MM/DD/YYYY":
                   xDate = new Date(x[sortBy]);
-                  d2 = new Date(y[sortBy]);
+                  yDate = new Date(y[sortBy]);
                   break;
                 case "DD-MM-YYYY":
                 case "DD/MM/YYYY":
@@ -280,6 +291,67 @@
 
     computed: {
       ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName']),
+
+      selectedAccountName() {
+        return this.bankAccountName( this.selectedAccountId() )
+      },
+
+// CHART PROPERTIES
+      chartOptions() {
+        return {
+          chart: {
+            id: 'vuechart-example',
+            zoom: {
+              enabled: true
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          series: [{
+            name: 'Account Values',
+            data: [1000.00, 2000.50, 1500.54, 1856.42, 2254.24, 2354.11]
+          }],
+           title: {
+            text: this.selectedAccountName,
+            align: 'center'
+          },
+          labels: ['2001-01-28', '2001-03-28', '2001-05-28', '2001-07-28', '2001-09-28', '2001-11-28'],
+          xaxis: {
+            type: 'datetime',
+          }
+        }
+      },
+
+      series() {
+        var storeAccountVals = this.bankAccountValuesByAccountId(this.selectedAccountId());   // get array from store
+        var accountVals = storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // clone the array, ref:https://stackoverflow.com/questions/44837957/how-to-clone-a-vuex-array
+
+        accountVals.forEach(obj => {
+          if (obj.date !== undefined) {
+            Object.defineProperty(obj, "x",
+              Object.getOwnPropertyDescriptor(obj, "date"));
+            delete obj["date"];
+          }
+          if (obj.value !== undefined) {
+            Object.defineProperty(obj, "y",
+              Object.getOwnPropertyDescriptor(obj, "value"));
+            delete obj["value"];
+          }
+          if (obj.accountValueId !== undefined) {
+            delete obj["accountValueId"];
+          }
+        });
+
+        return [{
+            name: this.selectedAccountName,
+            data: accountVals
+          }]
+      },
+// END OF CHART PROPERTIES
       
       contentStyle () {
         return {

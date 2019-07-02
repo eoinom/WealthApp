@@ -48,7 +48,7 @@ const getDefaultState = () => {
         }
       }
     },
-    dateFormat: 'DD/MM/YYYY'
+    dateFormat: 'MM/DD/YYYY'
   }
 }
 
@@ -70,6 +70,17 @@ const mutations = {
   addBankAccount(state, bankAccount) {
     // first convert the date format of any Account Values to the user preferred format (state.dateFormat)
     if (bankAccount.hasOwnProperty('accountValues') && bankAccount.accountValues.length > 0) {
+      
+      // sort bankAccountValues
+      if (bankAccount.accountValues.length > 1) {
+        var accountValsSorted = bankAccount.accountValues.sort(function(a, b) {
+          var date1 = new Date(a.date);
+          var date2 = new Date(b.date);
+          return date1 - date2;
+        });
+      }
+
+      //Change dates into user preferred format (this really should be done only in UI input/output)
       bankAccount.accountValues.forEach(function(a) {     // ref: https://stackoverflow.com/questions/12482961/is-it-possible-to-change-values-of-the-array-when-doing-foreach-in-javascript
         var date = new Date(a.date);
         var dd = date.getDate();
@@ -105,6 +116,7 @@ const mutations = {
         }
       });    
     }
+
     // Now add the account and store the accountId in a sorted array
     Vue.set(state.bankAccounts, bankAccount.bankAccountId, bankAccount)
     Vue.set(state.bankAccountIds, state.bankAccountIds.length, bankAccount.bankAccountId)
@@ -172,8 +184,63 @@ const mutations = {
       default:
         // leave as is
     }
-    const accountVals = state.bankAccounts[payload.bankAccountId].accountValues
+    var accountVals = state.bankAccounts[payload.bankAccountId].accountValues
     Vue.set(accountVals, accountVals.length, payload.accountValue)
+
+    //sort the Account Values
+    accountVals.sort(function(a, b) {
+        var date1 = new Date();
+        var date2 = new Date();
+        var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
+        dd1 = mm1 = yyyy1 = dd2 = mm2 = yyyy2 = '';
+        
+        switch(state.dateFormat) {
+          case "YYYY-MM-DD":
+          case "MM/DD/YYYY":
+            date1 = new Date(a.date);
+            date2 = new Date(b.date);
+            console.log('date1: ' + date1)
+            console.log('date2: ' + date2)
+            return date1 - date2;
+            break;
+          case "DD-MM-YYYY":
+          case "DD/MM/YYYY":
+            dd1 = a.date.slice(0,2)
+            mm1 = a.date.slice(3,5)
+            yyyy1 = a.date.slice(6,10)
+            // dateA = new Date(yyyy + '-' + mm + '-' + dd);
+            dd2 = b.date.slice(0,2)
+            mm2 = b.date.slice(3,5)
+            yyyy2 = b.date.slice(6,10)
+            // dateB = new Date(yyyy + '-' + mm + '-' + dd);
+            break;
+          case "MM-DD-YYYY":
+            mm1 = a.date.slice(0,2)
+            dd1 = a.date.slice(3,5)
+            yyyy1 = a.date.slice(6,10)
+            // dateA = new Date(yyyy + '-' + mm + '-' + dd);
+            mm2 = b.date.slice(0,2)
+            dd2 = b.date.slice(3,5)
+            yyyy2 = b.date.slice(6,10)
+            // dateB = new Date(yyyy + '-' + mm + '-' + dd);
+            break;
+          case "YYYY/MM/DD":
+            yyyy1 = a.date.slice(0,4)
+            mm1 = a.date.slice(5,7)
+            dd1 = a.date.slice(8,10)
+            // dateA = new Date(yyyy + '-' + mm + '-' + dd);
+            yyyy2 = b.date.slice(0,4)
+            mm2 = b.date.slice(5,7)
+            dd2 = b.date.slice(8,10)
+            // dateB = new Date(yyyy + '-' + mm + '-' + dd);
+            break;
+          default:
+            // do nothing
+        }
+        date1 = new Date(yyyy1 + '-' + mm1 + '-' + dd1);
+        date2 = new Date(yyyy2 + '-' + mm2 + '-' + dd2);
+        return date1 - date2;
+      });
   },
   deleteValuesForBankAccount(state, accountId) {
     Vue.delete(state.bankAccountValues, accountId)
@@ -488,60 +555,62 @@ const getters = {
   getBankAccountBalance: (state) => (accountId) => {
     try {
       var numOfValues = state.bankAccounts[accountId].accountValues.length;
-      const accountValsArray = [...state.bankAccounts[accountId].accountValues];
-      var accountValsSorted = accountValsArray.sort(function(a, b) {
-        // var dateA = new Date(a.date);
-        // var dateB = new Date(b.date);
-
-        var dateA = new Date();
-        var dateB = new Date();
-        var dd = '';
-        var mm = '';
-        var yyyy = '';
+      // const accountValsArray = [...state.bankAccounts[accountId].accountValues];
+      // var accountValsSorted = accountValsArray.sort(function(a, b) {
+      //   var date1 = new Date();
+      //   var date2 = new Date();
+      //   var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
+      //   dd1 = mm1 = yyyy1 = dd2 = mm2 = yyyy2 = '';
         
-        switch(state.dateFormat) {
-          case "YYYY-MM-DD":
-          case "MM/DD/YYYY":
-            dateA = new Date(a.date);
-            dateB = new Date(b.date);
-            break;
-          case "DD-MM-YYYY":
-          case "DD/MM/YYYY":
-            dd = a.date.slice(0,2)
-            mm = a.date.slice(3,5)
-            yyyy = a.date.slice(6,10)
-            dateA = new Date(yyyy + '-' + mm + '-' + dd);
-            dd = b.date.slice(0,2)
-            mm = b.date.slice(3,5)
-            yyyy = b.date.slice(6,10)
-            dateB = new Date(yyyy + '-' + mm + '-' + dd);
-            break;
-          case "MM-DD-YYYY":
-            mm = a.date.slice(0,2)
-            dd = a.date.slice(3,5)
-            yyyy = a.date.slice(6,10)
-            dateA = new Date(yyyy + '-' + mm + '-' + dd);
-            mm = b.date.slice(0,2)
-            dd = b.date.slice(3,5)
-            yyyy = b.date.slice(6,10)
-            dateB = new Date(yyyy + '-' + mm + '-' + dd);
-            break;
-          case "YYYY/MM/DD":
-            yyyy = a.date.slice(0,4)
-            mm = a.date.slice(5,7)
-            dd = a.date.slice(8,10)
-            dateA = new Date(yyyy + '-' + mm + '-' + dd);
-            yyyy = b.date.slice(0,4)
-            mm = b.date.slice(5,7)
-            dd = b.date.slice(8,10)
-            dateB = new Date(yyyy + '-' + mm + '-' + dd);
-            break;
-          default:
-            // do nothing
-        }
-        return dateA - dateB;
-      });
-      return accountValsSorted[ numOfValues - 1 ].value;
+      //   switch(state.dateFormat) {
+      //     case "YYYY-MM-DD":
+      //     case "MM/DD/YYYY":
+      //       date1 = new Date(a.date);
+      //       date2 = new Date(b.date);
+      //       console.log('date1: ' + date1)
+      //       console.log('date2: ' + date2)
+      //       return date1 - date2;
+      //       break;
+      //     case "DD-MM-YYYY":
+      //     case "DD/MM/YYYY":
+      //       dd1 = a.date.slice(0,2)
+      //       mm1 = a.date.slice(3,5)
+      //       yyyy1 = a.date.slice(6,10)
+      //       // dateA = new Date(yyyy + '-' + mm + '-' + dd);
+      //       dd2 = b.date.slice(0,2)
+      //       mm2 = b.date.slice(3,5)
+      //       yyyy2 = b.date.slice(6,10)
+      //       // dateB = new Date(yyyy + '-' + mm + '-' + dd);
+      //       break;
+      //     case "MM-DD-YYYY":
+      //       mm1 = a.date.slice(0,2)
+      //       dd1 = a.date.slice(3,5)
+      //       yyyy1 = a.date.slice(6,10)
+      //       // dateA = new Date(yyyy + '-' + mm + '-' + dd);
+      //       mm2 = b.date.slice(0,2)
+      //       dd2 = b.date.slice(3,5)
+      //       yyyy2 = b.date.slice(6,10)
+      //       // dateB = new Date(yyyy + '-' + mm + '-' + dd);
+      //       break;
+      //     case "YYYY/MM/DD":
+      //       yyyy1 = a.date.slice(0,4)
+      //       mm1 = a.date.slice(5,7)
+      //       dd1 = a.date.slice(8,10)
+      //       // dateA = new Date(yyyy + '-' + mm + '-' + dd);
+      //       yyyy2 = b.date.slice(0,4)
+      //       mm2 = b.date.slice(5,7)
+      //       dd2 = b.date.slice(8,10)
+      //       // dateB = new Date(yyyy + '-' + mm + '-' + dd);
+      //       break;
+      //     default:
+      //       // do nothing
+      //   }
+      //   date1 = new Date(yyyy1 + '-' + mm1 + '-' + dd1);
+      //   date2 = new Date(yyyy2 + '-' + mm2 + '-' + dd2);
+      //   return date1 - date2;
+      // });
+      // return accountValsSorted[ numOfValues - 1 ].value;
+      return state.bankAccounts[accountId].accountValues[ numOfValues - 1 ].value;
     }
     catch (error) {
       console.error(error); 
