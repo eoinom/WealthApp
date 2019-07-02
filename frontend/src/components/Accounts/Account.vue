@@ -39,7 +39,7 @@
     <q-card-section>
       Type: {{ account.type }}
       <br />Currency: {{ account.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getBankAccountBalance(account.bankAccountId) }}
+      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.bankAccountId) }}
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -88,7 +88,22 @@
       log: function(str) {
         console.log(str);
       },
-      
+      getAccountBalance: function (accountId) {
+        try {
+          var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
+          if (numOfValues == 0) {
+            console.log('No account values for accountId: ' + accountId);
+            return " No account values";
+          }
+          else {
+            return this.getBankAccountBalance(accountId).toFixed(2);
+          }          
+        }
+        catch (error) {
+          console.error(error); 
+          return " Not available";
+        }        
+      },
       getCurrencySymbol: function (shortName) {
         try {
           switch ( shortName.toLowerCase() ) {
