@@ -18,7 +18,7 @@
 
 <script>
   export default {
-      props: ['accountName']
+    props: ['accountName']
   }
 </script>
 

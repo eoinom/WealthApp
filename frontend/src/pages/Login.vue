@@ -156,26 +156,11 @@
 
 <script type="text/javascript">
   import AppVue from '../App.vue';
-  import { mapGetters } from 'vuex'
-  import { mapActions } from 'vuex'
-  import { mapMutations } from 'vuex'
-  //   import Vivus from 'vivus'  // for SVG animation
-  //   import logoData from './logoData'
   import router from '../router';
+  import { mapActions } from 'vuex'
+  import { mapGetters } from 'vuex'    
 
   export default {
-    created() {
-    },
-    mounted () {
-    //   this.startAnimation()
-    },
-    beforeDestroy () {
-    },
-    computed: {
-    //   logoMethod () {
-    //     return logoData[this.logo]
-    //   }
-    },
     data () {
       return {
         email: '',
@@ -186,14 +171,15 @@
         surname: '',
         subscribed: true,
         agreeTerms: false,
-        // vivus: '',
         tab: 'login',
         // authenticated: false
       }
     },
-    methods: {
-      ...mapGetters('main', ['authenticated', 'user', 'bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
+    computed: {
+    },
+    methods: {      
       ...mapActions('main', ['login', 'updateUser', 'initialiseBankAccounts', 'updateBankAccountValues']),
+      ...mapGetters('main', ['authenticated', 'user', 'bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
 
       onSubmitLogin () { 
         this.$q.loading.show({
@@ -345,156 +331,12 @@
         return false
       },
 
-      async checkAuth(email, password) {                
-        const axios = require("axios")
-        try {
-          var response = await axios({
-            method: "POST",
-            url: "/",
-            data: {
-              query: `                    
-              {
-                user_queries {
-                  userLogin(email: "` + email + `", password:"` + password + `") {
-                    userId,
-                    firstName,
-                    lastName,
-                    email,
-                    newsletterSub,
-                    country {
-                      iso2Code
-                    },
-                    displayCurrency {
-                      code
-                    }
-                  }
-                }  
-              }
-              `
-            }
-          });  
-          this.updateUser(response.data.data.user_queries.userLogin);
-          
-          if (this.user() != null) {
-            return true
-          }
-          else {
-            console.log("Login failed")
-            return false
-          }
-        } catch (error) {
-            console.error(error); 
-        }
-        return false
-      },
-
-      async getBankAccounts(userId) {                
-        const axios = require("axios")
-        try {
-          var response = await axios({
-            method: "POST",
-            url: "/",
-            data: {
-              query: `                    
-              {
-                bankAccount_queries {
-                  userBankAccounts(userId: ` + userId + `) {
-                    bankAccountId
-                    accountName
-                    description      
-                    type
-                    isActive
-                    institution
-                    quotedCurrency {
-                      code
-                      nameShort
-                      nameLong        
-                    }
-                  }
-                }
-              }
-              `
-            }
-          });  
-          this.initialiseBankAccounts(response.data.data.bankAccount_queries.userBankAccounts);
-          
-          if (this.bankAccounts() != null) {
-            return true
-          }
-          else {
-            console.log("Bank account(s) retrieval failed or none present on server")
-            return false
-          }
-        } catch (error) {
-            console.error(error); 
-        }
-        return false
-      },
-
-      async getAccountValues(accountId) {                
-        const axios = require("axios")
-        try {
-          var response = await axios({
-            method: "POST",
-            url: "/",
-            data: {
-              query: `                    
-              {
-                accountValue_queries {
-                  accountValues(accountId: ` + accountId + `) {
-                    accountValueId
-                    date
-                    value
-                  }
-                }
-              }
-              `
-            }
-          });  
-          var accountVals = response.data.data.accountValue_queries.accountValues.sort(function(a, b) {
-              var dateA = new Date(a.date);
-              var dateB = new Date(b.date);
-              return dateA - dateB;
-          });
-
-          console.log('accountVals:')
-          console.log(accountVals)
-
-          this.updateBankAccountValues({ bankAccountId: accountId, bankAccountValues: accountVals })
-          
-          if (this.bankAccountValuesByAccountId(accountId) != null) {
-            console.log("bankAccountValuesByAccountId for accountId: " + accountId)
-            console.log(this.bankAccountValuesByAccountId(accountId))
-            return true
-          }
-          else {
-            console.log("Account values retrieval failed or none present on server")
-            return false
-          }
-        } catch (error) {
-            console.error(error); 
-        }
-        return false
-      },
-
       beforeDestroy () {
         if (this.timer !== void 0) {
           clearTimeout(this.timer)
           this.$q.loading.hide()
         }
       }
-    //   startAnimation () {
-    //     this.vivus = new Vivus('logo', {
-    //         duration: 400,
-    //       forceRender: false
-    //       }, function(element) {
-    //         for (let item of element.el.children[0].children) {
-    //           item.setAttribute('style', 'fill:white')
-    //           item.setAttribute('style', 'fill:white')
-    //         }
-    //       }
-    //     )
-    //   }
     }
   }
 </script>
