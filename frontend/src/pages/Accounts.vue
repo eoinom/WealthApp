@@ -41,9 +41,10 @@
         <h5 class="q-my-md">Account Values</h5>
         
         <div class="q-pa-md">
+          <!-- Account Values Table -->
           <q-table
             title="AccountValues"
-            :data="bankAccountValuesByAccountId( selectedAccountId() )"
+            :data="selectedBankAccountValues"
             :columns="tableColumns()"
             row-key="date"            
             :filter="filter"
@@ -90,22 +91,37 @@
                 <q-td auto-width>
                   <q-checkbox v-model="props.selected" />
                 </q-td>
-                <q-td key="date">
+
+                <!-- Date -->
+                <q-td key="date" :props="props">
                   {{ props.row.date }}
-                  <q-popup-edit v-model="props.row.date">
+                  <q-popup-edit 
+                    v-model="popupEditDate" 
+                    @show="() => showPopupDate(props.row, 'date')" 
+                     >
                     <q-date
-                      v-model="props.row.date"
-                      mask="getDateFormat"
+                      v-model="popupEditDate" 
+                      today-btn
+                      mask="YYYY-MM-DD"
+                      :options="dateOptionsFn"
+                      @input="(val, initval) => onUpdateAccountValue(val, props.row, 'date')"
                     />
                   </q-popup-edit>
                 </q-td>
 
+                <!-- Value -->
                 <q-td key="value" :props="props">
                   {{ props.row.value.toFixed(2) }}
-                  <q-popup-edit v-model="props.row.value" title="Update value" buttons>
+
+                  <q-popup-edit 
+                    v-model="popupEditValue" 
+                    @show="() => showPopupValue(props.row, 'value')" 
+                    @save="(val, initval) => onUpdateAccountValue(val, props.row, 'value')"
+                    title="Update value" 
+                    buttons >
                     <q-input 
                       type="number" 
-                      v-model="props.row.value" 
+                      v-model="popupEditValue" 
                       dense 
                       autofocus />
                   </q-popup-edit>
@@ -139,14 +155,6 @@
 <script>
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
-  // import { mapMutations } from 'vuex'
-  // import VueApexCharts from 'vue-apexcharts'
-  // Vue.component('apexchart', VueApexCharts)
-
-  // export default ({ app, router, store, Vue }) => {
-    // Vue.use(VueApexCharts)
-  //   Vue.component('apexcharts', VueApexCharts)
-  // }
 
   export default {
     name: 'UserAccounts',
@@ -154,7 +162,9 @@
       return {
         showAddAccount: false,
         showAddAccountValue: false,
-        selectedValues: [],
+        selectedValues: [],         // selected rows in table
+        popupEditDate: '2019-01-31',
+        popupEditValue: 0,
         loading: false,
         filter: '',
         pagination: {
@@ -166,10 +176,44 @@
     },  
 
     methods: {           
-      ...mapGetters('main', ['getInitialFirstBankAccountId', 'getDateFormat']),
+      ...mapGetters('main', ['getInitialFirstBankAccountId']),
       ...mapGetters('accounts', ['selectedAccountId', 'tableColumns']),
-      ...mapActions('main', ['deleteBankAccountValues']),
+      ...mapActions('main', ['updateBankAccountValue', 'deleteBankAccountValues']),
       ...mapActions('accounts', ['updateSelectedAccountId']),
+
+      showPopupDate(row, col) {
+        this.popupEditDate = row[col];
+      },
+      showPopupValue(row, col) {
+        console.log('row: ' + row + ' , col: ' + col + ' row[col]: ' + row[col])
+        this.popupEditValue = row[col];
+      },
+      dateOptionsFn(date) {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; 
+        var yyyy = today.getFullYear();
+        if(dd<10) 
+            dd='0'+dd;
+        if(mm<10) 
+            mm='0'+mm;
+        return date <= yyyy + '/' + mm + '/' + dd;
+      },
+      onUpdateAccountValue(val, row, col) {
+        // this.setLoading(true);
+        const updatedRow = Object.assign({}, row);
+        updatedRow[col] = val;
+        const res = this.updateBankAccountValue(updatedRow);
+        res.then((response) => {
+          // do nothing
+        })
+        .catch((err) => {
+          err.log(-1);
+        })
+        .finally(() => {
+          // this.setLoading(false);
+        });
+      },
 
       promptToDeleteAccountValue() {
         var numSelectedRows = this.selectedValues.length;
@@ -237,7 +281,7 @@
               var mm = '';
               var yyyy = '';
           
-              switch(this.getDateFormat()) {
+              switch(this.getDateFormat) {
                 case "YYYY-MM-DD":
                 case "MM/DD/YYYY":
                   xDate = new Date(x[sortBy]);
@@ -290,10 +334,15 @@
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName']),
+      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName', 'getDateFormat']),
 
       selectedAccountName() {
         return this.bankAccountName( this.selectedAccountId() )
+      },
+
+      selectedBankAccountValues() {
+        var storeAccountVals = this.bankAccountValuesByAccountId(this.selectedAccountId());   // get array from store
+        return storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // return a cloned array
       },
 
 // CHART PROPERTIES

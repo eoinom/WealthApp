@@ -7,6 +7,7 @@ namespace backendAPI.Types
         public AccountValueInputType()
         {
             Name = "AccountValueInputType";
+            Field<IntGraphType>("accountValueId");
             Field<NonNullGraphType<DateGraphType>>("date");
             Field<NonNullGraphType<DecimalGraphType>>("value");
             Field<IntGraphType>("bankAccountId");

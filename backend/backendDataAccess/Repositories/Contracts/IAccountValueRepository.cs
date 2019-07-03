@@ -11,5 +11,6 @@ namespace backendDataAccess.Repositories.Contracts
         IEnumerable<AccountValue> GetAllForLoanAccount(int accountId);
         IEnumerable<AccountValue> GetAllForMortgageAccount(int accountId);
         AccountValue Add(AccountValue accountValue);
+        AccountValue Update(AccountValue accountValue);
     }
 }

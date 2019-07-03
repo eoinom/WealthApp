@@ -44,12 +44,49 @@ namespace backendDataAccess.Repositories
 
             _dbContext.AccountValues.Add(accountValue);
             _dbContext.SaveChanges();
+            _dbContext.Entry<AccountValue>(accountValue).State = EntityState.Detached;
+            return accountValue;
+        }
+
+        public AccountValue Update(AccountValue accountValue)
+        {
+            if (accountValue.BankAccount != null)
+            {
+                BankAccount bankAccount = _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
+                accountValue.BankAccount = bankAccount;
+            }
+
+            if (accountValue.CashAccount != null)
+            {
+                CashAccount cashAccount = _dbContext.CashAccounts.SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
+                accountValue.CashAccount = cashAccount;
+            }
+
+            if (accountValue.LoanAccount != null)
+            {
+                LoanAccount loanAccount = _dbContext.LoanAccounts.SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
+                accountValue.LoanAccount = loanAccount;
+            }
+
+            if (accountValue.MortgageAccount != null)
+            {
+                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts.SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
+                accountValue.MortgageAccount = mortgageAccount;
+            }
+
+            _dbContext.AccountValues.Update(accountValue);
+            _dbContext.SaveChanges();
+
+            //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
+            //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
+            _dbContext.Entry<AccountValue>(accountValue).State = EntityState.Detached;
+
             return accountValue;
         }
 
         public IEnumerable<AccountValue> GetAllForBankAccount(int bankAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.BankAccount.BankAccountId == bankAccountId)
                 .Include(x => x.BankAccount)
                 .Include(x => x.BankAccount.QuotedCurrency)
@@ -58,7 +95,7 @@ namespace backendDataAccess.Repositories
 
         public AccountValue GetLatestForBankAccount(int bankAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.BankAccount.BankAccountId == bankAccountId)
                 .OrderByDescending(x => x.Date)
                 .Include(x => x.BankAccount)
@@ -69,7 +106,7 @@ namespace backendDataAccess.Repositories
 
         public IEnumerable<AccountValue> GetAllForCashAccount(int bankAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.CashAccount.CashAccountId == bankAccountId)
                 .Include(x => x.CashAccount)
                 .Include(x => x.CashAccount.QuotedCurrency)
@@ -78,7 +115,7 @@ namespace backendDataAccess.Repositories
 
         public AccountValue GetLatestForCashAccount(int cashAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.CashAccount.CashAccountId == cashAccountId)
                 .OrderByDescending(x => x.Date)
                 .Include(x => x.CashAccount)
@@ -89,7 +126,7 @@ namespace backendDataAccess.Repositories
 
         public IEnumerable<AccountValue> GetAllForLoanAccount(int bankAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.LoanAccount.LoanAccountId == bankAccountId)
                 .Include(x => x.LoanAccount)
                 .Include(x => x.LoanAccount.QuotedCurrency)
@@ -98,7 +135,7 @@ namespace backendDataAccess.Repositories
 
         public AccountValue GetLatestForLoanAccount(int loanAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.LoanAccount.LoanAccountId == loanAccountId)
                 .OrderByDescending(x => x.Date)
                 .Include(x => x.LoanAccount)
@@ -109,7 +146,7 @@ namespace backendDataAccess.Repositories
 
         public IEnumerable<AccountValue> GetAllForMortgageAccount(int bankAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.MortgageAccount.MortgageAccountId == bankAccountId)
                 .Include(x => x.MortgageAccount)
                 .Include(x => x.MortgageAccount.QuotedCurrency)
@@ -118,7 +155,7 @@ namespace backendDataAccess.Repositories
 
         public AccountValue GetLatestForMortgageAccount(int mortgageAccountId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Where(x => x.MortgageAccount.MortgageAccountId == mortgageAccountId)
                 .OrderByDescending(x => x.Date)
                 .Include(x => x.MortgageAccount)
@@ -129,7 +166,7 @@ namespace backendDataAccess.Repositories
 
         public AccountValue GetById(int accountValueId)
         {
-            return _dbContext.AccountValues
+            return _dbContext.AccountValues.AsNoTracking()
                 .Include(x => x.BankAccount)
                 .Include(x => x.BankAccount.QuotedCurrency)
                 .Include(x => x.BankAccount.User)

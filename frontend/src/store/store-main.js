@@ -31,24 +31,18 @@ const getDefaultState = () => {
           {
             accountValueId: 0,
             date: '',
-            value: 0.00
+            value: 0.00,
+            bankAccount: {
+              bankAccountId: 0
+            }
           }
         ],
-        balance: 0.00
+        // balance: 0.00  // Not implemented yet
       }
     },
     initialFirstBankAccountId: 0,
     bankAccountIds: [],
-    bankAccountValues: {
-      '0': {
-        '0': {
-          accountValueId: 0,
-          date: '',
-          value: 0.00
-        }
-      }
-    },
-    dateFormat: 'MM/DD/YYYY'
+    dateFormat: 'YYYY-MM-DD'
   }
 }
 
@@ -147,12 +141,9 @@ const mutations = {
   },
   updateBankAccountBalance(state, bankAccountId) {
     // To do
-  },
-  updateBankAccountValues(state, payload) {
-    state.bankAccountValues[payload.bankAccountId] = payload.bankAccountValues
-  },
-  addBankAccountValue(state, payload) {
-    var date = new Date(payload.accountValue.date);
+  },  
+  addBankAccountValue(state, accountValue) {
+    var date = new Date(accountValue.date);
     var dd = date.getDate();
     var mm = date.getMonth()+1;  // As January is 0
     var yyyy = date.getFullYear();
@@ -164,28 +155,28 @@ const mutations = {
 
     switch(state.dateFormat) {
       case "DD-MM-YYYY":
-        payload.accountValue.date = dd + '-' + mm + '-' + yyyy;
+        accountValue.date = dd + '-' + mm + '-' + yyyy;
         break;
       case "DD/MM/YYYY":
-        payload.accountValue.date = dd + '/' + mm + '/' + yyyy;
+        accountValue.date = dd + '/' + mm + '/' + yyyy;
         break;
       case "MM-DD-YYYY":
-        payload.accountValue.date = mm + '-' + dd + '-' + yyyy;
+        accountValue.date = mm + '-' + dd + '-' + yyyy;
         break;
       case "MM/DD/YYYY":
-        payload.accountValue.date = mm + '/' + dd + '/' + yyyy;
+        accountValue.date = mm + '/' + dd + '/' + yyyy;
         break;
       case "YYYY-MM-DD":
-        payload.accountValue.date = yyyy + '-' + mm + '-' + dd;
+        accountValue.date = yyyy + '-' + mm + '-' + dd;
         break;
       case "YYYY/MM/DD":
-        payload.accountValue.date = yyyy + '/' + mm + '/' + dd;
+        accountValue.date = yyyy + '/' + mm + '/' + dd;
         break;
       default:
         // leave as is
     }
-    var accountVals = state.bankAccounts[payload.bankAccountId].accountValues
-    Vue.set(accountVals, accountVals.length, payload.accountValue)
+    var accountVals = state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
+    Vue.set(accountVals, accountVals.length, accountValue)
 
     //sort the Account Values
     accountVals.sort(function(a, b) {
@@ -199,8 +190,6 @@ const mutations = {
           case "MM/DD/YYYY":
             date1 = new Date(a.date);
             date2 = new Date(b.date);
-            console.log('date1: ' + date1)
-            console.log('date2: ' + date2)
             return date1 - date2;
             break;
           case "DD-MM-YYYY":
@@ -208,31 +197,25 @@ const mutations = {
             dd1 = a.date.slice(0,2)
             mm1 = a.date.slice(3,5)
             yyyy1 = a.date.slice(6,10)
-            // dateA = new Date(yyyy + '-' + mm + '-' + dd);
             dd2 = b.date.slice(0,2)
             mm2 = b.date.slice(3,5)
             yyyy2 = b.date.slice(6,10)
-            // dateB = new Date(yyyy + '-' + mm + '-' + dd);
             break;
           case "MM-DD-YYYY":
             mm1 = a.date.slice(0,2)
             dd1 = a.date.slice(3,5)
             yyyy1 = a.date.slice(6,10)
-            // dateA = new Date(yyyy + '-' + mm + '-' + dd);
             mm2 = b.date.slice(0,2)
             dd2 = b.date.slice(3,5)
             yyyy2 = b.date.slice(6,10)
-            // dateB = new Date(yyyy + '-' + mm + '-' + dd);
             break;
           case "YYYY/MM/DD":
             yyyy1 = a.date.slice(0,4)
             mm1 = a.date.slice(5,7)
             dd1 = a.date.slice(8,10)
-            // dateA = new Date(yyyy + '-' + mm + '-' + dd);
             yyyy2 = b.date.slice(0,4)
             mm2 = b.date.slice(5,7)
             dd2 = b.date.slice(8,10)
-            // dateB = new Date(yyyy + '-' + mm + '-' + dd);
             break;
           default:
             // do nothing
@@ -241,6 +224,99 @@ const mutations = {
         date2 = new Date(yyyy2 + '-' + mm2 + '-' + dd2);
         return date1 - date2;
       });
+  },
+  updateBankAccountValue(state, accountValue) {    
+    var date = new Date(accountValue.date);
+    var dd = date.getDate();
+    var mm = date.getMonth()+1;  // As January is 0
+    var yyyy = date.getFullYear();
+
+    if (dd < 10) 
+      dd = '0' + dd;
+    if (mm < 10) 
+      mm = '0' + mm;
+
+    switch(state.dateFormat) {
+      case "DD-MM-YYYY":
+        accountValue.date = dd + '-' + mm + '-' + yyyy;
+        break;
+      case "DD/MM/YYYY":
+        accountValue.date = dd + '/' + mm + '/' + yyyy;
+        break;
+      case "MM-DD-YYYY":
+        accountValue.date = mm + '-' + dd + '-' + yyyy;
+        break;
+      case "MM/DD/YYYY":
+        accountValue.date = mm + '/' + dd + '/' + yyyy;
+        break;
+      case "YYYY-MM-DD":
+        accountValue.date = yyyy + '-' + mm + '-' + dd;
+        break;
+      case "YYYY/MM/DD":
+        accountValue.date = yyyy + '/' + mm + '/' + dd;
+        break;
+      default:
+        // leave as is
+    }
+
+    var accountVals = state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
+    var valueId = accountValue.accountValueId;
+    for (var i = 0; i < accountVals.length; i++) {
+      if (accountVals[i].accountValueId === valueId) {
+        Vue.set(accountVals, i, accountValue)
+
+        //sort the Account Values
+        accountVals.sort(function(a, b) {
+          var date1 = new Date();
+          var date2 = new Date();
+          var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
+          dd1 = mm1 = yyyy1 = dd2 = mm2 = yyyy2 = '';
+          
+          switch(state.dateFormat) {
+            case "YYYY-MM-DD":
+            case "MM/DD/YYYY":
+              date1 = new Date(a.date);
+              date2 = new Date(b.date);
+              return date1 - date2;
+              break;
+            case "DD-MM-YYYY":
+            case "DD/MM/YYYY":
+              dd1 = a.date.slice(0,2)
+              mm1 = a.date.slice(3,5)
+              yyyy1 = a.date.slice(6,10)
+              dd2 = b.date.slice(0,2)
+              mm2 = b.date.slice(3,5)
+              yyyy2 = b.date.slice(6,10)
+              break;
+            case "MM-DD-YYYY":
+              mm1 = a.date.slice(0,2)
+              dd1 = a.date.slice(3,5)
+              yyyy1 = a.date.slice(6,10)
+              mm2 = b.date.slice(0,2)
+              dd2 = b.date.slice(3,5)
+              yyyy2 = b.date.slice(6,10)
+              break;
+            case "YYYY/MM/DD":
+              yyyy1 = a.date.slice(0,4)
+              mm1 = a.date.slice(5,7)
+              dd1 = a.date.slice(8,10)
+              yyyy2 = b.date.slice(0,4)
+              mm2 = b.date.slice(5,7)
+              dd2 = b.date.slice(8,10)
+              break;
+            default:
+              // do nothing
+          }
+          date1 = new Date(yyyy1 + '-' + mm1 + '-' + dd1);
+          date2 = new Date(yyyy2 + '-' + mm2 + '-' + dd2);
+          return date1 - date2;
+        });
+        break;
+      }
+    }
+  },
+  updateBankAccountValues(state, payload) {
+    // To Do
   },
   deleteValuesForBankAccount(state, accountId) {
     Vue.delete(state.bankAccountValues, accountId)
@@ -408,7 +484,7 @@ const actions = {
     },
 
     async deleteBankAccount({ commit, state, rootState, dispatch }, bankAccountId) {
-      console.log('bankAccountId for deletion= ' + bankAccountId)
+      console.log('bankAccountId for deletion: ' + bankAccountId)
 
       //sent mutation to graphql with bankAccountId to delete from db
       const axios = require("axios");
@@ -467,6 +543,9 @@ const actions = {
                     accountValueId  
                     date
                     value
+                    bankAccount {
+                      bankAccountId
+                    }
                   }
                 }
               }
@@ -475,7 +554,7 @@ const actions = {
               accountValue: {
                 date: accountValue.date,
                 value: accountValue.value,
-                bankAccountId: accountValue.accountId
+                bankAccountId: accountValue.bankAccountId
               }
             },
           }
@@ -483,8 +562,52 @@ const actions = {
         
         // get back details of new account from database and add to local store
         if (response.data.data.accountValue_mutations.addAccountValue != null) {       
-          commit('addBankAccountValue', 
-            {bankAccountId: accountValue.accountId, accountValue: response.data.data.accountValue_mutations.addAccountValue})
+          commit('addBankAccountValue', response.data.data.accountValue_mutations.addAccountValue)
+        }   
+      } catch (error) {
+          console.error(error); 
+      }
+    },
+
+    async updateBankAccountValue({ commit }, accountValue) {
+      console.log('account value to update:')
+      console.log(accountValue)
+
+      //sent mutation to graphql with accountValue to add to db
+      const axios = require("axios");
+      try {
+        var response = await axios({
+          method: "POST",
+          url: "/",
+          data: {
+            query: `                    
+              mutation ($accountValue: AccountValueInputType!){
+                accountValue_mutations {
+                  updateAccountValue(accountValue: $accountValue) {                    
+                    accountValueId  
+                    date
+                    value
+                    bankAccount {
+                      bankAccountId
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              accountValue: {
+                accountValueId: accountValue.accountValueId,
+                date: accountValue.date,
+                value: accountValue.value,
+                bankAccountId: accountValue.bankAccount.bankAccountId
+              }
+            },
+          }
+        });            
+        
+        // get back details of new account from database and add to local store
+        if (response.data.data.accountValue_mutations.updateAccountValue != null) {       
+          commit('updateBankAccountValue', response.data.data.accountValue_mutations.updateAccountValue)
         }   
       } catch (error) {
           console.error(error); 
@@ -492,7 +615,8 @@ const actions = {
     },
 
     updateBankAccountValues({ commit }, payload) {
-        commit('updateBankAccountValues', payload)
+        // Not implemented
+        // commit('updateBankAccountValues', payload)
     },
     sortBankAccountValues({ commit }, accountId) {
         commit('sortBankAccountValues', accountId)
@@ -555,61 +679,6 @@ const getters = {
   getBankAccountBalance: (state) => (accountId) => {
     try {
       var numOfValues = state.bankAccounts[accountId].accountValues.length;
-      // const accountValsArray = [...state.bankAccounts[accountId].accountValues];
-      // var accountValsSorted = accountValsArray.sort(function(a, b) {
-      //   var date1 = new Date();
-      //   var date2 = new Date();
-      //   var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
-      //   dd1 = mm1 = yyyy1 = dd2 = mm2 = yyyy2 = '';
-        
-      //   switch(state.dateFormat) {
-      //     case "YYYY-MM-DD":
-      //     case "MM/DD/YYYY":
-      //       date1 = new Date(a.date);
-      //       date2 = new Date(b.date);
-      //       console.log('date1: ' + date1)
-      //       console.log('date2: ' + date2)
-      //       return date1 - date2;
-      //       break;
-      //     case "DD-MM-YYYY":
-      //     case "DD/MM/YYYY":
-      //       dd1 = a.date.slice(0,2)
-      //       mm1 = a.date.slice(3,5)
-      //       yyyy1 = a.date.slice(6,10)
-      //       // dateA = new Date(yyyy + '-' + mm + '-' + dd);
-      //       dd2 = b.date.slice(0,2)
-      //       mm2 = b.date.slice(3,5)
-      //       yyyy2 = b.date.slice(6,10)
-      //       // dateB = new Date(yyyy + '-' + mm + '-' + dd);
-      //       break;
-      //     case "MM-DD-YYYY":
-      //       mm1 = a.date.slice(0,2)
-      //       dd1 = a.date.slice(3,5)
-      //       yyyy1 = a.date.slice(6,10)
-      //       // dateA = new Date(yyyy + '-' + mm + '-' + dd);
-      //       mm2 = b.date.slice(0,2)
-      //       dd2 = b.date.slice(3,5)
-      //       yyyy2 = b.date.slice(6,10)
-      //       // dateB = new Date(yyyy + '-' + mm + '-' + dd);
-      //       break;
-      //     case "YYYY/MM/DD":
-      //       yyyy1 = a.date.slice(0,4)
-      //       mm1 = a.date.slice(5,7)
-      //       dd1 = a.date.slice(8,10)
-      //       // dateA = new Date(yyyy + '-' + mm + '-' + dd);
-      //       yyyy2 = b.date.slice(0,4)
-      //       mm2 = b.date.slice(5,7)
-      //       dd2 = b.date.slice(8,10)
-      //       // dateB = new Date(yyyy + '-' + mm + '-' + dd);
-      //       break;
-      //     default:
-      //       // do nothing
-      //   }
-      //   date1 = new Date(yyyy1 + '-' + mm1 + '-' + dd1);
-      //   date2 = new Date(yyyy2 + '-' + mm2 + '-' + dd2);
-      //   return date1 - date2;
-      // });
-      // return accountValsSorted[ numOfValues - 1 ].value;
       return state.bankAccounts[accountId].accountValues[ numOfValues - 1 ].value;
     }
     catch (error) {

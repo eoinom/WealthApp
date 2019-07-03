@@ -305,6 +305,9 @@
                         accountValueId
                         date
                         value
+                        bankAccount {
+                          bankAccountId
+                        }
                       }
                     }
                   }
