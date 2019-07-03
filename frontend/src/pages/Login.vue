@@ -183,7 +183,7 @@
 
       onSubmitLogin () { 
         this.$q.loading.show({
-          // delay: 400 // ms
+          delay: 400, // ms
           message: 'Loading accounts<br/><span class="text-white">Hang on...</span>'
         })
         this.login(this.email, this.password).then(authorised => {          
@@ -197,12 +197,12 @@
               message: 'Welcome back ' + this.user().firstName + '!'
             });
 
-            // hiding in 3s
+            // hiding for 2s
             this.timer = setTimeout(() => {
               this.$q.loading.hide()
               this.timer = void 0
               this.$router.push('/accounts')
-            }, 3000)
+            }, 2000)
 
             // this.$router.push('/accounts')                                        
           }
