@@ -26,6 +26,7 @@ namespace backendDataAccess.Repositories
 
             addBankAccountAsync(bankAccount);
             _dbContext.SaveChanges();
+            _dbContext.Entry<BankAccount>(bankAccount).State = EntityState.Detached;
             return bankAccount;
         }
 
@@ -49,7 +50,7 @@ namespace backendDataAccess.Repositories
 
         public IEnumerable<BankAccount> GetAllForUser(int userId)
         {
-            return _dbContext.BankAccounts
+            return _dbContext.BankAccounts.AsNoTracking()
                 .Where(x => x.User.UserId == userId)
                 .Include(x => x.QuotedCurrency)
                 .Include(x => x.User)
@@ -58,7 +59,7 @@ namespace backendDataAccess.Repositories
 
         public BankAccount GetById(int id)
         {
-            return _dbContext.BankAccounts
+            return _dbContext.BankAccounts.AsNoTracking()
                 .Include(x => x.QuotedCurrency)
                 .Include(x => x.User)
                 .Include(x => x.AccountValues)
@@ -83,7 +84,12 @@ namespace backendDataAccess.Repositories
                 account.Institution = accountUpdates.Institution;
                 account.QuotedCurrency = accountUpdates.QuotedCurrency;
                 account.IsActive = accountUpdates.IsActive;
+
                 _dbContext.SaveChanges();
+
+                //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
+                //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
+                _dbContext.Entry<BankAccount>(account).State = EntityState.Detached;
             }
 
             return account;

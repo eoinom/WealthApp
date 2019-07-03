@@ -18,12 +18,12 @@ namespace backendDataAccess.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            return _dbContext.Users;
+            return _dbContext.Users.AsNoTracking();
         }
 
         public User GetById(int id)
         {
-            return _dbContext.Users
+            return _dbContext.Users.AsNoTracking()
                 .Include(x => x.Country)
                 .Include(x => x.DisplayCurrency)
                 .Include(x => x.BankAccounts)
@@ -43,12 +43,13 @@ namespace backendDataAccess.Repositories
 
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
+            _dbContext.Entry<User>(user).State = EntityState.Detached;
             return user;
         }
 
         public User CheckCredentials(string email, string password)
         {
-            return _dbContext.Users                
+            return _dbContext.Users.AsNoTracking()
                 .Include(x => x.Country)
                 .Include(x => x.DisplayCurrency)
                 .Include(x => x.BankAccounts)
