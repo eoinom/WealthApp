@@ -37,13 +37,10 @@ namespace backendDataAccess.Repositories
 
         public void Delete(int bankAccountId)
         {
-            //var bankAccount = new BankAccount() { BankAccountId = bankAccountId };
             var bankAccount = _dbContext.BankAccounts
                                 .Include(x => x.AccountValues)
                                 .SingleOrDefault(x => x.BankAccountId == bankAccountId);
-
-            //_dbContext.Remove<BankAccount>(bankAccount);
-
+            
             _dbContext.Remove(bankAccount);
             _dbContext.SaveChanges();
         }

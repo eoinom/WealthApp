@@ -10,7 +10,7 @@ namespace backendAPI.Mutations
     {
         public UserMutation(IUserRepository userRepository)
         {
-            Name = "AddUserMutation";
+            Name = "UserMutations";
 
             Field<UserType>(
                 "addUser",

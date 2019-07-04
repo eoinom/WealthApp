@@ -12,5 +12,7 @@ namespace backendDataAccess.Repositories.Contracts
         IEnumerable<AccountValue> GetAllForMortgageAccount(int accountId);
         AccountValue Add(AccountValue accountValue);
         AccountValue Update(AccountValue accountValue);
+        void DeleteById(int accountValueId);
+        void DeleteByIds(int[] accountValueIds);
     }
 }

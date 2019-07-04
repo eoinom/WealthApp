@@ -84,6 +84,27 @@ namespace backendDataAccess.Repositories
             return accountValue;
         }
 
+        public void DeleteById(int accountValueId)
+        {
+            var accountValue = _dbContext.AccountValues
+                                .SingleOrDefault(x => x.AccountValueId == accountValueId);
+
+            _dbContext.Remove(accountValue);
+            _dbContext.SaveChanges();
+        }
+
+        public void DeleteByIds(int[] accountValueIds)
+        {
+            foreach (var accountValueId in accountValueIds)
+            {
+                var accountValue = _dbContext.AccountValues
+                               .SingleOrDefault(x => x.AccountValueId == accountValueId);
+
+                _dbContext.Remove(accountValue);
+            }           
+            _dbContext.SaveChanges();
+        }
+
         public IEnumerable<AccountValue> GetAllForBankAccount(int bankAccountId)
         {
             return _dbContext.AccountValues.AsNoTracking()

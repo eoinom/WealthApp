@@ -239,7 +239,11 @@
             },
             persistent: true
           }).onOk(() => {
-            this.deleteBankAccountValues({ accountId: this.selectedAccountId(), valueIds: this.selectedValues }); 
+            var valueIds = [];
+            this.selectedValues.forEach(el => {
+              valueIds.push(el.accountValueId);
+            });
+            this.deleteBankAccountValues({ bankAccountId: this.selectedAccountId(), bankAccountValueIds: valueIds }); 
             this.selectedValues = [];
           })
         }
