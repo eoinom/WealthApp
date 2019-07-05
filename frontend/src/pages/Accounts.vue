@@ -437,7 +437,7 @@
       'add-account-value' : require('components/Accounts/Modals/AddAccountValue.vue').default
     },
 
-    mounted () {
+    mounted () {      
       this.updateSelectedAccountId( this.getInitialFirstBankAccountId() )
     }
   }
