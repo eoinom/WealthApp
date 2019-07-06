@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace backendData.Models
@@ -16,5 +17,6 @@ namespace backendData.Models
     [Required] public Currency QuotedCurrency { get; set; }
     [Required] public User User { get; set; }
     public Property MortgagedProperty { get; set; }
+    public virtual IEnumerable<AccountValue> BalancesOwing { get; set; }
   }
 }

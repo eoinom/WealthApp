@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace backendData.Models
@@ -15,5 +16,6 @@ namespace backendData.Models
     public bool IsActive { get; set; }
     [Required] public Currency QuotedCurrency { get; set; }
     [Required] public User User { get; set; }
+    public virtual IEnumerable<AccountValue> BalancesOwing { get; set; }
   }
 }
