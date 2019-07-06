@@ -1,7 +1,10 @@
 import Vue from 'vue'
+import index from './index'
 
-function resetState (state) {
-  Object.assign(state.state, state.getDefaultState())
+function resetState (state) {  
+  // https://stackoverflow.com/questions/42295340/how-to-clear-state-in-vuex-store
+  Object.assign(state, index.getDefaultState())
+  // Vuex.store.replaceState({})
 }
 
 function updateUser (state, user) {
