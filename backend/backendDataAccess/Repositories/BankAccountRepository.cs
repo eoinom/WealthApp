@@ -18,7 +18,10 @@ namespace backendDataAccess.Repositories
 
         public BankAccount Add(BankAccount bankAccount)
         {
-            User user = _dbContext.Users.SingleOrDefault(x => x.UserId == bankAccount.User.UserId);
+            User user = _dbContext.Users
+                            .Include(x => x.Country)
+                            .Include(x => x.DisplayCurrency)
+                            .SingleOrDefault(x => x.UserId == bankAccount.User.UserId);
             bankAccount.User = user;
 
             Currency currency = _dbContext.Currencies.SingleOrDefault(x => x.Code == bankAccount.QuotedCurrency.Code);
@@ -51,6 +54,9 @@ namespace backendDataAccess.Repositories
                 .Where(x => x.User.UserId == userId)
                 .Include(x => x.QuotedCurrency)
                 .Include(x => x.User)
+                    .ThenInclude(u => u.Country)
+                .Include(x => x.User)
+                    .ThenInclude(u => u.DisplayCurrency)
                 .Include(x => x.AccountValues);
         }
 
@@ -59,19 +65,29 @@ namespace backendDataAccess.Repositories
             return _dbContext.BankAccounts.AsNoTracking()
                 .Include(x => x.QuotedCurrency)
                 .Include(x => x.User)
+                    .ThenInclude(u => u.Country)
+                .Include(x => x.User)
+                    .ThenInclude(u => u.DisplayCurrency)
                 .Include(x => x.AccountValues)
                 .SingleOrDefault(x => x.BankAccountId == id);
         }
 
         public BankAccount Update(BankAccount accountUpdates)
         {
-            User user = _dbContext.Users.SingleOrDefault(x => x.UserId == accountUpdates.User.UserId);
-            accountUpdates.User = user;
+            //User user = _dbContext.Users.SingleOrDefault(x => x.UserId == accountUpdates.User.UserId);
+            //accountUpdates.User = user;
 
             Currency currency = _dbContext.Currencies.FirstOrDefault(x => x.Code == accountUpdates.QuotedCurrency.Code);
             accountUpdates.QuotedCurrency = currency;
             
-            var account = _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == accountUpdates.BankAccountId);
+            var account = _dbContext.BankAccounts
+                .Include(x => x.QuotedCurrency)
+                .Include(x => x.User)
+                    .ThenInclude(u => u.Country)
+                .Include(x => x.User)
+                    .ThenInclude(u => u.DisplayCurrency)
+                .Include(x => x.AccountValues)
+                .SingleOrDefault(x => x.BankAccountId == accountUpdates.BankAccountId);
 
             if (account != null)
             {

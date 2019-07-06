@@ -22,40 +22,39 @@ namespace backendAPI.Mutations
                     //var accountValue = context.GetArgument<AccountValue>("accountValue");
                     var accountValueArg = context.Arguments["accountValue"];
 
-                    AccountValue newAccountValue = new AccountValue()
-                    {
+                    AccountValue newAccountValue = new AccountValue() {
                         Date = (System.DateTime)JToken.FromObject(accountValueArg).SelectToken("date"),
                         Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
                     };
-
-                    BankAccount bankAccount = new BankAccount();
+                   
                     var bankAccountId = JToken.FromObject(accountValueArg).SelectToken("bankAccountId");
                     if (bankAccountId != null)
                     {
+                        BankAccount bankAccount = new BankAccount();
                         bankAccount.BankAccountId = (int)bankAccountId;
                         newAccountValue.BankAccount = bankAccount;
                     }
-
-                    CashAccount cashAccount = new CashAccount();
+                    
                     var cashAccountId = JToken.FromObject(accountValueArg).SelectToken("cashAccountId");
                     if (cashAccountId != null)
                     {
+                        CashAccount cashAccount = new CashAccount();
                         cashAccount.CashAccountId = (int)cashAccountId;
                         newAccountValue.CashAccount = cashAccount;
                     }
-
-                    LoanAccount loanAccount = new LoanAccount();
+                    
                     var loanAccountId = JToken.FromObject(accountValueArg).SelectToken("loanAccountId");
                     if (loanAccountId != null)
                     {
+                        LoanAccount loanAccount = new LoanAccount();
                         loanAccount.LoanAccountId = (int)loanAccountId;
                         newAccountValue.LoanAccount = loanAccount;
                     }
-
-                    MortgageAccount mortgageAccount = new MortgageAccount();
+                    
                     var mortgageAccountId = JToken.FromObject(accountValueArg).SelectToken("loanAccountId");
                     if (mortgageAccountId != null)
                     {
+                        MortgageAccount mortgageAccount = new MortgageAccount();
                         mortgageAccount.MortgageAccountId = (int)mortgageAccountId;
                         newAccountValue.MortgageAccount = mortgageAccount;
                     }

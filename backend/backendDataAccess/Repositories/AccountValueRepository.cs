@@ -20,25 +20,37 @@ namespace backendDataAccess.Repositories
         {
             if (accountValue.BankAccount != null)
             {
-                BankAccount bankAccount = _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
+                BankAccount bankAccount = _dbContext.BankAccounts
+                                            .Include(x => x.AccountValues)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
                 accountValue.BankAccount = bankAccount;
             }
 
             if (accountValue.CashAccount != null)
             {
-                CashAccount cashAccount = _dbContext.CashAccounts.SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
+                CashAccount cashAccount = _dbContext.CashAccounts
+                                            .Include(x => x.AccountValues)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
                 accountValue.CashAccount = cashAccount;
             }
 
             if (accountValue.LoanAccount != null)
             {
-                LoanAccount loanAccount = _dbContext.LoanAccounts.SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
+                LoanAccount loanAccount = _dbContext.LoanAccounts
+                                            .Include(x => x.BalancesOwing)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
                 accountValue.LoanAccount = loanAccount;
             }
 
             if (accountValue.MortgageAccount != null)
             {
-                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts.SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
+                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts
+                                            .Include(x => x.BalancesOwing)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
                 accountValue.MortgageAccount = mortgageAccount;
             }
 
@@ -52,25 +64,37 @@ namespace backendDataAccess.Repositories
         {
             if (accountValue.BankAccount != null)
             {
-                BankAccount bankAccount = _dbContext.BankAccounts.SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
+                BankAccount bankAccount = _dbContext.BankAccounts
+                                            .Include(x => x.AccountValues)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
                 accountValue.BankAccount = bankAccount;
             }
 
             if (accountValue.CashAccount != null)
             {
-                CashAccount cashAccount = _dbContext.CashAccounts.SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
+                CashAccount cashAccount = _dbContext.CashAccounts
+                                            .Include(x => x.AccountValues)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
                 accountValue.CashAccount = cashAccount;
             }
 
             if (accountValue.LoanAccount != null)
             {
-                LoanAccount loanAccount = _dbContext.LoanAccounts.SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
+                LoanAccount loanAccount = _dbContext.LoanAccounts
+                                            .Include(x => x.BalancesOwing)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
                 accountValue.LoanAccount = loanAccount;
             }
 
             if (accountValue.MortgageAccount != null)
             {
-                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts.SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
+                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts
+                                            .Include(x => x.BalancesOwing)
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
                 accountValue.MortgageAccount = mortgageAccount;
             }
 
@@ -86,9 +110,7 @@ namespace backendDataAccess.Repositories
 
         public void DeleteById(int accountValueId)
         {
-            var accountValue = _dbContext.AccountValues
-                                .SingleOrDefault(x => x.AccountValueId == accountValueId);
-
+            var accountValue = _dbContext.AccountValues.SingleOrDefault(x => x.AccountValueId == accountValueId);
             _dbContext.Remove(accountValue);
             _dbContext.SaveChanges();
         }
@@ -97,9 +119,7 @@ namespace backendDataAccess.Repositories
         {
             foreach (var accountValueId in accountValueIds)
             {
-                var accountValue = _dbContext.AccountValues
-                               .SingleOrDefault(x => x.AccountValueId == accountValueId);
-
+                var accountValue = _dbContext.AccountValues.SingleOrDefault(x => x.AccountValueId == accountValueId);
                 _dbContext.Remove(accountValue);
             }           
             _dbContext.SaveChanges();
