@@ -1,26 +1,19 @@
 import Vue from 'vue'
 
 function resetState (state) {
-  Object.assign(state, getDefaultState())
+  Object.assign(state.state, state.getDefaultState())
 }
 
 function updateUser (state, user) {
-  console.log('user: ')
-  console.log(user)
-  console.log('state: ')
-  console.log(state)
-  console.log('state.user: ')
-  console.log(state.user)
-
-  Object.assign(state.user, user)
+  Object.assign(state.state.user, user)
 }
 
 function updateAuth (state, authenticated) {
-  state.authenticated = authenticated
+  state.state.authenticated = authenticated
 }
 
 function addBankAccount (state, bankAccount) {
-  // first convert the date format of any Account Values to the user preferred format (state.dateFormat)
+  // first convert the date format of any Account Values to the user preferred format (state.state.dateFormat)
   if (bankAccount.hasOwnProperty('accountValues') && bankAccount.accountValues.length > 0) {
     
     // sort bankAccountValues
@@ -44,7 +37,7 @@ function addBankAccount (state, bankAccount) {
       if (mm < 10) 
       mm = '0' + mm;
       
-      switch(state.dateFormat) {
+      switch(state.state.dateFormat) {
         case "DD-MM-YYYY":
         a.date = dd + '-' + mm + '-' + yyyy;
         break;
@@ -70,28 +63,28 @@ function addBankAccount (state, bankAccount) {
   }
   
   // Now add the account and store the accountId in a sorted array
-  Vue.set(state.bankAccounts, bankAccount.bankAccountId, bankAccount)
-  Vue.set(state.bankAccountIds, state.bankAccountIds.length, bankAccount.bankAccountId)
-  state.bankAccountIds.sort(function(a, b){return a - b});
+  Vue.set(state.state.bankAccounts, bankAccount.bankAccountId, bankAccount)
+  Vue.set(state.state.bankAccountIds, state.state.bankAccountIds.length, bankAccount.bankAccountId)
+  state.state.bankAccountIds.sort(function(a, b){return a - b});
 }
 
 function updateBankAccount (state, bankAccount) {    
   var id = bankAccount.bankAccountId
-  Vue.set(state.bankAccounts[id], "accountName", bankAccount.accountName)
-  Vue.set(state.bankAccounts[id], "description", bankAccount.description)
-  Vue.set(state.bankAccounts[id], "institution", bankAccount.institution)
-  Vue.set(state.bankAccounts[id], "type", bankAccount.type)
-  Vue.set(state.bankAccounts[id], "isActive", bankAccount.isActive)
-  Vue.set(state.bankAccounts[id], "quotedCurrency", bankAccount.quotedCurrency)
+  Vue.set(state.state.bankAccounts[id], "accountName", bankAccount.accountName)
+  Vue.set(state.state.bankAccounts[id], "description", bankAccount.description)
+  Vue.set(state.state.bankAccounts[id], "institution", bankAccount.institution)
+  Vue.set(state.state.bankAccounts[id], "type", bankAccount.type)
+  Vue.set(state.state.bankAccounts[id], "isActive", bankAccount.isActive)
+  Vue.set(state.state.bankAccounts[id], "quotedCurrency", bankAccount.quotedCurrency)
 }
 
 function deleteBankAccount (state, bankAccountId) {     
-  Vue.delete(state.bankAccounts, bankAccountId)
+  Vue.delete(state.state.bankAccounts, bankAccountId)
   
-  // remove id from state.bankAccountIds array
-  for (var i=0; i < state.bankAccountIds.length; i++) {
-    if (state.bankAccountIds[i] === bankAccountId) {
-      Vue.delete(state.bankAccountIds, i)
+  // remove id from state.state.bankAccountIds array
+  for (var i=0; i < state.state.bankAccountIds.length; i++) {
+    if (state.state.bankAccountIds[i] === bankAccountId) {
+      Vue.delete(state.state.bankAccountIds, i)
       break
     }
   }
@@ -116,7 +109,7 @@ function addBankAccountValue (state, accountValue) {
   if (mm < 10) 
   mm = '0' + mm;
   
-  switch(state.dateFormat) {
+  switch(state.state.dateFormat) {
     case "DD-MM-YYYY":
     accountValue.date = dd + '-' + mm + '-' + yyyy;
     break;
@@ -138,7 +131,7 @@ function addBankAccountValue (state, accountValue) {
     default:
     // leave as is
   }
-  var accountVals = state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
+  var accountVals = state.state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
   Vue.set(accountVals, accountVals.length, accountValue)
   
   //sort the Account Values
@@ -148,7 +141,7 @@ function addBankAccountValue (state, accountValue) {
     var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
     dd1 = mm1 = yyyy1 = dd2 = mm2 = yyyy2 = '';
     
-    switch(state.dateFormat) {
+    switch(state.state.dateFormat) {
       case "YYYY-MM-DD":
       case "MM/DD/YYYY":
       date1 = new Date(a.date);
@@ -200,7 +193,7 @@ function updateBankAccountValue (state, accountValue) {
   if (mm < 10) 
   mm = '0' + mm;
   
-  switch(state.dateFormat) {
+  switch(state.state.dateFormat) {
     case "DD-MM-YYYY":
     accountValue.date = dd + '-' + mm + '-' + yyyy;
     break;
@@ -223,7 +216,7 @@ function updateBankAccountValue (state, accountValue) {
     // leave as is
   }
   
-  var accountVals = state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
+  var accountVals = state.state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
   var valueId = accountValue.accountValueId;
   for (var i = 0; i < accountVals.length; i++) {
     if (accountVals[i].accountValueId === valueId) {
@@ -236,7 +229,7 @@ function updateBankAccountValue (state, accountValue) {
         var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
         dd1 = mm1 = yyyy1 = dd2 = mm2 = yyyy2 = '';
         
-        switch(state.dateFormat) {
+        switch(state.state.dateFormat) {
           case "YYYY-MM-DD":
           case "MM/DD/YYYY":
           date1 = new Date(a.date);
@@ -285,11 +278,11 @@ function updateBankAccountValue (state, accountValue) {
 // }
 
 function deleteValuesForBankAccount (state, accountId) {
-  Vue.delete(state.bankAccountValues, accountId)
+  Vue.delete(state.state.bankAccountValues, accountId)
 }
 
 function deleteBankAccountValue (state, accountId, accountValueId) {
-  Vue.delete(state.bankAccountValues[accountId], accountValueId)
+  Vue.delete(state.state.bankAccountValues[accountId], accountValueId)
 }
 
 function deleteBankAccountValues (state, payload) {
@@ -298,7 +291,7 @@ function deleteBankAccountValues (state, payload) {
   for (var i = 0; i < Object.keys(payload.bankAccountValueIds).length; i++) {
     var valueId = payload.bankAccountValueIds[i];
     console.log('valueId:' + valueId);
-    var accValuesArr = state.bankAccounts[payload.bankAccountId].accountValues;
+    var accValuesArr = state.state.bankAccounts[payload.bankAccountId].accountValues;
     console.log('accValuesArr length:' + accValuesArr.length);
     for (var j = 0; j < accValuesArr.length; j++) {
       if (accValuesArr[j].accountValueId === valueId) {
@@ -310,7 +303,7 @@ function deleteBankAccountValues (state, payload) {
 }
 
 function sortBankAccountValues (state, accountId) {
-  state.bankAccounts[accountId].accountValues.sort(function(a, b) {
+  state.state.bankAccounts[accountId].accountValues.sort(function(a, b) {
     var dateA = new Date(a.date);
     var dateB = new Date(b.date);
     return dateA - dateB;
@@ -318,7 +311,7 @@ function sortBankAccountValues (state, accountId) {
 }
 
 function setInitialFirstBankAccountId (state, accountId) {
-  state.initialFirstBankAccountId = accountId
+  state.state.initialFirstBankAccountId = accountId
 }
 
 export {

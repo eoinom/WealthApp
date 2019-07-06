@@ -138,5 +138,4 @@ const state = getDefaultState()
 
 export default {
   state
-  // state: getDefaultState()
 }

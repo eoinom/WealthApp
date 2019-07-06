@@ -1,27 +1,30 @@
 
 const authenticated = state => {
-  return state.authenticated
+  return state.state.authenticated
 }
 
 const user = state => {
-  return state.user
+  console.log('state.state.user');
+  console.log(state.state.user);
+  
+  return state.state.user
 }
 
 const userFullName = state => {
-  return state.user.firstName + ' ' + state.user.lastName
+  return state.state.user.firstName + ' ' + state.state.user.lastName
 }
 
 const userEmail = state => {
-  return state.user.email
+  return state.state.user.email
 }
 
 const getInitialFirstBankAccountId = state => {
-  return Object.keys(state.bankAccounts)[1]
+  return Object.keys(state.state.bankAccounts)[1]
 }
 
 const bankAccounts = state => {
   var filtered = {}
-  Object.assign(filtered, state.bankAccounts)
+  Object.assign(filtered, state.state.bankAccounts)
   for (var key in filtered) {
     if (key == 0) {
       delete filtered[key];
@@ -31,25 +34,25 @@ const bankAccounts = state => {
 }
 
 const bankAccountById = state => (id) => {
-  return state.bankAccounts[id]
+  return state.state.bankAccounts[id]
 }
 
 const bankAccountName = state => (id) => {
-  var account = state.bankAccounts[id]
+  var account = state.state.bankAccounts[id]
   return account.accountName
 }
 
 const bankAccountValues = state => {
-  return state.bankAccountValues
+  return state.state.bankAccountValues
 }
 
 const bankAccountValueById = state => (id) => {
-  return state.bankAccountValues[id]
+  return state.state.bankAccountValues[id]
 }
 
 const bankAccountValuesByAccountId = state => (id) => {
-  if (state.bankAccounts[id].hasOwnProperty('accountValues')) {
-    return state.bankAccounts[id].accountValues
+  if (state.state.bankAccounts[id].hasOwnProperty('accountValues')) {
+    return state.state.bankAccounts[id].accountValues
   } 
   else {
     return []
@@ -58,8 +61,8 @@ const bankAccountValuesByAccountId = state => (id) => {
 
 const getBankAccountBalance = state => (accountId) => {
   try {
-    var numOfValues = state.bankAccounts[accountId].accountValues.length;
-    return state.bankAccounts[accountId].accountValues[ numOfValues - 1 ].value;
+    var numOfValues = state.state.bankAccounts[accountId].accountValues.length;
+    return state.state.bankAccounts[accountId].accountValues[ numOfValues - 1 ].value;
   }
   catch (error) {
     console.error(error); 
@@ -68,7 +71,7 @@ const getBankAccountBalance = state => (accountId) => {
 }
 
 const getDateFormat = state => {
-  return state.dateFormat
+  return state.state.dateFormat
 }
 
 export {
