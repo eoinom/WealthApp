@@ -63,7 +63,7 @@ async function addBankAccount ({ commit, state }, account) {
             institution: account.institution,
             isActive: account.isActive,                
             quotedCurrency: account.currencyCode,
-            userId: state.state.user.userId
+            userId: state.user.userId
           }
         },
       }
@@ -117,7 +117,7 @@ async function updateBankAccount ({ commit, state }, account) {
             institution: account.institution,
             isActive: account.isActive,                
             quotedCurrency: account.currencyCode,
-            userId: state.state.user.userId
+            userId: state.user.userId
           }
         },
       }
@@ -165,8 +165,8 @@ async function deleteBankAccount ({ commit, state, rootState, dispatch }, bankAc
   
   // update the selectedAccountId
   var newSelectedAccId = 0
-  if (state.state.bankAccountIds.length > 0) {
-    newSelectedAccId = state.state.bankAccountIds[0]
+  if (state.bankAccountIds.length > 0) {
+    newSelectedAccId = state.bankAccountIds[0]
   }
   var selectedId = rootState.accounts.selectedAccountId
   if (selectedId == bankAccountId) {

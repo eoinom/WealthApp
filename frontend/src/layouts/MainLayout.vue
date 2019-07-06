@@ -39,6 +39,7 @@
 
                   <q-btn
                     v-go-back=" '/login' "
+                    @click="logout"
                     color="primary"
                     label="Logout"
                     size="sm"
@@ -100,6 +101,7 @@
 
 <script>
   import { openURL } from 'quasar'
+  import { mapActions } from 'vuex'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -136,10 +138,11 @@
         ]
       }
     },
-    computed: {
+    computed: {      
       ...mapGetters('main', ['userFullName', 'userEmail'])
     },
     methods: {
+      ...mapActions('main', ['logout']),
       openURL
     }
   }
