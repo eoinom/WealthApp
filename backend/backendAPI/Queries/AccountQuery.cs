@@ -14,7 +14,7 @@ namespace backendAPI.Queries
                 resolve: context => accountRepository.GetAllForUser(context.GetArgument<int>("userId")));
 
             Field<AccountType>(
-                "bankAccount",
+                "account",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "accountId" }),
                 resolve: context => accountRepository.GetById(context.GetArgument<int>("accountId")));
         }

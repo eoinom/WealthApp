@@ -58,16 +58,15 @@ namespace backendAPI
             services.AddSingleton<Query>();
             services.AddSingleton<Mutation>();
 
-            services.AddSingleton<AccountValueType>();
-            services.AddSingleton<AccountValueInputType>();
-
-            services.AddSingleton<AccountValueQuery>();
-            services.AddSingleton<AccountValueMutation>();
-
             services.AddSingleton<AccountType>();
             services.AddSingleton<AccountInputType>();
             services.AddSingleton<AccountQuery>();
             services.AddSingleton<AccountMutation>();
+
+            services.AddSingleton<AccountValueType>();
+            services.AddSingleton<AccountValueInputType>();
+            services.AddSingleton<AccountValueQuery>();
+            services.AddSingleton<AccountValueMutation>();            
 
             services.AddSingleton<CountryType>();
             services.AddSingleton<CountryQuery>();
