@@ -55,7 +55,7 @@
     data() {
       return {
         accountToSubmit: {
-          bankAccountId: 0,
+          accountId: 0,
           accountName: '',          
           description: '',
           type: '',
@@ -71,7 +71,7 @@
     },
 
     methods: {
-      ...mapActions('accounts', ['updateBankAccount']),
+      ...mapActions('accounts', ['updateAccount']),
       submitForm() {
         this.$refs.modalAccountName.$refs.accountName.validate()
         if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
@@ -81,7 +81,7 @@
       submitAccount() {
         console.log('in submitAccount, this.accountToSubmit:')
         console.log(this.accountToSubmit)
-        this.updateBankAccount(this.accountToSubmit)
+        this.updateAccount(this.accountToSubmit)
         this.$emit('close')
       }
     },
@@ -99,7 +99,7 @@
 
     mounted() {
       // this.accountToSubmit = Object.assign({}, this.account) 
-      this.accountToSubmit.bankAccountId = this.account.bankAccountId
+      this.accountToSubmit.accountId = this.account.accountId
       this.accountToSubmit.accountName = this.account.accountName 
       this.accountToSubmit.description = this.account.description
       this.accountToSubmit.type = this.account.type

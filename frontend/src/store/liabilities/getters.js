@@ -1,11 +1,11 @@
 
-const getInitialFirstBankAccountId = state => {
-  return Object.keys(state.bankAccounts)[1]
+const getInitialFirstAccountId = state => {
+  return Object.keys(state.accounts)[1]
 }
 
-const bankAccounts = state => {
+const accounts = state => {
   var filtered = {}
-  Object.assign(filtered, state.bankAccounts)
+  Object.assign(filtered, state.accounts)
   for (var key in filtered) {
     if (key == 0) {
       delete filtered[key];
@@ -14,36 +14,36 @@ const bankAccounts = state => {
   return filtered
 }
 
-const bankAccountById = state => (id) => {
-  return state.bankAccounts[id]
+const accountById = state => (id) => {
+  return state.accounts[id]
 }
 
-const bankAccountName = state => (id) => {
-  var account = state.bankAccounts[id]
+const accountName = state => (id) => {
+  var account = state.accounts[id]
   return account.accountName
 }
 
-const bankAccountValues = state => {
-  return state.bankAccountValues
+const accountValues = state => {
+  return state.accountValues
 }
 
-const bankAccountValueById = state => (id) => {
-  return state.bankAccountValues[id]
+const accountValueById = state => (id) => {
+  return state.accountValues[id]
 }
 
-const bankAccountValuesByAccountId = state => (id) => {
-  if (state.bankAccounts[id].hasOwnProperty('accountValues')) {
-    return state.bankAccounts[id].accountValues
+const accountValuesByAccountId = state => (id) => {
+  if (state.accounts[id].hasOwnProperty('accountValues')) {
+    return state.accounts[id].accountValues
   } 
   else {
     return []
   }
 }
 
-const getBankAccountBalance = state => (accountId) => {
+const getAccountBalance = state => (accountId) => {
   try {
-    var numOfValues = state.bankAccounts[accountId].accountValues.length;
-    return state.bankAccounts[accountId].accountValues[ numOfValues - 1 ].value;
+    var numOfValues = state.accounts[accountId].accountValues.length;
+    return state.accounts[accountId].accountValues[ numOfValues - 1 ].value;
   }
   catch (error) {
     console.error(error); 
@@ -68,14 +68,14 @@ const tableColumns = state => {
 }
 
 export {
-  getInitialFirstBankAccountId,
-  bankAccounts,
-  bankAccountById,
-  bankAccountName,
-  bankAccountValues,
-  bankAccountValueById,
-  bankAccountValuesByAccountId,
-  getBankAccountBalance,
+  getInitialFirstAccountId,
+  accounts,
+  accountById,
+  accountName,
+  accountValues,
+  accountValueById,
+  accountValuesByAccountId,
+  getAccountBalance,
   liabilityTypes,
   selectedAccountId,
   selectedAccountCurrencySymbol,

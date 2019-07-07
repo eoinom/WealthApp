@@ -23,10 +23,10 @@
           class=""
           style="height: 540px; min-width: 400px; max-width: 600px;">
 
-          <template v-if="Object.keys(bankAccounts).length > 0">
+          <template v-if="Object.keys(accounts).length > 0">
             
             <account
-              v-for="(account, key) in bankAccounts"
+              v-for="(account, key) in accounts"
               :key="key"
               :account="account"
               :id="key"
@@ -44,7 +44,7 @@
           <!-- Account Values Table -->
           <q-table
             title="AccountValues"
-            :data="selectedBankAccountValues"
+            :data="selectedAccountValues"
             :columns="tableColumns()"
             row-key="date"            
             :filter="filter"
@@ -176,8 +176,8 @@
     },  
 
     methods: {           
-      ...mapGetters('accounts', ['getInitialFirstBankAccountId', 'selectedAccountId', 'tableColumns']),
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateBankAccountValue', 'deleteBankAccountValues']),
+      ...mapGetters('accounts', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues']),
 
       showPopupDate(row, col) {
         this.popupEditDate = row[col];
@@ -201,7 +201,7 @@
         // this.setLoading(true);
         const updatedRow = Object.assign({}, row);
         updatedRow[col] = val;
-        const res = this.updateBankAccountValue(updatedRow);
+        const res = this.updateAccountValue(updatedRow);
         res.then((response) => {
           // do nothing
         })
@@ -241,7 +241,7 @@
             this.selectedValues.forEach(el => {
               valueIds.push(el.accountValueId);
             });
-            this.deleteBankAccountValues({ bankAccountId: this.selectedAccountId(), bankAccountValueIds: valueIds }); 
+            this.deleteAccountValues({ accountId: this.selectedAccountId(), accountValueIds: valueIds }); 
             this.selectedValues = [];
           })
         }
@@ -252,9 +252,9 @@
         if (this.selectedValues.length === 0 )
           return ''
         else if (this.selectedValues.length === 1 )
-          return `1 record selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
+          return `1 record selected of ${this.accountValuesByAccountId( this.selectedAccountId() ).length}`
         else
-          return `${this.selectedValues.length} records selected of ${this.bankAccountValuesByAccountId( this.selectedAccountId() ).length}`
+          return `${this.selectedValues.length} records selected of ${this.accountValuesByAccountId( this.selectedAccountId() ).length}`
       },
 
       log: function(str) {
@@ -336,14 +336,14 @@
     },
 
     computed: {
-      ...mapGetters('accounts', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName']),
+      ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'accountName']),
       ...mapGetters('main', ['getDateFormat']),
 
       selectedAccountName() {
-        return this.bankAccountName( this.selectedAccountId() )
+        return this.accountName( this.selectedAccountId() )
       },
-      selectedBankAccountValues() {
-        var storeAccountVals = this.bankAccountValuesByAccountId(this.selectedAccountId());   // get array from store
+      selectedAccountValues() {
+        var storeAccountVals = this.accountValuesByAccountId(this.selectedAccountId());   // get array from store
         return storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // return a cloned array
       },
 
@@ -377,7 +377,7 @@
         }
       },
       series() {
-        var storeAccountVals = this.bankAccountValuesByAccountId(this.selectedAccountId());   // get array from store
+        var storeAccountVals = this.accountValuesByAccountId(this.selectedAccountId());   // get array from store
         var accountVals = storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // clone the array, ref:https://stackoverflow.com/questions/44837957/how-to-clone-a-vuex-array
 
         accountVals.forEach(obj => {
@@ -433,7 +433,7 @@
     },
 
     mounted () {      
-      this.updateSelectedAccountId( this.getInitialFirstBankAccountId() )
+      this.updateSelectedAccountId( this.getInitialFirstAccountId() )
     }
   }
 </script>

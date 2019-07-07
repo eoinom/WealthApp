@@ -14,7 +14,7 @@ const getDefaultState = () => {
     ],
     liabilities: {
       '0': {
-        bankAccountId: 0,
+        accountId: 0,
         accountName: '',
         description: '',
         institution: '',
@@ -30,8 +30,8 @@ const getDefaultState = () => {
             accountValueId: 0,
             date: '',
             value: 0.00,
-            bankAccount: {
-              bankAccountId: 0
+            account: {
+              accountId: 0
             }
           }
         ],

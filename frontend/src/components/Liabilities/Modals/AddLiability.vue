@@ -68,7 +68,7 @@
     },
 
     methods: {
-      ...mapActions('liabilities', ['addBankAccount']),   
+      ...mapActions('liabilities', ['addAccount']),   
 
       submitForm() {
         this.$refs.modalAccountName.$refs.accountName.validate()
@@ -77,7 +77,7 @@
         }
       },
       submitAccount() {
-        this.addBankAccount(this.accountToSubmit)
+        this.addAccount(this.accountToSubmit)
         this.$emit('close')
       }
     },

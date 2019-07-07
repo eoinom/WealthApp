@@ -5,7 +5,7 @@ function logout ({ commit }) {
 
 // login ({ commit }, payload) {
 //     commit('updateUser', payload.user)
-//     commit('initialiseBankAccounts', payload.bankAccounts)
+//     commit('initialiseAccounts', payload.accounts)
 //     commit('initialiseAccountValues', payload.accountValues)
 //     commit('updateAccountBalances')
 // }

@@ -45,7 +45,7 @@ import { constants } from 'crypto';
       ...mapGetters('accounts', ['selectedAccountCurrencySymbol'])
     },
     methods: {
-      ...mapActions('accounts', ['addBankAccountValue']),
+      ...mapActions('accounts', ['addAccountValue']),
       ...mapGetters('main', ['getDateFormat']),
       
       submitForm() {
@@ -59,7 +59,7 @@ import { constants } from 'crypto';
       submitAccountValue() {
         this.accountValueToSubmit.date = this.convertDateToIso(this.accountValueToSubmit.date)
         console.log(this.accountValueToSubmit)
-        this.addBankAccountValue(this.accountValueToSubmit)
+        this.addAccountValue(this.accountValueToSubmit)
         this.$emit('close')
       },
       getTodaysDate() {

@@ -14,7 +14,7 @@ const getDefaultState = () => {
       newsletterSub: false,
       country: {},
       displayCurrency: {},
-      bankAccounts: {}
+      acounts: {}
     }
   }
 }

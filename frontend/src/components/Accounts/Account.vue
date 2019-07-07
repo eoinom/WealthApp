@@ -1,7 +1,7 @@
 <template>
   <q-card               
     @click="
-      updateSelectedAccountId(account.bankAccountId);
+      updateSelectedAccountId(account.accountId);
       var symbol = getCurrencySymbol(account.quotedCurrency.nameShort);
       updateSelectedAccountCurrencySymbol(symbol);
       updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + account.quotedCurrency.code + ' ' + symbol + ')' } });
@@ -24,7 +24,7 @@
               color="cyan-2" 
               icon="edit" /> 
             <q-btn 
-              @click.stop="promptToDeleteAccount(account.bankAccountId)"
+              @click.stop="promptToDeleteAccount(account.accountId)"
               flat 
               round 
               dense
@@ -39,7 +39,7 @@
     <q-card-section>
       Type: {{ account.type }}
       <br />Currency: {{ account.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.bankAccountId) }}
+      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.accountId) }}
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -51,7 +51,7 @@
       <edit-account 
         @close="showEditAccount = false" 
         :account="account"
-        :accountId="account.bankAccountId" />
+        :accountId="account.accountId" />
     </q-dialog>
   </q-card>
 </template>
@@ -70,11 +70,11 @@
     },
 
     computed: {
-      ...mapGetters('accounts', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance', 'selectedAccountId']),
+      ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'getAccountBalance', 'selectedAccountId']),
     },
 
     methods: {
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteBankAccount']),      
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteAccount']),      
       promptToDeleteAccount(id) {
         this.$q.dialog({
           title: 'Confirm',
@@ -87,7 +87,7 @@
           },
           persistent: true
         }).onOk(() => {
-          this.deleteBankAccount(id)
+          this.deleteAccount(id)
         })
       },
       log: function(str) {
@@ -95,13 +95,13 @@
       },
       getAccountBalance: function (accountId) {
         try {
-          var numOfValues = this.bankAccountValuesByAccountId(accountId).length;
+          var numOfValues = this.accountValuesByAccountId(accountId).length;
           if (numOfValues == 0) {
             console.log('No account values for accountId: ' + accountId);
             return " No account values";
           }
           else {
-            return this.getBankAccountBalance(accountId).toFixed(2);
+            return this.getAccountBalance(accountId).toFixed(2);
           }          
         }
         catch (error) {

@@ -10,9 +10,9 @@ const getDefaultState = () => {
       'Investment', 
       'Other'
     ],
-    bankAccounts: {
+    accounts: {
       '0': {
-        bankAccountId: 0,
+        accountId: 0,
         accountName: '',
         description: '',
         institution: '',
@@ -28,16 +28,16 @@ const getDefaultState = () => {
             accountValueId: 0,
             date: '',
             value: 0.00,
-            bankAccount: {
-              bankAccountId: 0
+            account: {
+              accountId: 0
             }
           }
         ],
         // balance: 0.00  // Not implemented yet
       }
     },    
-    bankAccountIds: [],
-    initialFirstBankAccountId: 0,    
+    accountIds: [],
+    initialFirstaccountId: 0,    
     selectedAccountId: 0,
     selectedAccountCurrencySymbol: '€',    
     tableColumns: [

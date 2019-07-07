@@ -179,9 +179,9 @@
     },
     methods: {      
       ...mapActions('main', ['login', 'updateUser']),
-      ...mapActions('accounts', ['initialiseBankAccounts', 'updateBankAccountValues']),
+      ...mapActions('accounts', ['initialiseAccounts', 'updateAccountValues']),
       ...mapGetters('main', ['authenticated', 'user']),
-      ...mapGetters('accounts', ['bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
+      ...mapGetters('accounts', ['accounts', 'accountValues', 'accountValuesByAccountId']),
 
       onSubmitLogin () { 
         this.$q.loading.show({
@@ -291,8 +291,8 @@
                       nameShort
                       nameLong 
                     }
-                    bankAccounts {
-                      bankAccountId
+                    accounts {
+                      accountId
                       accountName
                       description      
                       type
@@ -307,8 +307,8 @@
                         accountValueId
                         date
                         value
-                        bankAccount {
-                          bankAccountId
+                        account {
+                          accountId
                         }
                       }
                     }
@@ -321,7 +321,7 @@
           
           if (response.data.data.user_queries.userLogin != null) {
             this.updateUser(response.data.data.user_queries.userLogin);
-            this.initialiseBankAccounts(response.data.data.user_queries.userLogin.bankAccounts);
+            this.initialiseAccounts(response.data.data.user_queries.userLogin.accounts);
 
             if (this.user() != null) {
               return true

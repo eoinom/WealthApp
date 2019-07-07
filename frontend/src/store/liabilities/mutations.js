@@ -7,13 +7,13 @@ function resetState (state) {
   // Vuex.store.replaceState({})
 }
 
-function addBankAccount (state, bankAccount) {
+function addAccount (state, account) {
   // first convert the date format of any Account Values to the user preferred format (state.dateFormat)
-  if (bankAccount.hasOwnProperty('accountValues') && bankAccount.accountValues.length > 0) {
+  if (account.hasOwnProperty('accountValues') && account.accountValues.length > 0) {
     
-    // sort bankAccountValues
-    if (bankAccount.accountValues.length > 1) {
-      var accountValsSorted = bankAccount.accountValues.sort(function(a, b) {
+    // sort accountValues
+    if (account.accountValues.length > 1) {
+      var accountValsSorted = account.accountValues.sort(function(a, b) {
         var date1 = new Date(a.date);
         var date2 = new Date(b.date);
         return date1 - date2;
@@ -21,7 +21,7 @@ function addBankAccount (state, bankAccount) {
     }
     
     //Change dates into user preferred format (this really should be done only in UI input/output)
-    bankAccount.accountValues.forEach(function(a) {     // ref: https://stackoverflow.com/questions/12482961/is-it-possible-to-change-values-of-the-array-when-doing-foreach-in-javascript
+    account.accountValues.forEach(function(a) {     // ref: https://stackoverflow.com/questions/12482961/is-it-possible-to-change-values-of-the-array-when-doing-foreach-in-javascript
       var date = new Date(a.date);
       var dd = date.getDate();
       var mm = date.getMonth()+1;  // As January is 0
@@ -58,42 +58,42 @@ function addBankAccount (state, bankAccount) {
   }
   
   // Now add the account and store the accountId in a sorted array
-  Vue.set(state.bankAccounts, bankAccount.bankAccountId, bankAccount)
-  Vue.set(state.bankAccountIds, state.bankAccountIds.length, bankAccount.bankAccountId)
-  state.bankAccountIds.sort(function(a, b){return a - b});
+  Vue.set(state.accounts, account.accountId, account)
+  Vue.set(state.accountIds, state.accountIds.length, account.accountId)
+  state.accountIds.sort(function(a, b){return a - b});
 }
 
-function updateBankAccount (state, bankAccount) {    
-  var id = bankAccount.bankAccountId
-  Vue.set(state.bankAccounts[id], "accountName", bankAccount.accountName)
-  Vue.set(state.bankAccounts[id], "description", bankAccount.description)
-  Vue.set(state.bankAccounts[id], "institution", bankAccount.institution)
-  Vue.set(state.bankAccounts[id], "type", bankAccount.type)
-  Vue.set(state.bankAccounts[id], "isActive", bankAccount.isActive)
-  Vue.set(state.bankAccounts[id], "quotedCurrency", bankAccount.quotedCurrency)
+function updateAccount (state, account) {    
+  var id = account.accountId
+  Vue.set(state.accounts[id], "accountName", account.accountName)
+  Vue.set(state.accounts[id], "description", account.description)
+  Vue.set(state.accounts[id], "institution", account.institution)
+  Vue.set(state.accounts[id], "type", account.type)
+  Vue.set(state.accounts[id], "isActive", account.isActive)
+  Vue.set(state.accounts[id], "quotedCurrency", account.quotedCurrency)
 }
 
-function deleteBankAccount (state, bankAccountId) {     
-  Vue.delete(state.bankAccounts, bankAccountId)
+function deleteAccount (state, accountId) {     
+  Vue.delete(state.accounts, accountId)
   
-  // remove id from state.bankAccountIds array
-  for (var i=0; i < state.bankAccountIds.length; i++) {
-    if (state.bankAccountIds[i] === bankAccountId) {
-      Vue.delete(state.bankAccountIds, i)
+  // remove id from state.accountIds array
+  for (var i=0; i < state.accountIds.length; i++) {
+    if (state.accountIds[i] === accountId) {
+      Vue.delete(state.accountIds, i)
       break
     }
   }
 }
 
-// function updateBankAccountBalance = (state, bankAccountId) {
+// function updateAccountBalance = (state, accountId) {
 //   // To do
 // }
 
-// function updateBankAccountBalances = (state) {
+// function updateAccountBalances = (state) {
 //   // To do
 // }
 
-function addBankAccountValue (state, accountValue) {
+function addAccountValue (state, accountValue) {
   var date = new Date(accountValue.date);
   var dd = date.getDate();
   var mm = date.getMonth()+1;  // As January is 0
@@ -126,7 +126,7 @@ function addBankAccountValue (state, accountValue) {
     default:
     // leave as is
   }
-  var accountVals = state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
+  var accountVals = state.accounts[accountValue.account.accountId].accountValues
   Vue.set(accountVals, accountVals.length, accountValue)
   
   //sort the Account Values
@@ -177,7 +177,7 @@ function addBankAccountValue (state, accountValue) {
   });
 }
 
-function updateBankAccountValue (state, accountValue) {    
+function updateAccountValue (state, accountValue) {    
   var date = new Date(accountValue.date);
   var dd = date.getDate();
   var mm = date.getMonth()+1;  // As January is 0
@@ -211,7 +211,7 @@ function updateBankAccountValue (state, accountValue) {
     // leave as is
   }
   
-  var accountVals = state.bankAccounts[accountValue.bankAccount.bankAccountId].accountValues
+  var accountVals = state.accounts[accountValue.account.accountId].accountValues
   var valueId = accountValue.accountValueId;
   for (var i = 0; i < accountVals.length; i++) {
     if (accountVals[i].accountValueId === valueId) {
@@ -268,25 +268,25 @@ function updateBankAccountValue (state, accountValue) {
   }
 }
 
-// function updateBankAccountValues = (state, payload) {
+// function updateAccountValues = (state, payload) {
 //   // To Do
 // }
 
-function deleteValuesForBankAccount (state, accountId) {
-  Vue.delete(state.bankAccountValues, accountId)
+function deleteValuesForAccount (state, accountId) {
+  Vue.delete(state.accountValues, accountId)
 }
 
-function deleteBankAccountValue (state, accountId, accountValueId) {
-  Vue.delete(state.bankAccountValues[accountId], accountValueId)
+function deleteAccountValue (state, accountId, accountValueId) {
+  Vue.delete(state.accountValues[accountId], accountValueId)
 }
 
-function deleteBankAccountValues (state, payload) {
-  console.log('deleteBankAccountValues mutation payload:')
+function deleteAccountValues (state, payload) {
+  console.log('deleteAccountValues mutation payload:')
   console.log(payload)
-  for (var i = 0; i < Object.keys(payload.bankAccountValueIds).length; i++) {
-    var valueId = payload.bankAccountValueIds[i];
+  for (var i = 0; i < Object.keys(payload.accountValueIds).length; i++) {
+    var valueId = payload.accountValueIds[i];
     console.log('valueId:' + valueId);
-    var accValuesArr = state.bankAccounts[payload.bankAccountId].accountValues;
+    var accValuesArr = state.accounts[payload.accountId].accountValues;
     console.log('accValuesArr length:' + accValuesArr.length);
     for (var j = 0; j < accValuesArr.length; j++) {
       if (accValuesArr[j].accountValueId === valueId) {
@@ -297,16 +297,16 @@ function deleteBankAccountValues (state, payload) {
   }
 }
 
-function sortBankAccountValues (state, accountId) {
-  state.bankAccounts[accountId].accountValues.sort(function(a, b) {
+function sortAccountValues (state, accountId) {
+  state.accounts[accountId].accountValues.sort(function(a, b) {
     var dateA = new Date(a.date);
     var dateB = new Date(b.date);
     return dateA - dateB;
   });    
 }
 
-function setInitialFirstBankAccountId (state, accountId) {
-  state.initialFirstBankAccountId = accountId
+function setInitialFirstaccountId (state, accountId) {
+  state.initialFirstaccountId = accountId
 }
 
 function updateSelectedAccountId(state, accountId) {
@@ -323,19 +323,19 @@ function updateTableColumn(state, payload) {
 
 export {
   resetState,
-  addBankAccount,
-  updateBankAccount,
-  deleteBankAccount,
-  // updateBankAccountBalance,
-  // updateBankAccountBalances,
-  addBankAccountValue,
-  updateBankAccountValue,
-  // updateBankAccountValues,
-  deleteValuesForBankAccount,
-  deleteBankAccountValue,
-  deleteBankAccountValues,
-  sortBankAccountValues,
-  setInitialFirstBankAccountId,
+  addAccount,
+  updateAccount,
+  deleteAccount,
+  // updateAccountBalance,
+  // updateAccountBalances,
+  addAccountValue,
+  updateAccountValue,
+  // updateAccountValues,
+  deleteValuesForAccount,
+  deleteAccountValue,
+  deleteAccountValues,
+  sortAccountValues,
+  setInitialFirstaccountId,
   updateSelectedAccountId,
   updateSelectedAccountCurrencySymbol,
   updateTableColumn

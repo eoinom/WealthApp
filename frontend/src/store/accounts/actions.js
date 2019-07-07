@@ -3,17 +3,17 @@ function resetState ({ commit }) {
   commit('resetState')
 };
 
-function initialiseBankAccounts ({ commit }, bankAccounts) {
-  for (var i = 0; i < Object.keys(bankAccounts).length; i++) {
-    var id = bankAccounts[i].bankAccountId
+function initialiseAccounts ({ commit }, accounts) {
+  for (var i = 0; i < Object.keys(accounts).length; i++) {
+    var id = accounts[i].accountId
     if (i === 0) {
-      commit('setInitialFirstBankAccountId', id)
+      commit('setInitialFirstaccountId', id)
     }
-    commit('addBankAccount', bankAccounts[i])
+    commit('addAccount', accounts[i])
   } 
 };
 
-async function addBankAccount ({ commit, state }, account) {
+async function addAccount ({ commit, state }, account) {
   console.log('account to add:')
   console.log(account)
   
@@ -25,10 +25,10 @@ async function addBankAccount ({ commit, state }, account) {
       url: "/",
       data: {
         query: `                    
-        mutation ($account: BankAccountInputType!){
-          bankAccount_mutations {
-            addBankAccount(bankAccount: $account) {
-              bankAccountId
+        mutation ($account: AccountInputType!){
+          account_mutations {
+            addAccount(account: $account) {
+              accountId
               accountName
               description
               type
@@ -58,15 +58,15 @@ async function addBankAccount ({ commit, state }, account) {
     });            
     
     // get back details of new account from database and add to local store
-    if (response.data.data.bankAccount_mutations.addBankAccount != null) {          
-      commit('addBankAccount', response.data.data.bankAccount_mutations.addBankAccount)
+    if (response.data.data.account_mutations.addAccount != null) {          
+      commit('addAccount', response.data.data.account_mutations.addAccount)
     }   
   } catch (error) {
     console.error(error); 
   }
 };
 
-async function updateBankAccount ({ commit, state }, account) {
+async function updateAccount ({ commit, state }, account) {
   console.log('account to update:')
   console.log(account)
 
@@ -78,10 +78,10 @@ async function updateBankAccount ({ commit, state }, account) {
       url: "/",
       data: {
         query: `                    
-        mutation ($account: BankAccountInputType!){
-          bankAccount_mutations {
-            updateBankAccount(bankAccount: $account) {
-              bankAccountId
+        mutation ($account: AccountInputType!){
+          account_mutations {
+            updateAccount(account: $account) {
+              accountId
               accountName
               description
               type
@@ -98,7 +98,7 @@ async function updateBankAccount ({ commit, state }, account) {
         `,
         variables: {
           account: {
-            bankAccountId: account.bankAccountId,
+            accountId: account.accountId,
             accountName: account.accountName,
             description: account.description,
             type: account.type,
@@ -112,18 +112,18 @@ async function updateBankAccount ({ commit, state }, account) {
     });            
     
     // get back details of amended account from database and update in local store
-    if (response.data.data.bankAccount_mutations.updateBankAccount != null) {          
-      commit('updateBankAccount', response.data.data.bankAccount_mutations.updateBankAccount)
+    if (response.data.data.account_mutations.updateAccount != null) {          
+      commit('updateAccount', response.data.data.account_mutations.updateAccount)
     }   
   } catch (error) {
     console.error(error); 
   }
 }
 
-async function deleteBankAccount ({ commit, state, rootState, dispatch }, bankAccountId) {
-  console.log('bankAccountId for deletion: ' + bankAccountId)
+async function deleteAccount ({ commit, state, rootState, dispatch }, accountId) {
+  console.log('accountId for deletion: ' + accountId)
   
-  //send mutation to graphql with bankAccountId to delete from db
+  //send mutation to graphql with accountId to delete from db
   const axios = require("axios");
   try {
     var response = await axios({
@@ -131,21 +131,21 @@ async function deleteBankAccount ({ commit, state, rootState, dispatch }, bankAc
       url: "/",
       data: {
         query: `                    
-        mutation ($bankAccountId: ID!){
-          bankAccount_mutations {
-            deleteBankAccount(bankAccountId: $bankAccountId)
+        mutation ($accountId: ID!){
+          account_mutations {
+            deleteAccount(accountId: $accountId)
           }
         }
         `,
         variables: {
-          bankAccountId: bankAccountId
+          accountId: accountId
         },
       }
     });            
     
     // if delete from db was successful then delete also from local store
-    if (response.data.data.bankAccount_mutations.deleteBankAccount != null) {          
-      commit('deleteBankAccount', bankAccountId)
+    if (response.data.data.account_mutations.deleteAccount != null) {          
+      commit('deleteAccount', accountId)
     }   
   } catch (error) {
     console.error(error); 
@@ -153,16 +153,16 @@ async function deleteBankAccount ({ commit, state, rootState, dispatch }, bankAc
   
   // update the selectedAccountId
   var newSelectedAccId = 0
-  if (state.bankAccountIds.length > 0) {
-    newSelectedAccId = state.bankAccountIds[0]
+  if (state.accountIds.length > 0) {
+    newSelectedAccId = state.accountIds[0]
   }
   var selectedId = rootState.accounts.selectedAccountId
-  if (selectedId == bankAccountId) {
+  if (selectedId == accountId) {
     dispatch('accounts/updateSelectedAccountId', newSelectedAccId, {root:true})
   }
 }
 
-async function addBankAccountValue ({ commit }, accountValue) {
+async function addAccountValue ({ commit }, accountValue) {
   console.log('account value to add:')
   console.log(accountValue)
   
@@ -180,8 +180,8 @@ async function addBankAccountValue ({ commit }, accountValue) {
               accountValueId  
               date
               value
-              bankAccount {
-                bankAccountId
+              account {
+                accountId
               }
             }
           }
@@ -191,7 +191,7 @@ async function addBankAccountValue ({ commit }, accountValue) {
           accountValue: {
             date: accountValue.date,
             value: accountValue.value,
-            bankAccountId: accountValue.accountId
+            accountId: accountValue.accountId
           }
         },
       }
@@ -199,14 +199,14 @@ async function addBankAccountValue ({ commit }, accountValue) {
     
     // get back details of new account from database and add to local store
     if (response.data.data.accountValue_mutations.addAccountValue != null) {       
-      commit('addBankAccountValue', response.data.data.accountValue_mutations.addAccountValue)
+      commit('addAccountValue', response.data.data.accountValue_mutations.addAccountValue)
     }   
   } catch (error) {
     console.error(error); 
   }
 }
 
-async function updateBankAccountValue ({ commit }, accountValue) {
+async function updateAccountValue ({ commit }, accountValue) {
   console.log('account value to update:')
   console.log(accountValue)
   
@@ -224,8 +224,8 @@ async function updateBankAccountValue ({ commit }, accountValue) {
               accountValueId  
               date
               value
-              bankAccount {
-                bankAccountId
+              account {
+                accountId
               }
             }
           }
@@ -236,7 +236,7 @@ async function updateBankAccountValue ({ commit }, accountValue) {
             accountValueId: accountValue.accountValueId,
             date: accountValue.date,
             value: accountValue.value,
-            bankAccountId: accountValue.bankAccount.bankAccountId
+            accountId: accountValue.account.accountId
           }
         },
       }
@@ -244,24 +244,24 @@ async function updateBankAccountValue ({ commit }, accountValue) {
     
     // get back details of new account from database and add to local store
     if (response.data.data.accountValue_mutations.updateAccountValue != null) {       
-      commit('updateBankAccountValue', response.data.data.accountValue_mutations.updateAccountValue)
+      commit('updateAccountValue', response.data.data.accountValue_mutations.updateAccountValue)
     }   
   } catch (error) {
     console.error(error); 
   }
 }
 
-// function updateBankAccountValues ({ commit }, payload) {
+// function updateAccountValues ({ commit }, payload) {
 //   // Not implemented
-//   // commit('updateBankAccountValues', payload)
+//   // commit('updateAccountValues', payload)
 // }
 
-function sortBankAccountValues ({ commit }, accountId) {
-  commit('sortBankAccountValues', accountId)
+function sortAccountValues ({ commit }, accountId) {
+  commit('sortAccountValues', accountId)
 };
 
-async function deleteBankAccountValues ({ commit }, payload) {
-  console.log('deleteBankAccountValues actions payload:')
+async function deleteAccountValues ({ commit }, payload) {
+  console.log('deleteAccountValues actions payload:')
   console.log(payload)
   
   // send mutation to graphql with array of AccountValueIds to delete from db
@@ -279,14 +279,14 @@ async function deleteBankAccountValues ({ commit }, payload) {
         }
         `,
         variables: {
-          accountValueIds: payload.bankAccountValueIds
+          accountValueIds: payload.accountValueIds
         },
       }
     });            
     
     // if delete from db was successful then delete also from local store
     if (response.data.data.accountValue_mutations.deleteAccountValuesByIds != null) {       
-      commit('deleteBankAccountValues', payload)
+      commit('deleteAccountValues', payload)
     }   
   } catch (error) {
     console.error(error); 
@@ -307,15 +307,15 @@ function updateTableColumn({ commit }, payload) {
 
 export {
   resetState,
-  initialiseBankAccounts,
-  addBankAccount,
-  updateBankAccount,
-  deleteBankAccount,
-  addBankAccountValue,
-  updateBankAccountValue,
-  // updateBankAccountValues,
-  sortBankAccountValues,
-  deleteBankAccountValues,
+  initialiseAccounts,
+  addAccount,
+  updateAccount,
+  deleteAccount,
+  addAccountValue,
+  updateAccountValue,
+  // updateAccountValues,
+  sortAccountValues,
+  deleteAccountValues,
   updateSelectedAccountId,
   updateSelectedAccountCurrencySymbol,
   updateTableColumn
