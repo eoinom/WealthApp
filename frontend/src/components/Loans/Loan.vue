@@ -17,7 +17,7 @@
         <div class="col-3">
           <div class="float-right">
             <q-btn 
-              @click.stop="showEditLiability = true"
+              @click.stop="showEditLoan = true"
               flat 
               round 
               dense
@@ -47,9 +47,9 @@
       {{ account.description }}
     </q-tooltip>
 
-    <q-dialog v-model="showEditLiability">
-      <edit-liability 
-        @close="showEditLiability = false" 
+    <q-dialog v-model="showEditLoan">
+      <edit-loan 
+        @close="showEditLoan = false" 
         :account="account"
         :accountId="account.accountId" />
     </q-dialog>
@@ -64,16 +64,16 @@
     props: ['account'],
     data() {
       return {
-        showEditLiability: false
+        showEditLoan: false
       }      
     },
 
     computed: {
-      ...mapGetters('liabilities', ['accounts', 'accountValuesByAccountId', 'getAccountBalance', 'selectedAccountId']),
+      ...mapGetters('loans', ['accounts', 'accountValuesByAccountId', 'getAccountBalance', 'selectedAccountId']),
     },
     
     methods: {
-      ...mapActions('liabilities', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteAccount']),
+      ...mapActions('loans', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteAccount']),
 
       promptToDeleteAccount(id) {
         this.$q.dialog({
@@ -134,7 +134,7 @@
     },
 
     components: {
-      'edit-liability': require('components/Liabilities/Modals/EditLiability.vue').default
+      'edit-loan': require('components/Loans/Modals/EditLoan.vue').default
     }
   }
 </script>

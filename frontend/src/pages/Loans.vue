@@ -3,14 +3,14 @@
 
     <div class="row justify-center q-ma-md">
       <div class="col-6 q-mb-lg q-mr-sm">
-        <h5 class="q-my-md">Liabilities</h5>
+        <h5 class="q-my-md">Loans</h5>
 
         <div class="q-mb-sm">
           <q-btn
-            @click="showAddLiability = true"
+            @click="showAddLoan = true"
             color="negative"
             icon="add"
-            label="Add Liability"
+            label="Add Loan"
             class="q-mb-sm"
             rounded
           />
@@ -25,20 +25,20 @@
 
           <template v-if="Object.keys(accounts).length > 0">
             
-            <liability
+            <loan
               v-for="(account, key) in accounts"
               :key="key"
               :account="account"
               :id="key"
               class="q-mb-md q-mr-sm">
-            </liability>
+            </loan>
 
           </template>
         </q-scroll-area>
       </div>
 
       <div class="col-auto q-ml-sm">
-        <h5 class="q-my-md">Liability Values</h5>
+        <h5 class="q-my-md">Loan Values</h5>
         
         <div class="q-pa-md">
           <!-- Account Values Table -->
@@ -81,7 +81,7 @@
                   class="q-ml-md q-my-md"
                   color="primary" 
                   :disable="loading" 
-                  @click="showAddLiabilityValue = true" 
+                  @click="showAddLoanValue = true" 
                 />
               </div>
             </template>            
@@ -139,14 +139,14 @@
       </div>
     </div>
 
-    <q-dialog v-model="showAddLiability">
-      <add-liability @close="showAddLiability = false" />
+    <q-dialog v-model="showAddLoan">
+      <add-loan @close="showAddLoan = false" />
     </q-dialog>
 
-    <q-dialog v-model="showAddLiabilityValue">
-      <add-liability-value 
+    <q-dialog v-model="showAddLoanValue">
+      <add-loan-value 
         :accountId="selectedAccountId()"
-        @close="showAddLiabilityValue = false" />
+        @close="showAddLoanValue = false" />
     </q-dialog>
   </q-page>
 </template>
@@ -160,8 +160,8 @@
     name: 'UserAccounts',
     data () {
       return {
-        showAddLiability: false,
-        showAddLiabilityValue: false,
+        showAddLoan: false,
+        showAddLoanValue: false,
         selectedValues: [],         // selected rows in table
         popupEditDate: '2019-01-31',
         popupEditValue: 0,
@@ -176,8 +176,8 @@
     },  
 
     methods: {           
-      ...mapGetters('liabilities', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
-      ...mapActions('liabilities', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues']),
+      ...mapGetters('loans', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
+      ...mapActions('loans', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues']),
 
       showPopupDate(row, col) {
         this.popupEditDate = row[col];
@@ -336,7 +336,7 @@
     },
 
     computed: {
-      ...mapGetters('liabilities', ['accounts', 'accountValuesByAccountId', 'accountName']),
+      ...mapGetters('loans', ['accounts', 'accountValuesByAccountId', 'accountName']),
       ...mapGetters('main', ['getDateFormat']),
 
       selectedAccountName() {
@@ -433,9 +433,9 @@
     },
 
     components : {
-      'liability' : require('components/Liabilities/Liability.vue').default,
-      'add-liability' : require('components/Liabilities/Modals/AddLiability.vue').default,
-      'add-liability-value' : require('components/Liabilities/Modals/AddLiabilityValue.vue').default
+      'loan' : require('components/Loans/Loan.vue').default,
+      'add-loan' : require('components/Loans/Modals/AddLoan.vue').default,
+      'add-loan-value' : require('components/Loans/Modals/AddLoanValue.vue').default
     },
 
     mounted () {      

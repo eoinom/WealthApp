@@ -4,15 +4,14 @@ import * as actions from './actions'
 
 const getDefaultState = () => {
   return { 
-    liabilityTypes: [
-      'Credit Card', 
+    loanTypes: [
       'Mortgage',
       'Personal Loan', 
       'Student Loan',
       'Car Loan',         
-      'Other'
+      'Other Loan'
     ],
-    liabilities: {
+    loans: {
       '0': {
         accountId: 0,
         accountName: '',
@@ -38,10 +37,10 @@ const getDefaultState = () => {
         // balance: 0.00  // Not implemented yet
       }
     },    
-    liabilityIds: [],
-    initialFirstLiabilityId: 0,    
-    selectedLiabilityId: 0,
-    selectedLiabilityCurrencySymbol: '€',    
+    loanIds: [],
+    initialFirstLoanId: 0,    
+    selectedLoanId: 0,
+    selectedLoanCurrencySymbol: '€',    
     tableColumns: [
       {
         name: 'date',

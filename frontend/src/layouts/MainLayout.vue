@@ -120,20 +120,25 @@
             icon: 'account_balance_wallet',
             to: '/accounts'
           },
+          // {
+          //   label: 'Crypto',
+          //   icon: 'fab fa-bitcoin',
+          //   to: '/crypto'
+          // },
+          // {
+          //   label: 'Property',
+          //   icon: 'home',
+          //   to: '/properties'
+          // },
           {
-            label: 'Crypto',
-            icon: 'fab fa-bitcoin',
-            to: '/crypto'
-          },
-          {
-            label: 'Property',
-            icon: 'home',
-            to: '/properties'
-          },
-          {
-            label: 'Liabilities',
+            label: 'Credit Cards',
             icon: 'credit_card',
-            to: '/liabilities'
+            to: '/loans'
+          },
+          {
+            label: 'Loans',
+            icon: 'fas fa-hand-holding-usd',
+            to: '/loans'
           }
         ]
       }

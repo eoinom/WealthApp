@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 import main from './main'
 import accounts from './accounts'
-import liabilities from './liabilities'
+import loans from './loans'
 
 Vue.use(Vuex)
 
@@ -18,7 +18,7 @@ export default function (/* { ssrContext } */) {
     modules: {
       main,
       accounts,
-      liabilities 
+      loans 
     },
 
     // enable strict mode (adds overhead!)

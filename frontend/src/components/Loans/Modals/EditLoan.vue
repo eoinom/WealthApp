@@ -1,25 +1,25 @@
 <template>
   <q-card>
     
-    <modal-header>Add Liability</modal-header>
+    <modal-header>Edit Loan</modal-header>
 
     <form @submit.prevent="submitForm">
       <q-card-section>
 
         <modal-name 
           :accountName.sync="accountToSubmit.accountName" 
-          label="Liability name"
+          label="Loan name"
           ref="modalAccountName"/>  
 
         <modal-description 
           :description.sync="accountToSubmit.description" 
-          label="Liability description"
+          label="Loan description"
           ref="modalAccountDescription"/>    
 
         <modal-type 
           :type.sync="accountToSubmit.type" 
-          label="Liability type"
-          :options="accountTypes"
+          label="Loan type"
+          :options="loanTypes"
           ref="modalAccountType"/>   
 
         <modal-institution 
@@ -33,7 +33,7 @@
 
         <modal-active
           :isActive.sync="accountToSubmit.isActive" 
-          label="Liability active?" 
+          label="Loan active?" 
           ref="modalAccountIsActive"/>  
 
       </q-card-section>
@@ -50,9 +50,12 @@
   import { mapGetters } from 'vuex'
 
   export default {
+    props: ['account', 'accountId'],
+
     data() {
       return {
         accountToSubmit: {
+          accountId: 0,
           accountName: '',          
           description: '',
           type: '',
@@ -64,11 +67,11 @@
     },
 
     computed: {
-      ...mapGetters('liabilities', ['accountTypes'])
+      ...mapGetters('loans', ['loanTypes'])
     },
 
     methods: {
-      ...mapActions('liabilities', ['addAccount']),   
+      ...mapActions('loans', ['updateAccount']),
 
       submitForm() {
         this.$refs.modalAccountName.$refs.accountName.validate()
@@ -77,7 +80,9 @@
         }
       },
       submitAccount() {
-        this.addAccount(this.accountToSubmit)
+        console.log('in submitAccount, this.accountToSubmit:')
+        console.log(this.accountToSubmit)
+        this.updateAccount(this.accountToSubmit)
         this.$emit('close')
       }
     },
@@ -91,7 +96,18 @@
       'modal-currency': require('components/SharedModals/ModalCurrency.vue').default,
       'modal-active': require('components/SharedModals/ModalActive.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default
-    }      
+    },
+
+    mounted() {
+      // this.accountToSubmit = Object.assign({}, this.account) 
+      this.accountToSubmit.accountId = this.account.accountId
+      this.accountToSubmit.accountName = this.account.accountName 
+      this.accountToSubmit.description = this.account.description
+      this.accountToSubmit.type = this.account.type
+      this.accountToSubmit.institution = this.account.institution
+      this.accountToSubmit.currencyCode = this.account.quotedCurrency.code
+      this.accountToSubmit.isActive = this.account.isActive
+    } 
   }
 </script>
 

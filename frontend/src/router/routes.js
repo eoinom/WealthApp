@@ -33,8 +33,8 @@ const routes = [
         component: () => import('pages/Properties.vue') 
       },
       { 
-        path: '/liabilities', 
-        component: () => import('pages/Liabilities.vue') 
+        path: '/loans', 
+        component: () => import('pages/Loans.vue') 
       }
     ]
   }

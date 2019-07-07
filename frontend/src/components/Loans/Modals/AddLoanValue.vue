@@ -1,7 +1,7 @@
 <template>
   <q-card>
     
-    <modal-header>Add Liability Value</modal-header>
+    <modal-header>Add Loan Value</modal-header>
 
     <form @submit.prevent="submitForm">
       <q-card-section>
@@ -43,11 +43,11 @@ import { constants } from 'crypto';
     },
 
     computed: {
-      ...mapGetters('liabilities', ['selectedAccountCurrencySymbol'])
+      ...mapGetters('loans', ['selectedAccountCurrencySymbol'])
     },
 
     methods: {
-      ...mapActions('liabilities', ['addAccountValue']),
+      ...mapActions('loans', ['addAccountValue']),
       ...mapGetters('main', ['getDateFormat']),
 
       submitForm() {

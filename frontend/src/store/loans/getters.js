@@ -51,8 +51,8 @@ const getAccountBalance = state => (accountId) => {
   }   
 }
 
-const liabilityTypes = state => {
-  return state.liabilityTypes
+const loanTypes = state => {
+  return state.loanTypes
 }
 
 const selectedAccountId = state => {
@@ -76,7 +76,7 @@ export {
   accountValueById,
   accountValuesByAccountId,
   getAccountBalance,
-  liabilityTypes,
+  loanTypes,
   selectedAccountId,
   selectedAccountCurrencySymbol,
   tableColumns
