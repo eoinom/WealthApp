@@ -2,20 +2,20 @@
   <div class="row q-mb-sm">        
     <q-input 
       outlined 
-      :value="institution" 
-      @input="$emit('update:institution', $event)"
+      :value="description" 
+      @input="$emit('update:description', $event)"
       :rules="[val => !!val || 'Field is required']"
-      ref="institution"
-      label="Institution" 
+      ref="description"
+      :label="label" 
       class="col"
-      clearable 
+      clearable
       autogrow />
   </div>    
 </template>
 
 <script>
   export default {
-      props: ['institution']
+      props: ['description', 'label']
   }
 </script>
 

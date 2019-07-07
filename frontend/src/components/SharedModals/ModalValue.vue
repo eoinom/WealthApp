@@ -20,19 +20,19 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['accountValue'],
+    props: ['accountValue', 'currencySymbol'],
     data () {
       return {
         accountVal: this.accountValue,
-        currencySymbol: '€'
+        // currencySymbol: '€'
       }
     },
-    computed: {
-      ...mapGetters('accounts', ['selectedAccountCurrencySymbol']),
-    },
-    mounted() {
-      this.currencySymbol = this.selectedAccountCurrencySymbol
-    },
+    // computed: {
+    //   ...mapGetters('accounts', ['selectedAccountCurrencySymbol']),
+    // },
+    // mounted() {
+    //   this.currencySymbol = this.selectedAccountCurrencySymbol
+    // },
   }
 
   

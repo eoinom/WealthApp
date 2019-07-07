@@ -6,13 +6,14 @@
     <form @submit.prevent="submitForm">
       <q-card-section>
 
-        <modal-account-value-date 
-          :accountValueDate.sync="accountValueToSubmit.date"           
+        <modal-value-date 
+          :valueDate.sync="accountValueToSubmit.date"           
           ref="modalAccountValueDate"
           />  
 
-        <modal-account-value 
-          :accountValue.sync="accountValueToSubmit.value" 
+        <modal-value 
+          :value.sync="accountValueToSubmit.value" 
+          :currencySymbol="selectedAccountCurrencySymbol"
           ref="modalAccountValue"/>    
 
       </q-card-section>
@@ -39,6 +40,9 @@ import { constants } from 'crypto';
           accountId: this.accountId,
         }
       }
+    },
+    computed: {
+      ...mapGetters('accounts', ['selectedAccountCurrencySymbol'])
     },
     methods: {
       ...mapActions('main', ['addBankAccountValue']),
@@ -124,10 +128,10 @@ import { constants } from 'crypto';
       }
     },
     components: {
-      'modal-header': require('components/Accounts/Modals/Shared/ModalHeader.vue').default,
-      'modal-account-value-date': require('components/Accounts/Modals/Shared/ModalAccountValueDate.vue').default,
-      'modal-account-value': require('components/Accounts/Modals/Shared/ModalAccountValue.vue').default,
-      'modal-buttons': require('components/Accounts/Modals/Shared/ModalButtons.vue').default,
+      'modal-header': require('components/SharedModals/ModalHeader.vue').default,
+      'modal-value-date': require('components/SharedModals/ModalValueDate.vue').default,
+      'modal-value': require('components/SharedModals/ModalValue.vue').default,
+      'modal-buttons': require('components/SharedModals/ModalButtons.vue').default,
     }      
   }
 </script>

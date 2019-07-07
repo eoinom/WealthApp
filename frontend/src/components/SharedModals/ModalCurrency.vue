@@ -2,7 +2,7 @@
   <div class="row q-mb-sm">        
     <q-select 
       outlined 
-      :options="options"
+      :options="currencyCodes"
       :value="currencyCode" 
       @input="$emit('update:currencyCode', $event)"
       :rules="[val => !!val || 'Field is required']"
@@ -14,20 +14,17 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
-      props: ['currencyCode'],
-      data () {
+    props: ['currencyCode'],
+    data () {
       return {
-        model: null,
-        options: [
-          'AUD',
-          'CAD',
-          'EUR', 
-          'GBP', 
-          'USD',
-          'NZD'
-        ]
+        model: null
       }
+    },
+    computed: {           
+      ...mapGetters('main', ['currencyCodes'])
     }
   }
 </script>

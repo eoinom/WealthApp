@@ -9,7 +9,7 @@
       :value="accountName" 
       ref="accountName" 
       class="col"
-      label="Account name"
+      :label="label"
       @input="$emit('update:accountName', $event)"
       :rules="[val => !!val || 'Field is required']" 
     />
@@ -18,7 +18,7 @@
 
 <script>
   export default {
-    props: ['accountName']
+    props: ['accountName', 'label'],
   }
 </script>
 

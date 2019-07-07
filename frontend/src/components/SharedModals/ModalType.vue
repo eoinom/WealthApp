@@ -7,7 +7,7 @@
       @input="$emit('update:type', $event)"
       :rules="[val => !!val || 'Field is required']"
       ref="type"
-      label="Account type" 
+      :label="label" 
       class="col" 
     />
   </div>    
@@ -15,13 +15,10 @@
 
 <script>
   export default {
-    props: ['type'],
+    props: ['type', 'label', 'options'],
     data () {
       return {
-        model: null,
-        options: [
-          'Current', 'Savings', 'Investment', 'Other'
-        ]
+        model: null
       }
     }
   }

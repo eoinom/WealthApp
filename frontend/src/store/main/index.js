@@ -4,17 +4,7 @@ import * as actions from './actions'
 
 const getDefaultState = () => {
   return {
-    authenticated: false,
-    user: {
-      userId: 0,
-      email: '',
-      firstName: '',
-      lastName: '',
-      newsletterSub: false,
-      country: {},
-      displayCurrency: {},
-      bankAccounts: {}
-    },
+    authenticated: false,    
     bankAccounts: {
       '0': {
         bankAccountId: 0,
@@ -40,10 +30,28 @@ const getDefaultState = () => {
         ],
         // balance: 0.00  // Not implemented yet
       }
-    },
-    initialFirstBankAccountId: 0,
+    },    
     bankAccountIds: [],
-    dateFormat: 'YYYY-MM-DD'
+    currencyCodes: [
+      'AUD',
+      'CAD',
+      'EUR', 
+      'GBP', 
+      'USD',
+      'NZD'
+    ],
+    dateFormat: 'YYYY-MM-DD',
+    initialFirstBankAccountId: 0,
+    user: {
+      userId: 0,
+      email: '',
+      firstName: '',
+      lastName: '',
+      newsletterSub: false,
+      country: {},
+      displayCurrency: {},
+      bankAccounts: {}
+    }
   }
 }
 

@@ -2,8 +2,14 @@ import Vue from 'vue'
 
 const getDefaultState = () => {
   return {
+    accountTypes: [
+      'Current', 
+      'Savings', 
+      'Investment', 
+      'Other'
+    ],
     selectedAccountId: 0,
-    selectedAccountCurrencySymbol: '€',
+    selectedAccountCurrencySymbol: '€',    
     tableColumns: [
       {
         name: 'date',
@@ -56,12 +62,15 @@ const actions = {
 }
 
 const getters = {
+  accountTypes: (state) => {
+    return state.accountTypes
+  },
   selectedAccountId: (state) => {
     return state.selectedAccountId
   },
   selectedAccountCurrencySymbol: (state) => {
     return state.selectedAccountCurrencySymbol
-  },
+  },  
   tableColumns: (state) => {
     return state.tableColumns
   },

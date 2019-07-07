@@ -1,22 +1,16 @@
 
 const authenticated = state => {
-  console.log('state.authenticated');
-  console.log(state.authenticated);
-  // return state.authenticated
+  return state.authenticated
+}
 
-  // console.log('rootState.authenticated');
-  // console.log(rootState.authenticated);
-  // return rootState.authenticated
+const currencyCodes = state => {
+  return state.currencyCodes
 }
 
 const user = state => {
   console.log('state');
   console.log(state);  
   return state.user
-
-  // console.log('rootState');
-  // console.log(rootState);  
-  // return rootState.user
 }
 
 const userFullName = state => {
@@ -85,6 +79,7 @@ const getDateFormat = state => {
 
 export {
   authenticated,
+  currencyCodes,
   user,
   userFullName,
   userEmail,

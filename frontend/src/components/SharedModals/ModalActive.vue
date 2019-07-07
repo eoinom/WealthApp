@@ -4,7 +4,7 @@
       :value="isActive"
       @input="$emit('update:isActive', $event)"
       color="primary"
-      label="Account active?"
+      :label="label"
       class="col"
     />
   </div>    
@@ -12,7 +12,7 @@
 
 <script>
   export default {
-    props: ['isActive']
+    props: ['isActive', 'label']
   }
 </script>
 
