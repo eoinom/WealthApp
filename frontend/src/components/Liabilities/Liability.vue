@@ -67,9 +67,14 @@
         showEditLiability: false
       }      
     },
+
+    computed: {
+      ...mapGetters('liabilities', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance', 'selectedAccountId']),
+    },
+    
     methods: {
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn']),
-      ...mapActions('main', ['deleteBankAccount']),
+      ...mapActions('liabilities', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteBankAccount']),
+
       promptToDeleteAccount(id) {
         this.$q.dialog({
           title: 'Confirm',
@@ -126,11 +131,6 @@
           return "";
         } 
       },
-    },
-
-    computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance']),
-      ...mapGetters('accounts', ['selectedAccountId']),
     },
 
     components: {

@@ -62,11 +62,14 @@
         }
       }
     },
+
     computed: {
-      ...mapGetters('accounts', ['accountTypes'])
+      ...mapGetters('liabilities', ['accountTypes'])
     },
+
     methods: {
-      ...mapActions('main', ['addBankAccount']),      
+      ...mapActions('liabilities', ['addBankAccount']),   
+
       submitForm() {
         this.$refs.modalAccountName.$refs.accountName.validate()
         if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
@@ -78,6 +81,7 @@
         this.$emit('close')
       }
     },
+
     components: {
       'modal-header': require('components/SharedModals/ModalHeader.vue').default,
       'modal-name': require('components/SharedModals/ModalName.vue').default,

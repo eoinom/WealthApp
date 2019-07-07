@@ -69,6 +69,10 @@
       }      
     },
 
+    computed: {
+      ...mapGetters('accounts', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance', 'selectedAccountId']),
+    },
+
     methods: {
       ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteBankAccount']),      
       promptToDeleteAccount(id) {
@@ -127,10 +131,6 @@
           return "";
         } 
       },
-    },
-
-    computed: {
-      ...mapGetters('accounts', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance', 'selectedAccountId']),
     },
 
     components: {

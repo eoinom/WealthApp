@@ -176,10 +176,8 @@
     },  
 
     methods: {           
-      ...mapGetters('main', ['getInitialFirstBankAccountId']),
-      ...mapGetters('accounts', ['selectedAccountId', 'tableColumns']),
-      ...mapActions('main', ['updateBankAccountValue', 'deleteBankAccountValues']),
-      ...mapActions('accounts', ['updateSelectedAccountId']),
+      ...mapGetters('liabilities', ['getInitialFirstBankAccountId', 'selectedAccountId', 'tableColumns']),
+      ...mapActions('liabilities', ['updateSelectedAccountId', 'updateBankAccountValue', 'deleteBankAccountValues']),
 
       showPopupDate(row, col) {
         this.popupEditDate = row[col];
@@ -338,7 +336,8 @@
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName', 'getDateFormat']),
+      ...mapGetters('liabilities', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName']),
+      ...mapGetters('main', ['getDateFormat']),
 
       selectedAccountName() {
         return this.bankAccountName( this.selectedAccountId() )
@@ -416,14 +415,12 @@
           color: '#555'
         }
       },
-
       contentActiveStyle () {
         return {
           backgroundColor: '#eee',
           color: 'black'
         }
       },
-
       thumbStyle () {
         return {
           right: '2px',

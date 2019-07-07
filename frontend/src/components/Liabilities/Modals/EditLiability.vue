@@ -51,6 +51,7 @@
 
   export default {
     props: ['account', 'accountId'],
+
     data() {
       return {
         accountToSubmit: {
@@ -64,11 +65,14 @@
         }
       }
     },
+
     computed: {
       ...mapGetters('liabilities', ['liabilityTypes'])
     },
+
     methods: {
-      ...mapActions('main', ['updateBankAccount']),
+      ...mapActions('liabilities', ['updateBankAccount']),
+
       submitForm() {
         this.$refs.modalAccountName.$refs.accountName.validate()
         if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
@@ -82,6 +86,7 @@
         this.$emit('close')
       }
     },
+
     components: {
       'modal-header': require('components/SharedModals/ModalHeader.vue').default,
       'modal-name': require('components/SharedModals/ModalName.vue').default,
@@ -92,6 +97,7 @@
       'modal-active': require('components/SharedModals/ModalActive.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default
     },
+
     mounted() {
       // this.accountToSubmit = Object.assign({}, this.account) 
       this.accountToSubmit.bankAccountId = this.account.bankAccountId

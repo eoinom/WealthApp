@@ -41,12 +41,15 @@ import { constants } from 'crypto';
         }
       }
     },
+
     computed: {
-      ...mapGetters('accounts', ['selectedAccountCurrencySymbol'])
+      ...mapGetters('liabilities', ['selectedAccountCurrencySymbol'])
     },
+
     methods: {
-      ...mapActions('main', ['addBankAccountValue']),
+      ...mapActions('liabilities', ['addBankAccountValue']),
       ...mapGetters('main', ['getDateFormat']),
+
       submitForm() {
         // this.$refs.modalAccountValueDate.$refs.accountValueDate.validate()
         // Need to install Moment.js and do date validation
@@ -127,6 +130,7 @@ import { constants } from 'crypto';
         }
       }
     },
+
     components: {
       'modal-header': require('components/SharedModals/ModalHeader.vue').default,
       'modal-value-date': require('components/SharedModals/ModalValueDate.vue').default,
