@@ -178,8 +178,10 @@
     computed: {
     },
     methods: {      
-      ...mapActions('main', ['login', 'updateUser', 'initialiseBankAccounts', 'updateBankAccountValues']),
-      ...mapGetters('main', ['authenticated', 'user', 'bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
+      ...mapActions('main', ['login', 'updateUser']),
+      ...mapActions('accounts', ['initialiseBankAccounts', 'updateBankAccountValues']),
+      ...mapGetters('main', ['authenticated', 'user']),
+      ...mapGetters('accounts', ['bankAccounts', 'accountValues', 'bankAccountValuesByAccountId']),
 
       onSubmitLogin () { 
         this.$q.loading.show({

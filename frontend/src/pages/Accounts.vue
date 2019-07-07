@@ -176,10 +176,8 @@
     },  
 
     methods: {           
-      ...mapGetters('main', ['getInitialFirstBankAccountId']),
-      ...mapGetters('accounts', ['selectedAccountId', 'tableColumns']),
-      ...mapActions('main', ['updateBankAccountValue', 'deleteBankAccountValues']),
-      ...mapActions('accounts', ['updateSelectedAccountId']),
+      ...mapGetters('accounts', ['getInitialFirstBankAccountId', 'selectedAccountId', 'tableColumns']),
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateBankAccountValue', 'deleteBankAccountValues']),
 
       showPopupDate(row, col) {
         this.popupEditDate = row[col];
@@ -338,18 +336,18 @@
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName', 'getDateFormat']),
+      ...mapGetters('accounts', ['bankAccounts', 'bankAccountValuesByAccountId', 'bankAccountName']),
+      ...mapGetters('main', ['getDateFormat']),
 
       selectedAccountName() {
         return this.bankAccountName( this.selectedAccountId() )
       },
-
       selectedBankAccountValues() {
         var storeAccountVals = this.bankAccountValuesByAccountId(this.selectedAccountId());   // get array from store
         return storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // return a cloned array
       },
 
-// CHART PROPERTIES
+      // CHART PROPERTIES
       chartOptions() {
         return {
           chart: {
@@ -378,7 +376,6 @@
           }
         }
       },
-
       series() {
         var storeAccountVals = this.bankAccountValuesByAccountId(this.selectedAccountId());   // get array from store
         var accountVals = storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // clone the array, ref:https://stackoverflow.com/questions/44837957/how-to-clone-a-vuex-array
@@ -412,14 +409,12 @@
           color: '#555'
         }
       },
-
       contentActiveStyle () {
         return {
           backgroundColor: '#eee',
           color: 'black'
         }
       },
-
       thumbStyle () {
         return {
           right: '2px',

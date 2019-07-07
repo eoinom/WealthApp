@@ -45,8 +45,9 @@ import { constants } from 'crypto';
       ...mapGetters('accounts', ['selectedAccountCurrencySymbol'])
     },
     methods: {
-      ...mapActions('main', ['addBankAccountValue']),
+      ...mapActions('accounts', ['addBankAccountValue']),
       ...mapGetters('main', ['getDateFormat']),
+      
       submitForm() {
         // this.$refs.modalAccountValueDate.$refs.accountValueDate.validate()
         // Need to install Moment.js and do date validation

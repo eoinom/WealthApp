@@ -62,14 +62,15 @@
 
   export default {
     props: ['account'],
+
     data() {
       return {
         showEditAccount: false
       }      
     },
+
     methods: {
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn']),
-      ...mapActions('main', ['deleteBankAccount']),
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteBankAccount']),      
       promptToDeleteAccount(id) {
         this.$q.dialog({
           title: 'Confirm',
@@ -129,8 +130,7 @@
     },
 
     computed: {
-      ...mapGetters('main', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance']),
-      ...mapGetters('accounts', ['selectedAccountId']),
+      ...mapGetters('accounts', ['bankAccounts', 'bankAccountValuesByAccountId', 'getBankAccountBalance', 'selectedAccountId']),
     },
 
     components: {

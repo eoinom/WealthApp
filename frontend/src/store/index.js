@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import main from './main'
-import accounts from './store-accounts'
+import accounts from './accounts'
 import liabilities from './store-liabilities'
 
 Vue.use(Vuex)

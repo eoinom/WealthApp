@@ -62,11 +62,13 @@
         }
       }
     },
+    
     computed: {
       ...mapGetters('accounts', ['accountTypes'])
     },
+
     methods: {
-      ...mapActions('main', ['addBankAccount']),      
+      ...mapActions('accounts', ['addBankAccount']),      
       submitForm() {
         this.$refs.modalAccountName.$refs.accountName.validate()
         if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
@@ -78,16 +80,8 @@
         this.$emit('close')
       }
     },
-    components: {
-      // 'modal-header': require('components/Accounts/Modals/Shared/ModalHeader.vue').default,
-      // 'modal-account-name': require('components/Accounts/Modals/Shared/ModalAccountName.vue').default,
-      // 'modal-account-description': require('components/Accounts/Modals/Shared/ModalAccountDescription.vue').default,
-      // 'modal-account-type': require('components/Accounts/Modals/Shared/ModalAccountType.vue').default,
-      // 'modal-account-institution': require('components/Accounts/Modals/Shared/ModalAccountInstitution.vue').default,
-      // 'modal-account-currency': require('components/Accounts/Modals/Shared/ModalAccountCurrency.vue').default,
-      // 'modal-account-isActive': require('components/Accounts/Modals/Shared/ModalAccountIsActive.vue').default,
-      // 'modal-buttons': require('components/Accounts/Modals/Shared/ModalButtons.vue').default,
 
+    components: {
       'modal-header': require('components/SharedModals/ModalHeader.vue').default,
       'modal-name': require('components/SharedModals/ModalName.vue').default,
       'modal-description': require('components/SharedModals/ModalDescription.vue').default,

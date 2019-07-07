@@ -21,18 +21,12 @@
 
   export default {
     props: ['accountValue', 'currencySymbol'],
+    
     data () {
       return {
-        accountVal: this.accountValue,
-        // currencySymbol: '€'
+        accountVal: this.accountValue
       }
-    },
-    // computed: {
-    //   ...mapGetters('accounts', ['selectedAccountCurrencySymbol']),
-    // },
-    // mounted() {
-    //   this.currencySymbol = this.selectedAccountCurrencySymbol
-    // },
+    }
   }
 
   
