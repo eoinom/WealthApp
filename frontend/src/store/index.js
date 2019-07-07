@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import main from './main'
 import accounts from './store-accounts'
+import liabilities from './store-liabilities'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       main,
-      accounts 
+      accounts,
+      liabilities 
     },
 
     // enable strict mode (adds overhead!)
