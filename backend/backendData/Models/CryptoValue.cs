@@ -13,8 +13,7 @@ namespace backendData.Models
     public double Price { get; set; }
     public double NoCoins { get; set; }
 
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
+    [Required, Column(TypeName = "decimal(18,2)")]
     public decimal Value { get; set; }
 
     public CryptoAccountValue CryptoAccountValue { get; set; }

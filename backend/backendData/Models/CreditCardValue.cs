@@ -4,16 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backendData.Models
 {
-  public class PropertyValue
-  {
-    public int PropertyValueId { get; set; }
+  public class CreditCardValue
+    {
+    public int CreditCardValueId { get; set; }
     [Required] public DateTime Date { get; set; }
 
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
+    [Required, Column(TypeName = "decimal(18,2)")]
     public decimal Value { get; set; }
 
-    public string Source { get; set; }
-    public Property Property { get; set; }
+    public CreditCard CreditCard { get; set; }
   }
 }

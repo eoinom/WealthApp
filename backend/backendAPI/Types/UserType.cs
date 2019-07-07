@@ -15,13 +15,11 @@ namespace backendAPI.Types
             Field(x => x.Country, type: typeof(CountryType), nullable: true);
             Field(x => x.NewsletterSub);
             Field(x => x.DisplayCurrency, type: typeof(CurrencyType));
-            Field(x => x.BankAccounts, type: typeof(ListGraphType<BankAccountType>));
-            //Field(x => x.CashAccounts);
-            //Field(x => x.CreditCards);
+            Field(x => x.Accounts, type: typeof(ListGraphType<AccountType>));
+            //Field(x => x.CreditCards);            
+            //Field(x => x.Loans);
             //Field(x => x.CryptoAccounts);
-            //Field(x => x.LoanAccounts);
-            //Field(x => x.MortgageAccounts);
-            //Field(x => x.Properties);
+            //Field(x => x.Assets);
         }
     }
 }

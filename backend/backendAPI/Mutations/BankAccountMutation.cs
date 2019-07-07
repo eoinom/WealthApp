@@ -6,93 +6,93 @@ using Newtonsoft.Json.Linq;
 
 namespace backendAPI.Mutations
 {
-    public class BankAccountMutation : ObjectGraphType
+    public class AccountMutation : ObjectGraphType
     {
-        public BankAccountMutation(IBankAccountRepository bankAccountRepository)
+        public AccountMutation(IAccountRepository accountRepository)
         {
-            Name = "BankAccountMutations";
+            Name = "AccountMutations";
 
-            Field<BankAccountType>(
-                "addBankAccount",
+            Field<AccountType>(
+                "addAccount",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<BankAccountInputType>> { Name = "bankAccount" }),
+                    new QueryArgument<NonNullGraphType<AccountInputType>> { Name = "account" }),
                 resolve: context =>
                 {
-                    //var bankAccount = context.GetArgument<BankAccount>("bankAccount");
-                    var bankAccountArg = context.Arguments["bankAccount"];
+                    //var account = context.GetArgument<Account>("account");
+                    var accountArg = context.Arguments["account"];
                     
-                    Currency bankAccountCurrency = new Currency();
-                    var currencyCode = bankAccountArg != null
-                        ? (string)JToken.FromObject(bankAccountArg).SelectToken("quotedCurrency")
+                    Currency accountCurrency = new Currency();
+                    var currencyCode = accountArg != null
+                        ? (string)JToken.FromObject(accountArg).SelectToken("quotedCurrency")
                         : null;
-                    bankAccountCurrency.Code = currencyCode;
+                    accountCurrency.Code = currencyCode;
 
-                    User bankAccountUser = new User();
-                    int userId = bankAccountArg != null
-                        ? (int)JToken.FromObject(bankAccountArg).SelectToken("userId")
+                    User accountUser = new User();
+                    int userId = accountArg != null
+                        ? (int)JToken.FromObject(accountArg).SelectToken("userId")
                         : 0;
-                    bankAccountUser.UserId = userId;
+                    accountUser.UserId = userId;
 
-                    BankAccount newBankAccount = new BankAccount()
+                    Account newAccount = new Account()
                     {                        
-                        AccountName = (string)JToken.FromObject(bankAccountArg).SelectToken("accountName"),
-                        Description = (string)JToken.FromObject(bankAccountArg).SelectToken("description"),
-                        Type = (string)JToken.FromObject(bankAccountArg).SelectToken("type"),
-                        IsActive = (bool)JToken.FromObject(bankAccountArg).SelectToken("isActive"),
-                        Institution = (string)JToken.FromObject(bankAccountArg).SelectToken("institution"),
-                        QuotedCurrency = bankAccountCurrency,
-                        User = bankAccountUser
+                        AccountName = (string)JToken.FromObject(accountArg).SelectToken("accountName"),
+                        Description = (string)JToken.FromObject(accountArg).SelectToken("description"),
+                        Type = (string)JToken.FromObject(accountArg).SelectToken("type"),
+                        IsActive = (bool)JToken.FromObject(accountArg).SelectToken("isActive"),
+                        Institution = (string)JToken.FromObject(accountArg).SelectToken("institution"),
+                        QuotedCurrency = accountCurrency,
+                        User = accountUser
                     };
 
-                    return bankAccountRepository.Add(newBankAccount);
+                    return accountRepository.Add(newAccount);
                 });
 
-            Field<BankAccountType>(
-                "updateBankAccount",
+            Field<AccountType>(
+                "updateAccount",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<BankAccountInputType>> { Name = "bankAccount" }),
+                    new QueryArgument<NonNullGraphType<AccountInputType>> { Name = "account" }),
                 resolve: context =>
                 {
-                    var bankAccountArg = context.Arguments["bankAccount"];
+                    var accountArg = context.Arguments["account"];
 
-                    Currency bankAccountCurrency = new Currency();
-                    var currencyCode = bankAccountArg != null
-                        ? (string)JToken.FromObject(bankAccountArg).SelectToken("quotedCurrency")
+                    Currency accountCurrency = new Currency();
+                    var currencyCode = accountArg != null
+                        ? (string)JToken.FromObject(accountArg).SelectToken("quotedCurrency")
                         : null;
-                    bankAccountCurrency.Code = currencyCode;
+                    accountCurrency.Code = currencyCode;
 
-                    User bankAccountUser = new User();
-                    int userId = bankAccountArg != null
-                        ? (int)JToken.FromObject(bankAccountArg).SelectToken("userId")
+                    User accountUser = new User();
+                    int userId = accountArg != null
+                        ? (int)JToken.FromObject(accountArg).SelectToken("userId")
                         : 0;
-                    bankAccountUser.UserId = userId;
+                    accountUser.UserId = userId;
 
-                    BankAccount newBankAccount = new BankAccount()
+                    Account newAccount = new Account()
                     {
-                        BankAccountId = (int)JToken.FromObject(bankAccountArg).SelectToken("bankAccountId"),
-                        AccountName = (string)JToken.FromObject(bankAccountArg).SelectToken("accountName"),
-                        Description = (string)JToken.FromObject(bankAccountArg).SelectToken("description"),
-                        Type = (string)JToken.FromObject(bankAccountArg).SelectToken("type"),
-                        IsActive = (bool)JToken.FromObject(bankAccountArg).SelectToken("isActive"),
-                        Institution = (string)JToken.FromObject(bankAccountArg).SelectToken("institution"),
-                        QuotedCurrency = bankAccountCurrency,
-                        User = bankAccountUser
+                        AccountId = (int)JToken.FromObject(accountArg).SelectToken("accountId"),
+                        AccountName = (string)JToken.FromObject(accountArg).SelectToken("accountName"),
+                        Description = (string)JToken.FromObject(accountArg).SelectToken("description"),
+                        Type = (string)JToken.FromObject(accountArg).SelectToken("type"),
+                        IsActive = (bool)JToken.FromObject(accountArg).SelectToken("isActive"),
+                        Institution = (string)JToken.FromObject(accountArg).SelectToken("institution"),
+                        QuotedCurrency = accountCurrency,
+                        User = accountUser
                     };
 
-                    return bankAccountRepository.Update(newBankAccount);
+                    return accountRepository.Update(newAccount);
                 });
 
             Field<StringGraphType>(
-                "deleteBankAccount",
+                "deleteAccount",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "bankAccountId" }),
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "accountId" }),
                 resolve: context =>
                 {
-                    int bankAccountId = context.GetArgument<int>("bankAccountId");
+                    int accountId = context.GetArgument<int>("accountId");
                     try
                     {
-                        bankAccountRepository.Delete(bankAccountId);
-                        return $"The bank account with the id: {bankAccountId} has been successfully deleted from the database.";
+                        accountRepository.Delete(accountId);
+                        return $"The account with the id: {accountId} has been successfully deleted from the database.";
                     }
                     catch (System.Exception ex)
                     {

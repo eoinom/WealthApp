@@ -5,14 +5,11 @@ namespace backendDataAccess.Repositories.Contracts
 {
     public interface IAccountValueRepository
     {
+        AccountValue Add(AccountValue value);
+        void DeleteById(int valueId);
+        void DeleteByIds(int[] valueIds);
         AccountValue GetById(int id);
-        IEnumerable<AccountValue> GetAllForBankAccount(int accountId);
-        IEnumerable<AccountValue> GetAllForCashAccount(int accountId);
-        IEnumerable<AccountValue> GetAllForLoanAccount(int accountId);
-        IEnumerable<AccountValue> GetAllForMortgageAccount(int accountId);
-        AccountValue Add(AccountValue accountValue);
-        AccountValue Update(AccountValue accountValue);
-        void DeleteById(int accountValueId);
-        void DeleteByIds(int[] accountValueIds);
+        IEnumerable<AccountValue> GetAllForAccount(int accountId);
+        AccountValue Update(AccountValue value);
     }
 }

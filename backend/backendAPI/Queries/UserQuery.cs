@@ -20,7 +20,7 @@ namespace backendAPI.Queries
             Field<UserType>(
                 "userLogin",
                 arguments: new QueryArguments(new QueryArgument<StringGraphType> { Name = "email" }, new QueryArgument<StringGraphType> { Name = "password" }),
-                resolve: context => userRepository.CheckCredentials(context.GetArgument<string>("email"), context.GetArgument<string>("password")));
+                resolve: context => userRepository.Login(context.GetArgument<string>("email"), context.GetArgument<string>("password")));
         }
     }
 }

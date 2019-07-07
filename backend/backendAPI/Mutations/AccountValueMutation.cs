@@ -27,36 +27,12 @@ namespace backendAPI.Mutations
                         Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
                     };
                    
-                    var bankAccountId = JToken.FromObject(accountValueArg).SelectToken("bankAccountId");
-                    if (bankAccountId != null)
+                    var accountId = JToken.FromObject(accountValueArg).SelectToken("accountId");
+                    if (accountId != null)
                     {
-                        BankAccount bankAccount = new BankAccount();
-                        bankAccount.BankAccountId = (int)bankAccountId;
-                        newAccountValue.BankAccount = bankAccount;
-                    }
-                    
-                    var cashAccountId = JToken.FromObject(accountValueArg).SelectToken("cashAccountId");
-                    if (cashAccountId != null)
-                    {
-                        CashAccount cashAccount = new CashAccount();
-                        cashAccount.CashAccountId = (int)cashAccountId;
-                        newAccountValue.CashAccount = cashAccount;
-                    }
-                    
-                    var loanAccountId = JToken.FromObject(accountValueArg).SelectToken("loanAccountId");
-                    if (loanAccountId != null)
-                    {
-                        LoanAccount loanAccount = new LoanAccount();
-                        loanAccount.LoanAccountId = (int)loanAccountId;
-                        newAccountValue.LoanAccount = loanAccount;
-                    }
-                    
-                    var mortgageAccountId = JToken.FromObject(accountValueArg).SelectToken("loanAccountId");
-                    if (mortgageAccountId != null)
-                    {
-                        MortgageAccount mortgageAccount = new MortgageAccount();
-                        mortgageAccount.MortgageAccountId = (int)mortgageAccountId;
-                        newAccountValue.MortgageAccount = mortgageAccount;
+                        Account account = new Account();
+                        account.AccountId = (int)accountId;
+                        newAccountValue.Account = account;
                     }
 
                     return accountValueRepository.Add(newAccountValue);
@@ -78,36 +54,12 @@ namespace backendAPI.Mutations
                         Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
                     };
 
-                    BankAccount bankAccount = new BankAccount();
-                    var bankAccountId = JToken.FromObject(accountValueArg).SelectToken("bankAccountId");
-                    if (bankAccountId != null)
+                    Account account = new Account();
+                    var accountId = JToken.FromObject(accountValueArg).SelectToken("accountId");
+                    if (accountId != null)
                     {
-                        bankAccount.BankAccountId = (int)bankAccountId;
-                        newAccountValue.BankAccount = bankAccount;
-                    }
-
-                    CashAccount cashAccount = new CashAccount();
-                    var cashAccountId = JToken.FromObject(accountValueArg).SelectToken("cashAccountId");
-                    if (cashAccountId != null)
-                    {
-                        cashAccount.CashAccountId = (int)cashAccountId;
-                        newAccountValue.CashAccount = cashAccount;
-                    }
-
-                    LoanAccount loanAccount = new LoanAccount();
-                    var loanAccountId = JToken.FromObject(accountValueArg).SelectToken("loanAccountId");
-                    if (loanAccountId != null)
-                    {
-                        loanAccount.LoanAccountId = (int)loanAccountId;
-                        newAccountValue.LoanAccount = loanAccount;
-                    }
-
-                    MortgageAccount mortgageAccount = new MortgageAccount();
-                    var mortgageAccountId = JToken.FromObject(accountValueArg).SelectToken("loanAccountId");
-                    if (mortgageAccountId != null)
-                    {
-                        mortgageAccount.MortgageAccountId = (int)mortgageAccountId;
-                        newAccountValue.MortgageAccount = mortgageAccount;
+                        account.AccountId = (int)accountId;
+                        newAccountValue.Account = account;
                     }
 
                     return accountValueRepository.Update(newAccountValue);

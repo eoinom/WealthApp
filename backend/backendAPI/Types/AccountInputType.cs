@@ -2,12 +2,12 @@
 
 namespace backendAPI.Types
 {
-    public class BankAccountInputType : InputObjectGraphType
+    public class AccountInputType : InputObjectGraphType
     {
-        public BankAccountInputType()
+        public AccountInputType()
         {
-            Name = "BankAccountInputType";
-            Field<IntGraphType>("bankAccountId");
+            Name = "AccountInputType";
+            Field<IntGraphType>("accountId");
             Field<NonNullGraphType<StringGraphType>>("accountName");
             Field<StringGraphType>("description");
             Field<StringGraphType>("type");

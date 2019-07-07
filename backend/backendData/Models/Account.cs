@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backendData.Models
 {
-    public class BankAccount
+    public class Account
     {
-        public int BankAccountId { get; set; }
+        public int AccountId { get; set; }
         [Required] public string AccountName { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }

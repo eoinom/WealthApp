@@ -11,7 +11,7 @@ namespace backendAPI.Queries
             Field<ListGraphType<AccountValueType>>(
                 "accountValues",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "accountId" }),
-                resolve: context => accountValueRepository.GetAllForBankAccount(context.GetArgument<int>("accountId")));
+                resolve: context => accountValueRepository.GetAllForAccount(context.GetArgument<int>("accountId")));
 
             Field<AccountValueType>(
                 "accountValue",

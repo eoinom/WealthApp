@@ -12,7 +12,7 @@ namespace backendAPI.Mutations
         {
             Name = "Mutation";
             Field<AccountValueMutation>("accountValue_mutations", resolve: context => new { } );
-            Field<BankAccountMutation>("bankAccount_mutations", resolve: context => new { } );
+            Field<AccountMutation>("account_mutations", resolve: context => new { } );
             Field<UserMutation>("user_mutations", resolve: context => new { } );
         }
     }

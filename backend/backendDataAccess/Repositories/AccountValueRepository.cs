@@ -16,211 +16,91 @@ namespace backendDataAccess.Repositories
             _dbContext = dbContext;
         }
 
-        public AccountValue Add(AccountValue accountValue)
+        public AccountValue Add(AccountValue value)
         {
-            if (accountValue.BankAccount != null)
+            if (value.Account != null)
             {
-                BankAccount bankAccount = _dbContext.BankAccounts
+                Account bankAccount = _dbContext.Accounts
                                             .Include(x => x.AccountValues)
                                             .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
-                accountValue.BankAccount = bankAccount;
+                                            .SingleOrDefault(x => x.AccountId == value.Account.AccountId);
+                value.Account = bankAccount;
             }
 
-            if (accountValue.CashAccount != null)
-            {
-                CashAccount cashAccount = _dbContext.CashAccounts
-                                            .Include(x => x.AccountValues)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
-                accountValue.CashAccount = cashAccount;
-            }
-
-            if (accountValue.LoanAccount != null)
-            {
-                LoanAccount loanAccount = _dbContext.LoanAccounts
-                                            .Include(x => x.BalancesOwing)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
-                accountValue.LoanAccount = loanAccount;
-            }
-
-            if (accountValue.MortgageAccount != null)
-            {
-                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts
-                                            .Include(x => x.BalancesOwing)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
-                accountValue.MortgageAccount = mortgageAccount;
-            }
-
-            _dbContext.AccountValues.Add(accountValue);
+            _dbContext.AccountValues.Add(value);
             _dbContext.SaveChanges();
-            _dbContext.Entry<AccountValue>(accountValue).State = EntityState.Detached;
-            return accountValue;
+            _dbContext.Entry<AccountValue>(value).State = EntityState.Detached;
+            return value;
         }
 
-        public AccountValue Update(AccountValue accountValue)
+        public void DeleteById(int valueId)
         {
-            if (accountValue.BankAccount != null)
-            {
-                BankAccount bankAccount = _dbContext.BankAccounts
-                                            .Include(x => x.AccountValues)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.BankAccountId == accountValue.BankAccount.BankAccountId);
-                accountValue.BankAccount = bankAccount;
-            }
-
-            if (accountValue.CashAccount != null)
-            {
-                CashAccount cashAccount = _dbContext.CashAccounts
-                                            .Include(x => x.AccountValues)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.CashAccountId == accountValue.CashAccount.CashAccountId);
-                accountValue.CashAccount = cashAccount;
-            }
-
-            if (accountValue.LoanAccount != null)
-            {
-                LoanAccount loanAccount = _dbContext.LoanAccounts
-                                            .Include(x => x.BalancesOwing)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.LoanAccountId == accountValue.LoanAccount.LoanAccountId);
-                accountValue.LoanAccount = loanAccount;
-            }
-
-            if (accountValue.MortgageAccount != null)
-            {
-                MortgageAccount mortgageAccount = _dbContext.MortgageAccounts
-                                            .Include(x => x.BalancesOwing)
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.MortgageAccountId == accountValue.MortgageAccount.MortgageAccountId);
-                accountValue.MortgageAccount = mortgageAccount;
-            }
-
-            _dbContext.AccountValues.Update(accountValue);
-            _dbContext.SaveChanges();
-
-            //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
-            //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
-            _dbContext.Entry<AccountValue>(accountValue).State = EntityState.Detached;
-
-            return accountValue;
-        }
-
-        public void DeleteById(int accountValueId)
-        {
-            var accountValue = _dbContext.AccountValues.SingleOrDefault(x => x.AccountValueId == accountValueId);
-            _dbContext.Remove(accountValue);
+            var value = _dbContext.AccountValues.SingleOrDefault(x => x.AccountValueId == valueId);
+            _dbContext.Remove(value);
             _dbContext.SaveChanges();
         }
 
-        public void DeleteByIds(int[] accountValueIds)
+        public void DeleteByIds(int[] valueIds)
         {
-            foreach (var accountValueId in accountValueIds)
+            foreach (var valueId in valueIds)
             {
-                var accountValue = _dbContext.AccountValues.SingleOrDefault(x => x.AccountValueId == accountValueId);
-                _dbContext.Remove(accountValue);
+                var value = _dbContext.AccountValues.SingleOrDefault(x => x.AccountValueId == valueId);
+                _dbContext.Remove(value);
             }           
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<AccountValue> GetAllForBankAccount(int bankAccountId)
+        public IEnumerable<AccountValue> GetAllForAccount(int accountId)
         {
             return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.BankAccount.BankAccountId == bankAccountId)
-                .Include(x => x.BankAccount)
-                .Include(x => x.BankAccount.QuotedCurrency)
-                .Include(x => x.BankAccount.User);
+                .Where(x => x.Account.AccountId == accountId)
+                .Include(x => x.Account)
+                .Include(x => x.Account.QuotedCurrency)
+                .Include(x => x.Account.User);
         }
 
-        public AccountValue GetLatestForBankAccount(int bankAccountId)
+        public AccountValue GetLatestForAccount(int accountId)
         {
             return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.BankAccount.BankAccountId == bankAccountId)
+                .Where(x => x.Account.AccountId == accountId)
                 .OrderByDescending(x => x.Date)
-                .Include(x => x.BankAccount)
-                .Include(x => x.BankAccount.QuotedCurrency)
-                .Include(x => x.BankAccount.User)
+                .Include(x => x.Account)
+                .Include(x => x.Account.QuotedCurrency)
+                .Include(x => x.Account.User)
                 .FirstOrDefault();
         }
 
-        public IEnumerable<AccountValue> GetAllForCashAccount(int bankAccountId)
+        public AccountValue GetById(int valueId)
         {
             return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.CashAccount.CashAccountId == bankAccountId)
-                .Include(x => x.CashAccount)
-                .Include(x => x.CashAccount.QuotedCurrency)
-                .Include(x => x.CashAccount.User);
+                .Include(x => x.Account)
+                .Include(x => x.Account.QuotedCurrency)
+                .Include(x => x.Account.User)
+                .SingleOrDefault(x => x.AccountValueId == valueId);
         }
 
-        public AccountValue GetLatestForCashAccount(int cashAccountId)
+        public AccountValue Update(AccountValue value)
         {
-            return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.CashAccount.CashAccountId == cashAccountId)
-                .OrderByDescending(x => x.Date)
-                .Include(x => x.CashAccount)
-                .Include(x => x.CashAccount.QuotedCurrency)
-                .Include(x => x.CashAccount.User)
-                .FirstOrDefault();
-        }
+            if (value.Account != null)
+            {
+                Account bankAccount = _dbContext.Accounts.AsNoTracking()
+                                            //.Include(x => x.AccountValues).AsNoTracking()
+                                            .Include(x => x.QuotedCurrency)
+                                            .SingleOrDefault(x => x.AccountId == value.Account.AccountId);
+                value.Account = bankAccount;
+                _dbContext.Entry<Account>(bankAccount).State = EntityState.Detached;
+                _dbContext.SaveChanges();
+            }
 
-        public IEnumerable<AccountValue> GetAllForLoanAccount(int bankAccountId)
-        {
-            return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.LoanAccount.LoanAccountId == bankAccountId)
-                .Include(x => x.LoanAccount)
-                .Include(x => x.LoanAccount.QuotedCurrency)
-                .Include(x => x.LoanAccount.User);
-        }
+            _dbContext.AccountValues.Update(value);
+            _dbContext.SaveChanges();
 
-        public AccountValue GetLatestForLoanAccount(int loanAccountId)
-        {
-            return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.LoanAccount.LoanAccountId == loanAccountId)
-                .OrderByDescending(x => x.Date)
-                .Include(x => x.LoanAccount)
-                .Include(x => x.LoanAccount.QuotedCurrency)
-                .Include(x => x.LoanAccount.User)
-                .FirstOrDefault();
-        }
+            //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
+            //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
+            _dbContext.Entry<AccountValue>(value).State = EntityState.Detached;
+            _dbContext.SaveChanges();
 
-        public IEnumerable<AccountValue> GetAllForMortgageAccount(int bankAccountId)
-        {
-            return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.MortgageAccount.MortgageAccountId == bankAccountId)
-                .Include(x => x.MortgageAccount)
-                .Include(x => x.MortgageAccount.QuotedCurrency)
-                .Include(x => x.MortgageAccount.User);
-        }
-
-        public AccountValue GetLatestForMortgageAccount(int mortgageAccountId)
-        {
-            return _dbContext.AccountValues.AsNoTracking()
-                .Where(x => x.MortgageAccount.MortgageAccountId == mortgageAccountId)
-                .OrderByDescending(x => x.Date)
-                .Include(x => x.MortgageAccount)
-                .Include(x => x.MortgageAccount.QuotedCurrency)
-                .Include(x => x.MortgageAccount.User)
-                .FirstOrDefault();
-        }
-
-        public AccountValue GetById(int accountValueId)
-        {
-            return _dbContext.AccountValues.AsNoTracking()
-                .Include(x => x.BankAccount)
-                .Include(x => x.BankAccount.QuotedCurrency)
-                .Include(x => x.BankAccount.User)
-                .Include(x => x.CashAccount)
-                .Include(x => x.CashAccount.QuotedCurrency)
-                .Include(x => x.CashAccount.User)
-                .Include(x => x.LoanAccount)
-                .Include(x => x.LoanAccount.QuotedCurrency)
-                .Include(x => x.LoanAccount.User)
-                .Include(x => x.MortgageAccount)
-                .Include(x => x.MortgageAccount.QuotedCurrency)
-                .Include(x => x.MortgageAccount.User)
-                .SingleOrDefault(x => x.AccountValueId == accountValueId);
+            return value;
         }
     }
 }

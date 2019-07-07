@@ -10,10 +10,7 @@ namespace backendAPI.Types
             Field<IntGraphType>("accountValueId");
             Field<NonNullGraphType<DateGraphType>>("date");
             Field<NonNullGraphType<DecimalGraphType>>("value");
-            Field<IntGraphType>("bankAccountId");
-            Field<IntGraphType>("cashAccountId");
-            Field<IntGraphType>("loanAccountId");
-            Field<IntGraphType>("mortgageAccountId");
+            Field<IntGraphType>("accountId");
         }
     }
 }

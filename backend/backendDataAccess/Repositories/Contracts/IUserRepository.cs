@@ -8,6 +8,7 @@ namespace backendDataAccess.Repositories.Contracts
         IEnumerable<User> GetAll();
         User GetById(int id);
         User Add(User user);
-        User CheckCredentials(string email, string password);
+        User Login(string email, string password);
+        bool CheckCredentials(string email, string password);
     }
 }

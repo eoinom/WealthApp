@@ -4,14 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backendData.Models
 {
-  public class AccountValue
+  public class AssetValue
   {
-    public int AccountValueId { get; set; }
+    public int AssetValueId { get; set; }
     [Required] public DateTime Date { get; set; }
 
     [Required, Column(TypeName = "decimal(18,2)")]
     public decimal Value { get; set; }
 
-    public Account Account { get; set; }
+    public string Source { get; set; }      // i.e. where is the valuation coming from (user-input, government data, another website etc.)
+    public Asset Asset { get; set; }
   }
 }

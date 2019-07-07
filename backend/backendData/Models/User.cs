@@ -14,12 +14,10 @@ namespace backendData.Models
     public Country Country { get; set; }
     public bool NewsletterSub { get; set; }
     public Currency DisplayCurrency { get; set; }
-    public virtual IEnumerable<BankAccount> BankAccounts { get; set; }
-    public virtual IEnumerable<CashAccount> CashAccounts { get; set; }
+    public virtual IEnumerable<Account> Accounts { get; set; }
     public virtual IEnumerable<CreditCard> CreditCards { get; set; }
     public virtual IEnumerable<CryptoAccount> CryptoAccounts { get; set; }
-    public virtual IEnumerable<LoanAccount> LoanAccounts { get; set; }
-    public virtual IEnumerable<MortgageAccount> MortgageAccounts { get; set; }
-    public virtual IEnumerable<Property> Properties { get; set; }
+    public virtual IEnumerable<Loan> Loans { get; set; }
+    public virtual IEnumerable<Asset> Assets { get; set; }
     }
 }

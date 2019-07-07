@@ -16,25 +16,8 @@ namespace backendDataAccess.Repositories
             _dbContext = dbContext;
         }
 
-        public IEnumerable<User> GetAll()
-        {
-            return _dbContext.Users.AsNoTracking();
-        }
-
-        public User GetById(int id)
-        {
-            return _dbContext.Users.AsNoTracking()
-                .Include(x => x.Country)
-                .Include(x => x.DisplayCurrency)
-                .Include(x => x.BankAccounts)
-                    .ThenInclude(acc => acc.QuotedCurrency)
-                .Include(x => x.BankAccounts)
-                    .ThenInclude(acc => acc.AccountValues)
-                .SingleOrDefault(x => x.UserId == id);
-        }
-
         public User Add(User user)
-        {            
+        {
             Country country = _dbContext.Countries.FirstOrDefault(x => x.Iso2Code == user.Country.Iso2Code);
             user.Country = country;
 
@@ -47,15 +30,59 @@ namespace backendDataAccess.Repositories
             return user;
         }
 
-        public User CheckCredentials(string email, string password)
+        public bool CheckCredentials(string email, string password)
+        {
+            if (_dbContext.Users.AsNoTracking().SingleOrDefault(x => x.Email == email && x.Password == password) != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return _dbContext.Users.AsNoTracking();
+        }
+
+        public User GetById(int id)
         {
             return _dbContext.Users.AsNoTracking()
                 .Include(x => x.Country)
                 .Include(x => x.DisplayCurrency)
-                .Include(x => x.BankAccounts)
-                    .ThenInclude(acc => acc.QuotedCurrency)
-                .Include(x => x.BankAccounts)
-                    .ThenInclude(acc => acc.AccountValues)
+                .Include(x => x.Accounts)
+                    .ThenInclude(a => a.QuotedCurrency)
+                .Include(x => x.Accounts)
+                    .ThenInclude(a => a.AccountValues)
+                .Include(x => x.CreditCards)
+                    .ThenInclude(c => c.QuotedCurrency)
+                .Include(x => x.CreditCards)
+                    .ThenInclude(c => c.BalancesOwing)
+                .Include(x => x.Loans)
+                    .ThenInclude(l => l.QuotedCurrency)
+                .Include(x => x.Loans)
+                    .ThenInclude(l => l.BalancesOwing)
+                .AsNoTracking()
+                .SingleOrDefault(x => x.UserId == id);
+        }        
+
+        public User Login(string email, string password)
+        {
+            return _dbContext.Users.AsNoTracking()
+                .Include(x => x.Country)
+                .Include(x => x.DisplayCurrency)
+                .Include(x => x.Accounts)
+                    .ThenInclude(a => a.QuotedCurrency)
+                .Include(x => x.Accounts)
+                    .ThenInclude(a => a.AccountValues)
+                .Include(x => x.CreditCards)
+                    .ThenInclude(c => c.QuotedCurrency)
+                .Include(x => x.CreditCards)
+                    .ThenInclude(c => c.BalancesOwing)
+                .Include(x => x.Loans)
+                    .ThenInclude(l => l.QuotedCurrency)
+                .Include(x => x.Loans)
+                    .ThenInclude(l => l.BalancesOwing)
+                .AsNoTracking()
                 .SingleOrDefault(x => x.Email == email && x.Password == password);
         }
 
