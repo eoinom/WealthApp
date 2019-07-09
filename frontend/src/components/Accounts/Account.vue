@@ -70,7 +70,7 @@
     },
 
     computed: {
-      ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'getAccountBalance', 'selectedAccountId']),
+      ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'accountBalance', 'selectedAccountId']),
     },
 
     methods: {
@@ -101,7 +101,8 @@
             return " No account values";
           }
           else {
-            return this.getAccountBalance(accountId).toFixed(2);
+            // return this.accountBalance(accountId).toFixed(2);
+            return this.toLocaleFixed(this.accountBalance(accountId), 2);
           }          
         }
         catch (error) {

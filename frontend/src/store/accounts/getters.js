@@ -40,7 +40,7 @@ const accountValuesByAccountId = state => (id) => {
   }
 }
 
-const getAccountBalance = state => (accountId) => {
+const accountBalance = state => (accountId) => {
   try {
     var numOfValues = state.accounts[accountId].accountValues.length;
     return state.accounts[accountId].accountValues[ numOfValues - 1 ].value;
@@ -75,7 +75,7 @@ export {
   accountValues,
   accountValueById,
   accountValuesByAccountId,
-  getAccountBalance,
+  accountBalance,
   accountTypes,
   selectedAccountId,
   selectedAccountCurrencySymbol,

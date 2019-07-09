@@ -40,7 +40,7 @@ const loanValuesByLoanId = state => (id) => {
   }
 }
 
-const getLoanBalance = state => (loanId) => {
+const loanBalance = state => (loanId) => {
   try {
     var numOfValues = state.loans[loanId].loanValues.length;
     return state.loans[loanId].loanValues[ numOfValues - 1 ].value;
@@ -75,7 +75,7 @@ export {
   loanValues,
   loanValueById,
   loanValuesByLoanId,
-  getLoanBalance,
+  loanBalance,
   loanTypes,
   selectedLoanId,
   selectedLoanCurrencySymbol,

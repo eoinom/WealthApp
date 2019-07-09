@@ -69,7 +69,7 @@
     },
 
     computed: {
-      ...mapGetters('loans', ['loans', 'loanValuesByLoanId', 'getLoanBalance', 'selectedLoanId']),
+      ...mapGetters('loans', ['loans', 'loanValuesByLoanId', 'loanBalance', 'selectedLoanId']),
     },
     
     methods: {
@@ -101,7 +101,8 @@
             return " No loan values";
           }
           else {
-            return this.getLoanBalance(loanId).toFixed(2);
+            // return this.loanBalance(loanId).toFixed(2);
+            return this.toLocaleFixed(this.loanBalance(loanId), 2);
           }          
         }
         catch (error) {

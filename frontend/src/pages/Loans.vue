@@ -111,7 +111,8 @@
 
                 <!-- Value -->
                 <q-td key="value" :props="props">
-                  {{ props.row.value.toFixed(2) }}
+                  <!-- {{ props.row.value.toFixed(2) }} -->
+                  {{ toLocaleFixed(props.row.value, 2) }}
 
                   <q-popup-edit 
                     v-model="popupEditValue" 
