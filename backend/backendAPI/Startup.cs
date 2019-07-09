@@ -47,10 +47,12 @@ namespace backendAPI
                       .AllowAnyMethod();
                 });
             });
-
-            services.AddTransient<IAccountValueRepository, AccountValueRepository>();
+                        
             services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IAccountValueRepository, AccountValueRepository>();
             services.AddTransient<ICountryRepository, CountryRepository>();
+            services.AddTransient<ILoanRepository, LoanRepository>();
+            services.AddTransient<ILoanValueRepository, LoanValueRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
@@ -72,6 +74,16 @@ namespace backendAPI
             services.AddSingleton<CountryQuery>();
 
             services.AddSingleton<CurrencyType>();
+
+            services.AddSingleton<LoanType>();
+            services.AddSingleton<LoanInputType>();
+            services.AddSingleton<LoanQuery>();
+            services.AddSingleton<LoanMutation>();
+
+            services.AddSingleton<LoanValueType>();
+            services.AddSingleton<LoanValueInputType>();
+            services.AddSingleton<LoanValueQuery>();
+            services.AddSingleton<LoanValueMutation>();
 
             services.AddSingleton<UserType>();
             services.AddSingleton<UserInputType>();

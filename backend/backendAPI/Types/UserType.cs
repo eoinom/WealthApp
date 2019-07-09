@@ -17,7 +17,7 @@ namespace backendAPI.Types
             Field(x => x.DisplayCurrency, type: typeof(CurrencyType));
             Field(x => x.Accounts, type: typeof(ListGraphType<AccountType>));
             //Field(x => x.CreditCards);            
-            //Field(x => x.Loans);
+            Field(x => x.Loans, type: typeof(ListGraphType<LoanType>));
             //Field(x => x.CryptoAccounts);
             //Field(x => x.Assets);
         }
