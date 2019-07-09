@@ -317,6 +317,14 @@
                       loanName
                       description      
                       type
+                      startPrincipal
+                      startDate
+                      totalTerm
+                      fixedTerm
+                      rateType
+                      aprRate
+                      repaymentFrequency
+                      repaymentAmount
                       isActive
                       institution
                       quotedCurrency {

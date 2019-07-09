@@ -40,6 +40,12 @@
       Type: {{ loan.type }}
       <br />Currency: {{ loan.quotedCurrency.code }}
       <br />Balance: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + getLoanBalance(loan.loanId) }}
+      <br />Start Principal: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) +toLocaleFixed(loan.startPrincipal, 2) }}
+      <br />Start Date: {{ loan.startDate }}
+      <br />Total Term: {{ getTermStr(loan.totalTerm, loan.repaymentFrequency) }}
+      <br />Rate: {{ (100*loan.aprRate).toFixed(2) + '% (' + loan.rateType + ')' }}
+      <br />Repayment: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + loan.repaymentAmount + ' ' + loan.repaymentFrequency }}
+
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -132,6 +138,44 @@
           return "";
         } 
       },
+      getTermStr: function (totalTerm, repaymentFrequency) {
+        try {
+          switch ( repaymentFrequency.toLowerCase() ) {
+            case 'weekly':
+              return totalTerm + ' weeks (' + totalTerm/52 + ' years)';
+              break;
+            case 'bi-weekly':
+            case 'fortnightly':
+              return totalTerm + ' fortnights (' + totalTerm/26 + ' years)';
+              break;
+            case 'monthly':
+              return totalTerm + ' months (' + totalTerm/12 + ' years)';
+              break;
+            case 'bi-monthly':
+              return 2*totalTerm + ' months (' + totalTerm/6 + ' years)';
+              break;
+            case 'quarterly':
+              return totalTerm + ' quarters (' + totalTerm/4 + ' years)';
+              break;
+            case 'half-annually':
+            case 'half-yearly':
+            case 'bi-annually':
+            case 'bi-yearly':
+              return totalTerm/2 + ' years';
+              break;
+            case 'annually':
+            case 'yearly':
+              return totalTerm + ' years';
+              break;
+            default:
+              return '';
+          }
+        }
+        catch (error) {
+          console.error(error); 
+          return "";
+        } 
+      }
     },
 
     components: {

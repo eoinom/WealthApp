@@ -14,8 +14,8 @@ namespace backendAPI.Types
 
             Field<DecimalGraphType>("startPrincipal");
             Field<DateGraphType>("startDate");
-            Field<IntGraphType>("termInMonths");
-            Field<IntGraphType>("fixedTermInMonths");
+            Field<IntGraphType>("totalTerm");
+            Field<IntGraphType>("fixedTerm");
             Field<StringGraphType>("rateType");
             Field<FloatGraphType>("aprRate");
             Field<StringGraphType>("repaymentFrequency");
