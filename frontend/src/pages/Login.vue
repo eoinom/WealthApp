@@ -179,9 +179,9 @@
     },
     methods: {      
       ...mapActions('main', ['login', 'updateUser']),
-      ...mapActions('accounts', ['initialiseAccounts', 'updateAccountValues']),
+      ...mapActions('accounts', ['initialiseAccounts']),
+      ...mapActions('loans', ['initialiseLoans']),
       ...mapGetters('main', ['authenticated', 'user']),
-      ...mapGetters('accounts', ['accounts', 'accountValues', 'accountValuesByAccountId']),
 
       onSubmitLogin () { 
         this.$q.loading.show({
@@ -312,6 +312,27 @@
                         }
                       }
                     }
+                    loans {
+                      loanId
+                      loanName
+                      description      
+                      type
+                      isActive
+                      institution
+                      quotedCurrency {
+                        code
+                        nameShort
+                        nameLong        
+                      }
+                      loanValues {
+                        loanValueId
+                        date
+                        value
+                        loan {
+                          loanId
+                        }
+                      }
+                    }
                   }
                 }  
               }
@@ -322,6 +343,7 @@
           if (response.data.data.user_queries.userLogin != null) {
             this.updateUser(response.data.data.user_queries.userLogin);
             this.initialiseAccounts(response.data.data.user_queries.userLogin.accounts);
+            this.initialiseLoans(response.data.data.user_queries.userLogin.loans);
 
             if (this.user() != null) {
               return true

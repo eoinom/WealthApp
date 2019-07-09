@@ -23,12 +23,12 @@
           class=""
           style="height: 540px; min-width: 400px; max-width: 600px;">
 
-          <template v-if="Object.keys(accounts).length > 0">
+          <template v-if="Object.keys(loans).length > 0">
             
             <loan
-              v-for="(account, key) in accounts"
+              v-for="(loan, key) in loans"
               :key="key"
-              :account="account"
+              :loan="loan"
               :id="key"
               class="q-mb-md q-mr-sm">
             </loan>
@@ -41,10 +41,10 @@
         <h5 class="q-my-md">Loan Values</h5>
         
         <div class="q-pa-md">
-          <!-- Account Values Table -->
+          <!-- Loan Values Table -->
           <q-table
-            title="AccountValues"
-            :data="selectedAccountValues"
+            title="LoanValues"
+            :data="selectedLoanValues"
             :columns="tableColumns()"
             row-key="date"            
             :filter="filter"
@@ -65,12 +65,12 @@
                   color="red" 
                   class="q-mr-md q-my-md"
                   :disable="loading" 
-                  @click="promptToDeleteAccountValue()" 
+                  @click="promptToDeleteLoanValue()" 
                 />
               </div>
 
               <div class="col">
-                <div class="text-h6 text-primary text-center">{{ selectedAccountName }}</div>
+                <div class="text-h6 text-primary text-center">{{ selectedLoanName }}</div>
               </div>
 
               <div class="col-2">
@@ -104,7 +104,7 @@
                       today-btn
                       mask="YYYY-MM-DD"
                       :options="dateOptionsFn"
-                      @input="(val, initval) => onUpdateAccountValue(val, props.row, 'date')"
+                      @input="(val, initval) => onUpdateLoanValue(val, props.row, 'date')"
                     />
                   </q-popup-edit>
                 </q-td>
@@ -116,7 +116,7 @@
                   <q-popup-edit 
                     v-model="popupEditValue" 
                     @show="() => showPopupValue(props.row, 'value')" 
-                    @save="(val, initval) => onUpdateAccountValue(val, props.row, 'value')"
+                    @save="(val, initval) => onUpdateLoanValue(val, props.row, 'value')"
                     title="Update value" 
                     buttons >
                     <q-input 
@@ -145,7 +145,7 @@
 
     <q-dialog v-model="showAddLoanValue">
       <add-loan-value 
-        :accountId="selectedAccountId()"
+        :loanId="selectedLoanId()"
         @close="showAddLoanValue = false" />
     </q-dialog>
   </q-page>
@@ -157,7 +157,7 @@
   import { mapActions } from 'vuex'
 
   export default {
-    name: 'UserAccounts',
+    name: 'UserLoans',
     data () {
       return {
         showAddLoan: false,
@@ -176,8 +176,8 @@
     },  
 
     methods: {           
-      ...mapGetters('loans', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
-      ...mapActions('loans', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues']),
+      ...mapGetters('loans', ['getInitialFirstLoanId', 'selectedLoanId', 'tableColumns']),
+      ...mapActions('loans', ['updateSelectedLoanId', 'updateLoanValue', 'deleteLoanValues']),
 
       showPopupDate(row, col) {
         this.popupEditDate = row[col];
@@ -197,11 +197,11 @@
             mm='0'+mm;
         return date <= yyyy + '/' + mm + '/' + dd;
       },
-      onUpdateAccountValue(val, row, col) {
+      onUpdateLoanValue(val, row, col) {
         // this.setLoading(true);
         const updatedRow = Object.assign({}, row);
         updatedRow[col] = val;
-        const res = this.updateAccountValue(updatedRow);
+        const res = this.updateLoanValue(updatedRow);
         res.then((response) => {
           // do nothing
         })
@@ -213,7 +213,7 @@
         });
       },
 
-      promptToDeleteAccountValue() {
+      promptToDeleteLoanValue() {
         var numSelectedRows = this.selectedValues.length;
         if (numSelectedRows === 0) {
           this.$q.dialog({
@@ -228,7 +228,7 @@
         else {
           this.$q.dialog({
             title: 'Confirm',
-            message: `Are you sure you want to delete the ${this.selectedValues.length} selected account value(s)? This cannot be undone.`,
+            message: `Are you sure you want to delete the ${this.selectedValues.length} selected loan value(s)? This cannot be undone.`,
             ok: {
               label: 'Yes'
             },
@@ -239,9 +239,9 @@
           }).onOk(() => {
             var valueIds = [];
             this.selectedValues.forEach(el => {
-              valueIds.push(el.accountValueId);
+              valueIds.push(el.loanValueId);
             });
-            this.deleteAccountValues({ accountId: this.selectedAccountId(), accountValueIds: valueIds }); 
+            this.deleteLoanValues({ loanId: this.selectedLoanId(), loanValueIds: valueIds }); 
             this.selectedValues = [];
           })
         }
@@ -252,9 +252,9 @@
         if (this.selectedValues.length === 0 )
           return ''
         else if (this.selectedValues.length === 1 )
-          return `1 record selected of ${this.accountValuesByAccountId( this.selectedAccountId() ).length}`
+          return `1 record selected of ${this.loanValuesByLoanId( this.selectedLoanId() ).length}`
         else
-          return `${this.selectedValues.length} records selected of ${this.accountValuesByAccountId( this.selectedAccountId() ).length}`
+          return `${this.selectedValues.length} records selected of ${this.loanValuesByLoanId( this.selectedLoanId() ).length}`
       },
 
       log: function(str) {
@@ -262,7 +262,7 @@
         var num = 0;
         num = str;
         console.log(num);
-        console.log(this.accountValues[num]);
+        console.log(this.loanValues[num]);
       },
 
       customTableSort(rows, sortBy, descending) {
@@ -336,16 +336,16 @@
     },
 
     computed: {
-      ...mapGetters('loans', ['accounts', 'accountValuesByAccountId', 'accountName']),
+      ...mapGetters('loans', ['loans', 'loanValuesByLoanId', 'loanName']),
       ...mapGetters('main', ['getDateFormat']),
 
-      selectedAccountName() {
-        return this.accountName( this.selectedAccountId() )
+      selectedLoanName() {
+        return this.loanName( this.selectedLoanId() )
       },
 
-      selectedAccountValues() {
-        var storeAccountVals = this.accountValuesByAccountId(this.selectedAccountId());   // get array from store
-        return storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // return a cloned array
+      selectedLoanValues() {
+        var storeLoanVals = this.loanValuesByLoanId(this.selectedLoanId());   // get array from store
+        return storeLoanVals.map((b, idx) => Object.assign({ index: idx }, b));   // return a cloned array
       },
 
 // CHART PROPERTIES
@@ -361,15 +361,15 @@
             enabled: false
           },
           stroke: {
-            curve: 'smooth'
+            curve: 'straight'   // straight or smooth
           },
           colors: ['#BB5601'],
           series: [{
-            name: 'Account Values',
+            name: 'Loan Values',
             data: [1000.00, 2000.50, 1500.54, 1856.42, 2254.24, 2354.11],
           }],
            title: {
-            text: this.selectedAccountName,
+            text: this.selectedLoanName,
             align: 'center'
           },
           labels: ['2001-01-28', '2001-03-28', '2001-05-28', '2001-07-28', '2001-09-28', '2001-11-28'],
@@ -383,10 +383,10 @@
       },
 
       series() {
-        var storeAccountVals = this.accountValuesByAccountId(this.selectedAccountId());   // get array from store
-        var accountVals = storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // clone the array, ref:https://stackoverflow.com/questions/44837957/how-to-clone-a-vuex-array
+        var storeLoanVals = this.loanValuesByLoanId(this.selectedLoanId());   // get array from store
+        var loanVals = storeLoanVals.map((b, idx) => Object.assign({ index: idx }, b));   // clone the array, ref:https://stackoverflow.com/questions/44837957/how-to-clone-a-vuex-array
 
-        accountVals.forEach(obj => {
+        loanVals.forEach(obj => {
           if (obj.date !== undefined) {
             Object.defineProperty(obj, "x",
               Object.getOwnPropertyDescriptor(obj, "date"));
@@ -397,14 +397,14 @@
               Object.getOwnPropertyDescriptor(obj, "value"));
             delete obj["value"];
           }
-          if (obj.accountValueId !== undefined) {
-            delete obj["accountValueId"];
+          if (obj.loanValueId !== undefined) {
+            delete obj["loanValueId"];
           }
         });
 
         return [{
-            name: this.selectedAccountName,
-            data: accountVals
+            name: this.selectedLoanName,
+            data: loanVals
           }]
       },
 // END OF CHART PROPERTIES
@@ -439,7 +439,7 @@
     },
 
     mounted () {      
-      this.updateSelectedAccountId( this.getInitialFirstAccountId() )
+      this.updateSelectedLoanId( this.getInitialFirstLoanId() )
     }
   }
 </script>

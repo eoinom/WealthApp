@@ -7,34 +7,34 @@
       <q-card-section>
 
         <modal-name 
-          :accountName.sync="accountToSubmit.accountName" 
+          :loanName.sync="loanToSubmit.loanName" 
           label="Loan name"
-          ref="modalAccountName"/>  
+          ref="modalLoanName"/>  
 
         <modal-description 
-          :description.sync="accountToSubmit.description" 
+          :description.sync="loanToSubmit.description" 
           label="Loan description"
-          ref="modalAccountDescription"/>    
+          ref="modalLoanDescription"/>    
 
         <modal-type 
-          :type.sync="accountToSubmit.type" 
+          :type.sync="loanToSubmit.type" 
           label="Loan type"
-          :options="accountTypes"
-          ref="modalAccountType"/>   
+          :options="loanTypes"
+          ref="modalLoanType"/>   
 
         <modal-institution 
-          :institution.sync="accountToSubmit.institution" 
+          :institution.sync="loanToSubmit.institution" 
           label="Institution"
-          ref="modalAccountInstitution"/>  
+          ref="modalLoanInstitution"/>  
 
         <modal-currency 
-          :currencyCode.sync="accountToSubmit.currencyCode" 
-          ref="modalAccountCurrency"/>   
+          :currencyCode.sync="loanToSubmit.currencyCode" 
+          ref="modalLoanCurrency"/>   
 
         <modal-active
-          :isActive.sync="accountToSubmit.isActive" 
+          :isActive.sync="loanToSubmit.isActive" 
           label="Loan active?" 
-          ref="modalAccountIsActive"/>  
+          ref="modalLoanIsActive"/>  
 
       </q-card-section>
 
@@ -52,8 +52,8 @@
   export default {
     data() {
       return {
-        accountToSubmit: {
-          accountName: '',          
+        loanToSubmit: {
+          loanName: '',          
           description: '',
           type: '',
           institution: '',
@@ -64,20 +64,20 @@
     },
 
     computed: {
-      ...mapGetters('loans', ['accountTypes'])
+      ...mapGetters('loans', ['loanTypes'])
     },
 
     methods: {
-      ...mapActions('loans', ['addAccount']),   
+      ...mapActions('loans', ['addLoan']),   
 
       submitForm() {
-        this.$refs.modalAccountName.$refs.accountName.validate()
-        if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
-          this.submitAccount()
+        this.$refs.modalLoanName.$refs.loanName.validate()
+        if (!this.$refs.modalLoanName.$refs.loanName.hasError) {
+          this.submitLoan()
         }
       },
-      submitAccount() {
-        this.addAccount(this.accountToSubmit)
+      submitLoan() {
+        this.addLoan(this.loanToSubmit)
         this.$emit('close')
       }
     },

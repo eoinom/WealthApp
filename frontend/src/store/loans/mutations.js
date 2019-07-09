@@ -7,13 +7,13 @@ function resetState (state) {
   // Vuex.store.replaceState({})
 }
 
-function addAccount (state, account) {
-  // first convert the date format of any Account Values to the user preferred format (state.dateFormat)
-  if (account.hasOwnProperty('accountValues') && account.accountValues.length > 0) {
+function addLoan (state, loan) {
+  // first convert the date format of any Loan Values to the user preferred format (state.dateFormat)
+  if (loan.hasOwnProperty('loanValues') && loan.loanValues.length > 0) {
     
-    // sort accountValues
-    if (account.accountValues.length > 1) {
-      var accountValsSorted = account.accountValues.sort(function(a, b) {
+    // sort loanValues
+    if (loan.loanValues.length > 1) {
+      var loanValsSorted = loan.loanValues.sort(function(a, b) {
         var date1 = new Date(a.date);
         var date2 = new Date(b.date);
         return date1 - date2;
@@ -21,7 +21,7 @@ function addAccount (state, account) {
     }
     
     //Change dates into user preferred format (this really should be done only in UI input/output)
-    account.accountValues.forEach(function(a) {     // ref: https://stackoverflow.com/questions/12482961/is-it-possible-to-change-values-of-the-array-when-doing-foreach-in-javascript
+    loan.loanValues.forEach(function(a) {     // ref: https://stackoverflow.com/questions/12482961/is-it-possible-to-change-values-of-the-array-when-doing-foreach-in-javascript
       var date = new Date(a.date);
       var dd = date.getDate();
       var mm = date.getMonth()+1;  // As January is 0
@@ -57,44 +57,44 @@ function addAccount (state, account) {
     });    
   }
   
-  // Now add the account and store the accountId in a sorted array
-  Vue.set(state.accounts, account.accountId, account)
-  Vue.set(state.accountIds, state.accountIds.length, account.accountId)
-  state.accountIds.sort(function(a, b){return a - b});
+  // Now add the loan and store the loanId in a sorted array
+  Vue.set(state.loans, loan.loanId, loan)
+  Vue.set(state.loanIds, state.loanIds.length, loan.loanId)
+  state.loanIds.sort(function(a, b){return a - b});
 }
 
-function updateAccount (state, account) {    
-  var id = account.accountId
-  Vue.set(state.accounts[id], "accountName", account.accountName)
-  Vue.set(state.accounts[id], "description", account.description)
-  Vue.set(state.accounts[id], "institution", account.institution)
-  Vue.set(state.accounts[id], "type", account.type)
-  Vue.set(state.accounts[id], "isActive", account.isActive)
-  Vue.set(state.accounts[id], "quotedCurrency", account.quotedCurrency)
+function updateLoan (state, loan) {    
+  var id = loan.loanId
+  Vue.set(state.loans[id], "loanName", loan.loanName)
+  Vue.set(state.loans[id], "description", loan.description)
+  Vue.set(state.loans[id], "institution", loan.institution)
+  Vue.set(state.loans[id], "type", loan.type)
+  Vue.set(state.loans[id], "isActive", loan.isActive)
+  Vue.set(state.loans[id], "quotedCurrency", loan.quotedCurrency)
 }
 
-function deleteAccount (state, accountId) {     
-  Vue.delete(state.accounts, accountId)
+function deleteLoan (state, loanId) {     
+  Vue.delete(state.loans, loanId)
   
-  // remove id from state.accountIds array
-  for (var i=0; i < state.accountIds.length; i++) {
-    if (state.accountIds[i] === accountId) {
-      Vue.delete(state.accountIds, i)
+  // remove id from state.loanIds array
+  for (var i=0; i < state.loanIds.length; i++) {
+    if (state.loanIds[i] === loanId) {
+      Vue.delete(state.loanIds, i)
       break
     }
   }
 }
 
-// function updateAccountBalance = (state, accountId) {
+// function updateLoanBalance = (state, loanId) {
 //   // To do
 // }
 
-// function updateAccountBalances = (state) {
+// function updateLoanBalances = (state) {
 //   // To do
 // }
 
-function addAccountValue (state, accountValue) {
-  var date = new Date(accountValue.date);
+function addLoanValue (state, loanValue) {
+  var date = new Date(loanValue.date);
   var dd = date.getDate();
   var mm = date.getMonth()+1;  // As January is 0
   var yyyy = date.getFullYear();
@@ -106,31 +106,31 @@ function addAccountValue (state, accountValue) {
   
   switch(state.dateFormat) {
     case "DD-MM-YYYY":
-    accountValue.date = dd + '-' + mm + '-' + yyyy;
+    loanValue.date = dd + '-' + mm + '-' + yyyy;
     break;
     case "DD/MM/YYYY":
-    accountValue.date = dd + '/' + mm + '/' + yyyy;
+    loanValue.date = dd + '/' + mm + '/' + yyyy;
     break;
     case "MM-DD-YYYY":
-    accountValue.date = mm + '-' + dd + '-' + yyyy;
+    loanValue.date = mm + '-' + dd + '-' + yyyy;
     break;
     case "MM/DD/YYYY":
-    accountValue.date = mm + '/' + dd + '/' + yyyy;
+    loanValue.date = mm + '/' + dd + '/' + yyyy;
     break;
     case "YYYY-MM-DD":
-    accountValue.date = yyyy + '-' + mm + '-' + dd;
+    loanValue.date = yyyy + '-' + mm + '-' + dd;
     break;
     case "YYYY/MM/DD":
-    accountValue.date = yyyy + '/' + mm + '/' + dd;
+    loanValue.date = yyyy + '/' + mm + '/' + dd;
     break;
     default:
     // leave as is
   }
-  var accountVals = state.accounts[accountValue.account.accountId].accountValues
-  Vue.set(accountVals, accountVals.length, accountValue)
+  var loanVals = state.loans[loanValue.loan.loanId].loanValues
+  Vue.set(loanVals, loanVals.length, loanValue)
   
-  //sort the Account Values
-  accountVals.sort(function(a, b) {
+  //sort the Loan Values
+  loanVals.sort(function(a, b) {
     var date1 = new Date();
     var date2 = new Date();
     var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
@@ -177,8 +177,8 @@ function addAccountValue (state, accountValue) {
   });
 }
 
-function updateAccountValue (state, accountValue) {    
-  var date = new Date(accountValue.date);
+function updateLoanValue (state, loanValue) {    
+  var date = new Date(loanValue.date);
   var dd = date.getDate();
   var mm = date.getMonth()+1;  // As January is 0
   var yyyy = date.getFullYear();
@@ -190,35 +190,35 @@ function updateAccountValue (state, accountValue) {
   
   switch(state.dateFormat) {
     case "DD-MM-YYYY":
-    accountValue.date = dd + '-' + mm + '-' + yyyy;
+    loanValue.date = dd + '-' + mm + '-' + yyyy;
     break;
     case "DD/MM/YYYY":
-    accountValue.date = dd + '/' + mm + '/' + yyyy;
+    loanValue.date = dd + '/' + mm + '/' + yyyy;
     break;
     case "MM-DD-YYYY":
-    accountValue.date = mm + '-' + dd + '-' + yyyy;
+    loanValue.date = mm + '-' + dd + '-' + yyyy;
     break;
     case "MM/DD/YYYY":
-    accountValue.date = mm + '/' + dd + '/' + yyyy;
+    loanValue.date = mm + '/' + dd + '/' + yyyy;
     break;
     case "YYYY-MM-DD":
-    accountValue.date = yyyy + '-' + mm + '-' + dd;
+    loanValue.date = yyyy + '-' + mm + '-' + dd;
     break;
     case "YYYY/MM/DD":
-    accountValue.date = yyyy + '/' + mm + '/' + dd;
+    loanValue.date = yyyy + '/' + mm + '/' + dd;
     break;
     default:
     // leave as is
   }
   
-  var accountVals = state.accounts[accountValue.account.accountId].accountValues
-  var valueId = accountValue.accountValueId;
-  for (var i = 0; i < accountVals.length; i++) {
-    if (accountVals[i].accountValueId === valueId) {
-      Vue.set(accountVals, i, accountValue)
+  var loanVals = state.loans[loanValue.loan.loanId].loanValues
+  var valueId = loanValue.loanValueId;
+  for (var i = 0; i < loanVals.length; i++) {
+    if (loanVals[i].loanValueId === valueId) {
+      Vue.set(loanVals, i, loanValue)
       
-      //sort the Account Values
-      accountVals.sort(function(a, b) {
+      //sort the Loan Values
+      loanVals.sort(function(a, b) {
         var date1 = new Date();
         var date2 = new Date();
         var dd1, mm1, yyyy1, dd2, mm2, yyyy2;
@@ -268,28 +268,28 @@ function updateAccountValue (state, accountValue) {
   }
 }
 
-// function updateAccountValues = (state, payload) {
+// function updateLoanValues = (state, payload) {
 //   // To Do
 // }
 
-function deleteValuesForAccount (state, accountId) {
-  Vue.delete(state.accountValues, accountId)
+function deleteValuesForLoan (state, loanId) {
+  Vue.delete(state.loanValues, loanId)
 }
 
-function deleteAccountValue (state, accountId, accountValueId) {
-  Vue.delete(state.accountValues[accountId], accountValueId)
+function deleteLoanValue (state, loanId, loanValueId) {
+  Vue.delete(state.loanValues[loanId], loanValueId)
 }
 
-function deleteAccountValues (state, payload) {
-  console.log('deleteAccountValues mutation payload:')
+function deleteLoanValues (state, payload) {
+  console.log('deleteLoanValues mutation payload:')
   console.log(payload)
-  for (var i = 0; i < Object.keys(payload.accountValueIds).length; i++) {
-    var valueId = payload.accountValueIds[i];
+  for (var i = 0; i < Object.keys(payload.loanValueIds).length; i++) {
+    var valueId = payload.loanValueIds[i];
     console.log('valueId:' + valueId);
-    var accValuesArr = state.accounts[payload.accountId].accountValues;
+    var accValuesArr = state.loans[payload.loanId].loanValues;
     console.log('accValuesArr length:' + accValuesArr.length);
     for (var j = 0; j < accValuesArr.length; j++) {
-      if (accValuesArr[j].accountValueId === valueId) {
+      if (accValuesArr[j].loanValueId === valueId) {
         Vue.delete(accValuesArr, j)
         break;
       } 
@@ -297,24 +297,24 @@ function deleteAccountValues (state, payload) {
   }
 }
 
-function sortAccountValues (state, accountId) {
-  state.accounts[accountId].accountValues.sort(function(a, b) {
+function sortLoanValues (state, loanId) {
+  state.loans[loanId].loanValues.sort(function(a, b) {
     var dateA = new Date(a.date);
     var dateB = new Date(b.date);
     return dateA - dateB;
   });    
 }
 
-function setInitialFirstaccountId (state, accountId) {
-  state.initialFirstaccountId = accountId
+function setInitialFirstloanId (state, loanId) {
+  state.initialFirstloanId = loanId
 }
 
-function updateSelectedAccountId(state, accountId) {
-  state.selectedAccountId = accountId
+function updateSelectedLoanId(state, loanId) {
+  state.selectedLoanId = loanId
 }
 
-function updateSelectedAccountCurrencySymbol(state, symbol) {
-  state.selectedAccountCurrencySymbol = symbol
+function updateSelectedLoanCurrencySymbol(state, symbol) {
+  state.selectedLoanCurrencySymbol = symbol
 }
 
 function updateTableColumn(state, payload) {
@@ -323,20 +323,20 @@ function updateTableColumn(state, payload) {
 
 export {
   resetState,
-  addAccount,
-  updateAccount,
-  deleteAccount,
-  // updateAccountBalance,
-  // updateAccountBalances,
-  addAccountValue,
-  updateAccountValue,
-  // updateAccountValues,
-  deleteValuesForAccount,
-  deleteAccountValue,
-  deleteAccountValues,
-  sortAccountValues,
-  setInitialFirstaccountId,
-  updateSelectedAccountId,
-  updateSelectedAccountCurrencySymbol,
+  addLoan,
+  updateLoan,
+  deleteLoan,
+  // updateLoanBalance,
+  // updateLoanBalances,
+  addLoanValue,
+  updateLoanValue,
+  // updateLoanValues,
+  deleteValuesForLoan,
+  deleteLoanValue,
+  deleteLoanValues,
+  sortLoanValues,
+  setInitialFirstloanId,
+  updateSelectedLoanId,
+  updateSelectedLoanCurrencySymbol,
   updateTableColumn
 }

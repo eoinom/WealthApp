@@ -7,14 +7,14 @@
       <q-card-section>
 
         <modal-value-date 
-          :valueDate.sync="accountValueToSubmit.date"           
-          ref="modalAccountValueDate"
+          :valueDate.sync="loanValueToSubmit.date"           
+          ref="modalLoanValueDate"
           />  
 
         <modal-value 
-          :value.sync="accountValueToSubmit.value" 
-          :currencySymbol="selectedAccountCurrencySymbol"
-          ref="modalAccountValue"/>    
+          :value.sync="loanValueToSubmit.value" 
+          :currencySymbol="selectedLoanCurrencySymbol"
+          ref="modalLoanValue"/>    
 
       </q-card-section>
 
@@ -31,37 +31,37 @@
 import { constants } from 'crypto';
 
   export default {
-    props: ['accountId'],
+    props: ['loanId'],
     data() {
       return {
-        accountValueToSubmit: {
+        loanValueToSubmit: {
           date: this.getTodaysDate(),
           value: '',
-          accountId: this.accountId,
+          loanId: this.loanId,
         }
       }
     },
 
     computed: {
-      ...mapGetters('loans', ['selectedAccountCurrencySymbol'])
+      ...mapGetters('loans', ['selectedLoanCurrencySymbol'])
     },
 
     methods: {
-      ...mapActions('loans', ['addAccountValue']),
+      ...mapActions('loans', ['addLoanValue']),
       ...mapGetters('main', ['getDateFormat']),
 
       submitForm() {
-        // this.$refs.modalAccountValueDate.$refs.accountValueDate.validate()
+        // this.$refs.modalLoanValueDate.$refs.loanValueDate.validate()
         // Need to install Moment.js and do date validation
-        this.$refs.modalAccountValue.$refs.accountValue.validate()
-        if (!this.$refs.modalAccountValue.$refs.accountValue.hasError) {
-          this.submitAccountValue()
+        this.$refs.modalLoanValue.$refs.loanValue.validate()
+        if (!this.$refs.modalLoanValue.$refs.loanValue.hasError) {
+          this.submitLoanValue()
         }
       },
-      submitAccountValue() {
-        this.accountValueToSubmit.date = this.convertDateToIso(this.accountValueToSubmit.date)
-        console.log(this.accountValueToSubmit)
-        this.addAccountValue(this.accountValueToSubmit)
+      submitLoanValue() {
+        this.loanValueToSubmit.date = this.convertDateToIso(this.loanValueToSubmit.date)
+        console.log(this.loanValueToSubmit)
+        this.addLoanValue(this.loanValueToSubmit)
         this.$emit('close')
       },
       getTodaysDate() {

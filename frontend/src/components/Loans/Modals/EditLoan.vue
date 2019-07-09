@@ -7,34 +7,34 @@
       <q-card-section>
 
         <modal-name 
-          :accountName.sync="accountToSubmit.accountName" 
+          :loanName.sync="loanToSubmit.loanName" 
           label="Loan name"
-          ref="modalAccountName"/>  
+          ref="modalLoanName"/>  
 
         <modal-description 
-          :description.sync="accountToSubmit.description" 
+          :description.sync="loanToSubmit.description" 
           label="Loan description"
-          ref="modalAccountDescription"/>    
+          ref="modalLoanDescription"/>    
 
         <modal-type 
-          :type.sync="accountToSubmit.type" 
+          :type.sync="loanToSubmit.type" 
           label="Loan type"
           :options="loanTypes"
-          ref="modalAccountType"/>   
+          ref="modalLoanType"/>   
 
         <modal-institution 
-          :institution.sync="accountToSubmit.institution" 
+          :institution.sync="loanToSubmit.institution" 
           label="Institution"
-          ref="modalAccountInstitution"/>  
+          ref="modalLoanInstitution"/>  
 
         <modal-currency 
-          :currencyCode.sync="accountToSubmit.currencyCode" 
-          ref="modalAccountCurrency"/>   
+          :currencyCode.sync="loanToSubmit.currencyCode" 
+          ref="modalLoanCurrency"/>   
 
         <modal-active
-          :isActive.sync="accountToSubmit.isActive" 
+          :isActive.sync="loanToSubmit.isActive" 
           label="Loan active?" 
-          ref="modalAccountIsActive"/>  
+          ref="modalLoanIsActive"/>  
 
       </q-card-section>
 
@@ -50,13 +50,13 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['account', 'accountId'],
+    props: ['loan', 'loanId'],
 
     data() {
       return {
-        accountToSubmit: {
-          accountId: 0,
-          accountName: '',          
+        loanToSubmit: {
+          loanId: 0,
+          loanName: '',          
           description: '',
           type: '',
           institution: '',
@@ -71,18 +71,18 @@
     },
 
     methods: {
-      ...mapActions('loans', ['updateAccount']),
+      ...mapActions('loans', ['updateLoan']),
 
       submitForm() {
-        this.$refs.modalAccountName.$refs.accountName.validate()
-        if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
-          this.submitAccount()
+        this.$refs.modalLoanName.$refs.loanName.validate()
+        if (!this.$refs.modalLoanName.$refs.loanName.hasError) {
+          this.submitLoan()
         }
       },
-      submitAccount() {
-        console.log('in submitAccount, this.accountToSubmit:')
-        console.log(this.accountToSubmit)
-        this.updateAccount(this.accountToSubmit)
+      submitLoan() {
+        console.log('in submitLoan, this.loanToSubmit:')
+        console.log(this.loanToSubmit)
+        this.updateLoan(this.loanToSubmit)
         this.$emit('close')
       }
     },
@@ -99,14 +99,14 @@
     },
 
     mounted() {
-      // this.accountToSubmit = Object.assign({}, this.account) 
-      this.accountToSubmit.accountId = this.account.accountId
-      this.accountToSubmit.accountName = this.account.accountName 
-      this.accountToSubmit.description = this.account.description
-      this.accountToSubmit.type = this.account.type
-      this.accountToSubmit.institution = this.account.institution
-      this.accountToSubmit.currencyCode = this.account.quotedCurrency.code
-      this.accountToSubmit.isActive = this.account.isActive
+      // this.loanToSubmit = Object.assign({}, this.loan) 
+      this.loanToSubmit.loanId = this.loan.loanId
+      this.loanToSubmit.loanName = this.loan.loanName 
+      this.loanToSubmit.description = this.loan.description
+      this.loanToSubmit.type = this.loan.type
+      this.loanToSubmit.institution = this.loan.institution
+      this.loanToSubmit.currencyCode = this.loan.quotedCurrency.code
+      this.loanToSubmit.isActive = this.loan.isActive
     } 
   }
 </script>

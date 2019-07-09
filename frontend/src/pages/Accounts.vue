@@ -360,7 +360,7 @@
             enabled: false
           },
           stroke: {
-            curve: 'smooth'
+            curve: 'straight'   // straight or smooth
           },
           series: [{
             name: 'Account Values',

@@ -13,8 +13,8 @@ const getDefaultState = () => {
     ],
     loans: {
       '0': {
-        accountId: 0,
-        accountName: '',
+        loanId: 0,
+        loanName: '',
         description: '',
         institution: '',
         type: '',
@@ -24,13 +24,13 @@ const getDefaultState = () => {
           nameLong: '',
           nameShort: ''
         },
-        accountValues: [
+        loanValues: [
           {
-            accountValueId: 0,
+            loanValueId: 0,
             date: '',
             value: 0.00,
-            account: {
-              accountId: 0
+            loan: {
+              loanId: 0
             }
           }
         ],

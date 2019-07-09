@@ -1,11 +1,11 @@
 
-const getInitialFirstAccountId = state => {
-  return Object.keys(state.accounts)[1]
+const getInitialFirstLoanId = state => {
+  return Object.keys(state.loans)[1]
 }
 
-const accounts = state => {
+const loans = state => {
   var filtered = {}
-  Object.assign(filtered, state.accounts)
+  Object.assign(filtered, state.loans)
   for (var key in filtered) {
     if (key == 0) {
       delete filtered[key];
@@ -14,36 +14,36 @@ const accounts = state => {
   return filtered
 }
 
-const accountById = state => (id) => {
-  return state.accounts[id]
+const loanById = state => (id) => {
+  return state.loans[id]
 }
 
-const accountName = state => (id) => {
-  var account = state.accounts[id]
-  return account.accountName
+const loanName = state => (id) => {
+  var loan = state.loans[id]
+  return loan.loanName
 }
 
-const accountValues = state => {
-  return state.accountValues
+const loanValues = state => {
+  return state.loanValues
 }
 
-const accountValueById = state => (id) => {
-  return state.accountValues[id]
+const loanValueById = state => (id) => {
+  return state.loanValues[id]
 }
 
-const accountValuesByAccountId = state => (id) => {
-  if (state.accounts[id].hasOwnProperty('accountValues')) {
-    return state.accounts[id].accountValues
+const loanValuesByLoanId = state => (id) => {  
+  if (state.loans[id].hasOwnProperty('loanValues')) {
+    return state.loans[id].loanValues
   } 
   else {
     return []
   }
 }
 
-const getAccountBalance = state => (accountId) => {
+const getLoanBalance = state => (loanId) => {
   try {
-    var numOfValues = state.accounts[accountId].accountValues.length;
-    return state.accounts[accountId].accountValues[ numOfValues - 1 ].value;
+    var numOfValues = state.loans[loanId].loanValues.length;
+    return state.loans[loanId].loanValues[ numOfValues - 1 ].value;
   }
   catch (error) {
     console.error(error); 
@@ -55,12 +55,12 @@ const loanTypes = state => {
   return state.loanTypes
 }
 
-const selectedAccountId = state => {
-  return state.selectedAccountId
+const selectedLoanId = state => {
+  return state.selectedLoanId
 }
 
-const selectedAccountCurrencySymbol = state => {
-  return state.selectedAccountCurrencySymbol
+const selectedLoanCurrencySymbol = state => {
+  return state.selectedLoanCurrencySymbol
 }
 
 const tableColumns = state => {
@@ -68,16 +68,16 @@ const tableColumns = state => {
 }
 
 export {
-  getInitialFirstAccountId,
-  accounts,
-  accountById,
-  accountName,
-  accountValues,
-  accountValueById,
-  accountValuesByAccountId,
-  getAccountBalance,
+  getInitialFirstLoanId,
+  loans,
+  loanById,
+  loanName,
+  loanValues,
+  loanValueById,
+  loanValuesByLoanId,
+  getLoanBalance,
   loanTypes,
-  selectedAccountId,
-  selectedAccountCurrencySymbol,
+  selectedLoanId,
+  selectedLoanCurrencySymbol,
   tableColumns
 }

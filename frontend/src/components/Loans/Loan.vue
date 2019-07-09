@@ -1,10 +1,10 @@
 <template>
   <q-card               
     @click="
-      updateSelectedAccountId(account.accountId);
-      var symbol = getCurrencySymbol(account.quotedCurrency.nameShort);
-      updateSelectedAccountCurrencySymbol(symbol);
-      updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + account.quotedCurrency.code + ' ' + symbol + ')' } });
+      updateSelectedLoanId(loan.loanId);
+      var symbol = getCurrencySymbol(loan.quotedCurrency.nameShort);
+      updateSelectedLoanCurrencySymbol(symbol);
+      updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + loan.quotedCurrency.code + ' ' + symbol + ')' } });
       "
     class="my-card text-white"
     style="background: radial-gradient(circle, #BB5601 0%, #883F01 100%)" 
@@ -12,7 +12,7 @@
     <q-card-section>
       <div class="row">
         
-        <div class="col-9 text-h6">{{ account.accountName }}</div>
+        <div class="col-9 text-h6">{{ loan.loanName }}</div>
 
         <div class="col-3">
           <div class="float-right">
@@ -24,7 +24,7 @@
               color="cyan-2" 
               icon="edit" /> 
             <q-btn 
-              @click.stop="promptToDeleteAccount(account.accountId)"
+              @click.stop="promptToDeleteLoan(loan.loanId)"
               flat 
               round 
               dense
@@ -34,24 +34,24 @@
         </div>
       </div>
 
-      <div class="text-subtitle2">{{ account.institution }}</div>
+      <div class="text-subtitle2">{{ loan.institution }}</div>
     </q-card-section>
     <q-card-section>
-      Type: {{ account.type }}
-      <br />Currency: {{ account.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.accountId) }}
+      Type: {{ loan.type }}
+      <br />Currency: {{ loan.quotedCurrency.code }}
+      <br />Balance: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + getLoanBalance(loan.loanId) }}
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
       content-class="bg-deep-orange" content-style="font-size: 14px" >
-      {{ account.description }}
+      {{ loan.description }}
     </q-tooltip>
 
     <q-dialog v-model="showEditLoan">
       <edit-loan 
         @close="showEditLoan = false" 
-        :account="account"
-        :accountId="account.accountId" />
+        :loan="loan"
+        :loanId="loan.loanId" />
     </q-dialog>
   </q-card>
 </template>
@@ -61,7 +61,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['account'],
+    props: ['loan'],
     data() {
       return {
         showEditLoan: false
@@ -69,16 +69,16 @@
     },
 
     computed: {
-      ...mapGetters('loans', ['accounts', 'accountValuesByAccountId', 'getAccountBalance', 'selectedAccountId']),
+      ...mapGetters('loans', ['loans', 'loanValuesByLoanId', 'getLoanBalance', 'selectedLoanId']),
     },
     
     methods: {
-      ...mapActions('loans', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteAccount']),
+      ...mapActions('loans', ['updateSelectedLoanId', 'updateSelectedLoanCurrencySymbol', 'updateTableColumn', 'deleteLoan']),
 
-      promptToDeleteAccount(id) {
+      promptToDeleteLoan(id) {
         this.$q.dialog({
           title: 'Confirm',
-          message: 'Are you sure you want to delete this account and all associated data? This cannot be undone.',
+          message: 'Are you sure you want to delete this loan and all associated data? This cannot be undone.',
           ok: {
             label: 'Yes'
           },
@@ -87,21 +87,21 @@
           },
           persistent: true
         }).onOk(() => {
-          this.deleteAccount(id)
+          this.deleteLoan(id)
         })
       },
       log: function(str) {
         console.log(str);
       },
-      getAccountBalance: function (accountId) {
+      getLoanBalance: function (loanId) {
         try {
-          var numOfValues = this.accountValuesByAccountId(accountId).length;
+          var numOfValues = this.loanValuesByLoanId(loanId).length;
           if (numOfValues == 0) {
-            console.log('No account values for accountId: ' + accountId);
-            return " No account values";
+            console.log('No loan values for loanId: ' + loanId);
+            return " No loan values";
           }
           else {
-            return this.getAccountBalance(accountId).toFixed(2);
+            return this.getLoanBalance(loanId).toFixed(2);
           }          
         }
         catch (error) {
