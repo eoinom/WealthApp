@@ -1,5 +1,5 @@
 export const scrollAreaMixin = {
-  methods: {
+  computed: {
     contentStyle () {
       return {
         backgroundColor: 'rgba(0,0,0,0.02)',
