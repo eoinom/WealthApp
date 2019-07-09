@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backendData;
 
 namespace backendData.Migrations
 {
     [DbContext(typeof(backendDbContext))]
-    partial class backendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190708201651_Take Required off Loan Start Principal")]
+    partial class TakeRequiredoffLoanStartPrincipal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +180,7 @@ namespace backendData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreditCardId");
+                    b.Property<int?>("CreditCardId");
 
                     b.Property<DateTime>("Date");
 
@@ -189,7 +191,7 @@ namespace backendData.Migrations
 
                     b.HasIndex("CreditCardId");
 
-                    b.ToTable("CreditCardValues");
+                    b.ToTable("CreditCardValue");
                 });
 
             modelBuilder.Entity("backendData.Models.CryptoAccount", b =>
@@ -309,7 +311,7 @@ namespace backendData.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("FixedTerm");
+                    b.Property<int>("FixedTermInMonths");
 
                     b.Property<string>("Institution");
 
@@ -335,7 +337,7 @@ namespace backendData.Migrations
                     b.Property<decimal>("StartPrincipal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TotalTerm");
+                    b.Property<int>("TermInMonths");
 
                     b.Property<string>("Type");
 
@@ -360,7 +362,7 @@ namespace backendData.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int>("LoanId");
+                    b.Property<int?>("LoanId");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
@@ -369,7 +371,7 @@ namespace backendData.Migrations
 
                     b.HasIndex("LoanId");
 
-                    b.ToTable("LoanValues");
+                    b.ToTable("LoanValue");
                 });
 
             modelBuilder.Entity("backendData.Models.User", b =>
@@ -470,8 +472,7 @@ namespace backendData.Migrations
                 {
                     b.HasOne("backendData.Models.CreditCard", "CreditCard")
                         .WithMany("CreditCardValues")
-                        .HasForeignKey("CreditCardId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CreditCardId");
                 });
 
             modelBuilder.Entity("backendData.Models.CryptoAccount", b =>
@@ -526,8 +527,7 @@ namespace backendData.Migrations
                 {
                     b.HasOne("backendData.Models.Loan", "Loan")
                         .WithMany("LoanValues")
-                        .HasForeignKey("LoanId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("LoanId");
                 });
 
             modelBuilder.Entity("backendData.Models.User", b =>

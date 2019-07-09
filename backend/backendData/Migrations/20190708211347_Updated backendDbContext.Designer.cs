@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backendData;
 
 namespace backendData.Migrations
 {
     [DbContext(typeof(backendDbContext))]
-    partial class backendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190708211347_Updated backendDbContext")]
+    partial class UpdatedbackendDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,7 +311,7 @@ namespace backendData.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("FixedTerm");
+                    b.Property<int>("FixedTermInMonths");
 
                     b.Property<string>("Institution");
 
@@ -335,7 +337,7 @@ namespace backendData.Migrations
                     b.Property<decimal>("StartPrincipal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TotalTerm");
+                    b.Property<int>("TermInMonths");
 
                     b.Property<string>("Type");
 
