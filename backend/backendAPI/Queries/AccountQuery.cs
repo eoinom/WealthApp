@@ -8,12 +8,12 @@ namespace backendAPI.Queries
     {
         public AccountQuery(IAccountRepository accountRepository)
         {
-            Field<ListGraphType<LoanType>>(
+            Field<ListGraphType<AccountType>>(
                 "userAccounts",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "userId" }),
                 resolve: context => accountRepository.GetAllForUser(context.GetArgument<int>("userId")));
 
-            Field<LoanType>(
+            Field<AccountType>(
                 "account",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "accountId" }),
                 resolve: context => accountRepository.GetById(context.GetArgument<int>("accountId")));

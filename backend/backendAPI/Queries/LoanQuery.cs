@@ -6,7 +6,7 @@ namespace backendAPI.Queries
 {
     public class LoanQuery : ObjectGraphType
     {
-        public LoanQuery(IAccountRepository loanRepository)
+        public LoanQuery(ILoanRepository loanRepository)
         {
             Field<ListGraphType<LoanType>>(
                 "userLoans",

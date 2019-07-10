@@ -12,7 +12,7 @@ namespace backendAPI.Mutations
         {
             Name = "AccountMutations";
 
-            Field<LoanType>(
+            Field<AccountType>(
                 "addAccount",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<AccountInputType>> { Name = "account" }),
@@ -47,7 +47,7 @@ namespace backendAPI.Mutations
                     return accountRepository.Add(newAccount);
                 });
 
-            Field<LoanType>(
+            Field<AccountType>(
                 "updateAccount",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<AccountInputType>> { Name = "account" }),
