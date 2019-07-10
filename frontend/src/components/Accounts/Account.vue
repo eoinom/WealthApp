@@ -10,10 +10,8 @@
     style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" 
     >
     <q-card-section>
-      <div class="row">
-        
+      <div class="row">        
         <div class="col-9 text-h6">{{ account.accountName }}</div>
-
         <div class="col-3">
           <div class="float-right">
             <q-btn 
@@ -33,13 +31,20 @@
           </div>        
         </div>
       </div>
-
       <div class="text-subtitle2">{{ account.institution }}</div>
     </q-card-section>
+
     <q-card-section>
-      Type: {{ account.type }}
-      <br />Currency: {{ account.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.accountId) }}
+      <div class="row"> 
+        <div class="col-9">
+          Type: {{ account.type }}
+          <br />Currency: {{ account.quotedCurrency.code }}
+          <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.accountId) }}
+        </div>
+        <div class="col institutionLogo" v-if="getInstitutionUrl(account.institution) != ''">
+          <img :src="getInstitutionLogoSrc(account.institution, undefined)">
+        </div>
+      </div>
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -59,9 +64,11 @@
 <script>
   import { mapActions } from 'vuex'
   import { mapGetters } from 'vuex'
+  import { institutionUrlsMixin } from '../../mixins/institutionUrlsMixin'
 
   export default {
     props: ['account'],
+    mixins: [institutionUrlsMixin],
 
     data() {
       return {
@@ -141,5 +148,13 @@
 </script>
 
 <style>
+  .institutionLogo {
+    text-align: right;
+  }
 
+  .institutionLogo img {
+    max-width: 150px;
+    max-height: 70px;
+    height: auto;
+  }
 </style>

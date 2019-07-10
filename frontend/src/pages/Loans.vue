@@ -140,6 +140,12 @@
       </div>
     </div>
 
+
+    <br /><br /><br /><br /><br /><br /><br />
+    <div class="footerNotes text-center">
+      <a href="https://clearbit.com" class="">Logos provided by Clearbit</a>
+    </div>
+
     <q-dialog v-model="showAddLoan">
       <add-loan @close="showAddLoan = false" />
     </q-dialog>
@@ -332,5 +338,8 @@
 
 
 <style>
-  
+  .footerNotes a {
+    text-decoration: none;
+    /* font-size: 12pt; */
+  }
 </style>

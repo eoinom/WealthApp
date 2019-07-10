@@ -10,10 +10,8 @@
     style="background: radial-gradient(circle, #BB5601 0%, #883F01 100%)" 
     >
     <q-card-section>
-      <div class="row">
-        
+      <div class="row">        
         <div class="col-9 text-h6">{{ loan.loanName }}</div>
-
         <div class="col-3">
           <div class="float-right">
             <q-btn 
@@ -33,19 +31,25 @@
           </div>        
         </div>
       </div>
-
       <div class="text-subtitle2">{{ loan.institution }}</div>
     </q-card-section>
-    <q-card-section>
-      Type: {{ loan.type }}
-      <br />Currency: {{ loan.quotedCurrency.code }}
-      <br />Balance: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + getLoanBalance(loan.loanId) }}
-      <br />Start Principal: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) +toLocaleFixed(loan.startPrincipal, 2) }}
-      <br />Start Date: {{ loan.startDate }}
-      <br />Total Term: {{ getTermStr(loan.totalTerm, loan.repaymentFrequency) }}
-      <br />Rate: {{ (100*loan.aprRate).toFixed(2) + '% (' + loan.rateType + ')' }}
-      <br />Repayment: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + loan.repaymentAmount + ' ' + loan.repaymentFrequency }}
 
+    <q-card-section>
+      <div class="row"> 
+        <div class="col-9">
+          Type: {{ loan.type }}
+          <br />Currency: {{ loan.quotedCurrency.code }}
+          <br />Balance: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + getLoanBalance(loan.loanId) }}
+          <br />Start Principal: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) +toLocaleFixed(loan.startPrincipal, 2) }}
+          <br />Start Date: {{ loan.startDate }}
+          <br />Total Term: {{ getTermStr(loan.totalTerm, loan.repaymentFrequency) }}
+          <br />Rate: {{ (100*loan.aprRate).toFixed(2) + '% (' + loan.rateType + ')' }}
+          <br />Repayment: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + loan.repaymentAmount + ' ' + loan.repaymentFrequency }}
+        </div>  
+        <div class="col institutionLogo" v-if="getInstitutionUrl(loan.institution) != ''">
+          <img :src="getInstitutionLogoSrc(loan.institution, undefined)">
+        </div>
+      </div>
     </q-card-section>
 
     <q-tooltip anchor="top right" self="top middle" :offset="[10, 10]" 
@@ -65,9 +69,11 @@
 <script>
   import { mapActions } from 'vuex'
   import { mapGetters } from 'vuex'
+  import { institutionUrlsMixin } from '../../mixins/institutionUrlsMixin'
 
   export default {
     props: ['loan'],
+    mixins: [institutionUrlsMixin],
     data() {
       return {
         showEditLoan: false
@@ -185,5 +191,13 @@
 </script>
 
 <style>
+  .institutionLogo {
+    text-align: right;
+  }
 
+  .institutionLogo img {
+    max-width: 150px;
+    max-height: 70px;
+    height: auto;
+  }
 </style>

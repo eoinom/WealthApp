@@ -139,6 +139,12 @@
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
       </div>
     </div>
+    
+
+    <br /><br /><br /><br /><br /><br /><br />
+    <div class="footerNotes text-center">
+      <a href="https://clearbit.com" class="">Logos provided by Clearbit</a>
+    </div>
 
     <q-dialog v-model="showAddAccount">
       <add-account @close="showAddAccount = false" />
@@ -327,5 +333,8 @@
 
 
 <style>
-  
+  .footerNotes a {
+    text-decoration: none;
+    /* font-size: 12pt; */
+  }
 </style>
