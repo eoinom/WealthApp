@@ -68,21 +68,20 @@ namespace backendDataAccess.Repositories
         public User Login(string email, string password)
         {
             return _dbContext.Users.AsNoTracking()
-                .Include(x => x.Country)
-                .Include(x => x.DisplayCurrency)
+                .Include(x => x.Country).AsNoTracking()
+                .Include(x => x.DisplayCurrency).AsNoTracking()
                 .Include(x => x.Accounts)
-                    .ThenInclude(a => a.QuotedCurrency)
+                    .ThenInclude(a => a.QuotedCurrency).AsNoTracking()
                 .Include(x => x.Accounts)
-                    .ThenInclude(a => a.AccountValues)
+                    .ThenInclude(a => a.AccountValues).AsNoTracking()
                 //.Include(x => x.CreditCards)
                 //    .ThenInclude(c => c.QuotedCurrency)
                 //.Include(x => x.CreditCards)
                 //    .ThenInclude(c => c.CreditCardValues)
                 .Include(x => x.Loans)
-                    .ThenInclude(l => l.QuotedCurrency)
+                    .ThenInclude(l => l.QuotedCurrency).AsNoTracking()
                 .Include(x => x.Loans)
-                    .ThenInclude(l => l.LoanValues)
-                .AsNoTracking()
+                    .ThenInclude(l => l.LoanValues).AsNoTracking()
                 .SingleOrDefault(x => x.Email == email && x.Password == password);
         }
 

@@ -84,12 +84,9 @@ namespace backendDataAccess.Repositories
             if (value.Account != null)
             {
                 Account bankAccount = _dbContext.Accounts.AsNoTracking()
-                                            //.Include(x => x.AccountValues).AsNoTracking()
                                             .Include(x => x.QuotedCurrency)
                                             .SingleOrDefault(x => x.AccountId == value.Account.AccountId);
                 value.Account = bankAccount;
-                _dbContext.Entry<Account>(bankAccount).State = EntityState.Detached;
-                _dbContext.SaveChanges();
             }
 
             _dbContext.AccountValues.Update(value);
@@ -98,6 +95,8 @@ namespace backendDataAccess.Repositories
             //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
             //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
             _dbContext.Entry<AccountValue>(value).State = EntityState.Detached;
+            _dbContext.Entry<Account>(value.Account).State = EntityState.Detached;
+            _dbContext.Entry<Currency>(value.Account.QuotedCurrency).State = EntityState.Detached;
             _dbContext.SaveChanges();
 
             return value;
