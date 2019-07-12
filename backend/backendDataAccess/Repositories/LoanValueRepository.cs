@@ -21,7 +21,7 @@ namespace backendDataAccess.Repositories
             if (value.Loan != null)
             {
                 Loan bankLoan = _dbContext.Loans
-                                            .Include(x => x.LoanValues)
+                                            //.Include(x => x.LoanValues)
                                             .Include(x => x.QuotedCurrency)
                                             .SingleOrDefault(x => x.LoanId == value.Loan.LoanId);
                 value.Loan = bankLoan;
@@ -30,6 +30,9 @@ namespace backendDataAccess.Repositories
             _dbContext.LoanValues.Add(value);
             _dbContext.SaveChanges();
             _dbContext.Entry<LoanValue>(value).State = EntityState.Detached;
+            _dbContext.Entry<Loan>(value.Loan).State = EntityState.Detached;
+            _dbContext.Entry<Currency>(value.Loan.QuotedCurrency).State = EntityState.Detached;
+            _dbContext.SaveChanges();
             return value;
         }
 

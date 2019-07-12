@@ -21,7 +21,7 @@ namespace backendDataAccess.Repositories
             if (value.Account != null)
             {
                 Account bankAccount = _dbContext.Accounts
-                                            .Include(x => x.AccountValues)
+                                            //.Include(x => x.AccountValues)
                                             .Include(x => x.QuotedCurrency)
                                             .SingleOrDefault(x => x.AccountId == value.Account.AccountId);
                 value.Account = bankAccount;
@@ -30,6 +30,9 @@ namespace backendDataAccess.Repositories
             _dbContext.AccountValues.Add(value);
             _dbContext.SaveChanges();
             _dbContext.Entry<AccountValue>(value).State = EntityState.Detached;
+            _dbContext.Entry<Account>(value.Account).State = EntityState.Detached;
+            _dbContext.Entry<Currency>(value.Account.QuotedCurrency).State = EntityState.Detached;
+            _dbContext.SaveChanges();
             return value;
         }
 

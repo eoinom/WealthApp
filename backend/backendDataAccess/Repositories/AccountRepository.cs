@@ -30,6 +30,10 @@ namespace backendDataAccess.Repositories
             addAccountAsync(account);
             _dbContext.SaveChanges();
             _dbContext.Entry<Account>(account).State = EntityState.Detached;
+            _dbContext.Entry<Currency>(account.QuotedCurrency).State = EntityState.Detached;
+            _dbContext.Entry<User>(account.User).State = EntityState.Detached;
+            _dbContext.Entry<Currency>(account.User.DisplayCurrency).State = EntityState.Detached;
+            _dbContext.SaveChanges();
             return account;
         }
 
@@ -103,8 +107,11 @@ namespace backendDataAccess.Repositories
                 //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
                 //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
                 _dbContext.Entry<Account>(account).State = EntityState.Detached;
+                _dbContext.Entry<Currency>(account.QuotedCurrency).State = EntityState.Detached;
+                _dbContext.Entry<User>(account.User).State = EntityState.Detached;
+                _dbContext.Entry<Currency>(account.User.DisplayCurrency).State = EntityState.Detached;
+                _dbContext.SaveChanges();
             }
-
             return account;
         }
     }

@@ -27,6 +27,8 @@ namespace backendDataAccess.Repositories
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
             _dbContext.Entry<User>(user).State = EntityState.Detached;
+            _dbContext.Entry<Currency>(user.DisplayCurrency).State = EntityState.Detached;
+            _dbContext.SaveChanges();
             return user;
         }
 
