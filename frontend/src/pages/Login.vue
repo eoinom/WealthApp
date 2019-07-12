@@ -349,6 +349,7 @@
           });            
           
           if (response.data.data.user_queries.userLogin != null) {
+            
             this.updateUser(response.data.data.user_queries.userLogin);
             this.initialiseAccounts(response.data.data.user_queries.userLogin.accounts);
             this.initialiseLoans(response.data.data.user_queries.userLogin.loans);

@@ -94,7 +94,7 @@
 
                 <!-- Date -->
                 <q-td key="date" :props="props">
-                  {{ props.row.date }}
+                  {{ formatDate_Iso2User(props.row.date) }}
                   <q-popup-edit 
                     v-model="popupEditDate" 
                     @show="() => showPopupDate(props.row, 'date')" 
@@ -111,7 +111,6 @@
 
                 <!-- Value -->
                 <q-td key="value" :props="props">
-                  <!-- {{ props.row.value.toFixed(2) }} -->
                   {{ toLocaleFixed(props.row.value, 2) }}
 
                   <q-popup-edit 
@@ -164,6 +163,7 @@
   import { mapActions } from 'vuex'
   import { scrollAreaMixin } from '../mixins/scrollAreaMixin'
   import { tableMixin } from '../mixins/tableMixin'
+  var moment = require('moment');
 
   export default {
     name: 'UserAccounts',
@@ -252,7 +252,7 @@
 
     computed: {
       ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'accountName']),
-      ...mapGetters('main', ['getDateFormat']),
+      // ...mapGetters('main', ['getDateFormat']),
 
       selectedAccountName() {
         return this.accountName( this.selectedAccountId() )

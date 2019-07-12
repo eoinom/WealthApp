@@ -28,14 +28,15 @@
 <script>
   import { mapActions } from 'vuex'
   import { mapGetters } from 'vuex'
-import { constants } from 'crypto';
+  import { constants } from 'crypto'
+  var moment = require('moment')
 
   export default {
     props: ['loanId'],
     data() {
       return {
         loanValueToSubmit: {
-          date: this.getTodaysDate(),
+          date: '',
           value: '',
           loanId: this.loanId,
         }
@@ -43,91 +44,26 @@ import { constants } from 'crypto';
     },
 
     computed: {
-      ...mapGetters('loans', ['selectedLoanCurrencySymbol'])
+      ...mapGetters('loans', ['selectedLoanCurrencySymbol']),
+      ...mapGetters('main', ['getDateFormat']),
     },
 
     methods: {
-      ...mapActions('loans', ['addLoanValue']),
-      ...mapGetters('main', ['getDateFormat']),
+      ...mapActions('loans', ['addLoanValue']),      
 
       submitForm() {
         // this.$refs.modalLoanValueDate.$refs.loanValueDate.validate()
-        // Need to install Moment.js and do date validation
-        this.$refs.modalLoanValue.$refs.loanValue.validate()
-        if (!this.$refs.modalLoanValue.$refs.loanValue.hasError) {
+        // Need to do date validation
+        this.$refs.modalLoanValue.$refs.value.validate()
+        if (!this.$refs.modalLoanValue.$refs.value.hasError) {
           this.submitLoanValue()
         }
       },
       submitLoanValue() {
-        this.loanValueToSubmit.date = this.convertDateToIso(this.loanValueToSubmit.date)
+        this.loanValueToSubmit.date = this.formatDate_User2Iso(this.loanValueToSubmit.date)
         console.log(this.loanValueToSubmit)
         this.addLoanValue(this.loanValueToSubmit)
         this.$emit('close')
-      },
-      getTodaysDate() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1;  // As January is 0
-        var yyyy = today.getFullYear();
-
-        if (dd < 10) 
-          dd = '0' + dd;
-        if (mm < 10) 
-          mm = '0' + mm;
-    
-        switch(this.getDateFormat()) {
-          case "DD-MM-YYYY":
-            return (dd + '-' + mm + '-' + yyyy);
-            break;
-          case "DD/MM/YYYY":
-            return (dd + '/' + mm + '/' + yyyy);
-            break;
-          case "MM-DD-YYYY":
-            return (mm + '-' + dd + '-' + yyyy);
-            break;
-          case "MM/DD/YYYY":
-            return (mm + '/' + dd + '/' + yyyy);
-            break;
-          case "YYYY-MM-DD":
-            return (yyyy + '-' + mm + '-' + dd);
-            break;
-          case "YYYY/MM/DD":
-            return (yyyy + '/' + mm + '/' + dd);
-            break;
-          default:
-            return (yyyy + '-' + mm + '-' + dd);
-        }
-      },
-      convertDateToIso(strDate) {        
-        var date = new Date();
-        var dd = '';
-        var mm = '';
-        var yyyy = '';
-        
-        switch(this.getDateFormat()) {
-          case "YYYY-MM-DD":
-            return strDate;
-          case "DD-MM-YYYY":
-          case "DD/MM/YYYY":
-            dd = strDate.slice(0,2)
-            mm = strDate.slice(3,5)
-            yyyy = strDate.slice(6,10)
-            return yyyy + '-' + mm + '-' + dd;
-          case "MM-DD-YYYY":
-          case "MM/DD/YYYY":
-            mm = strDate.slice(0,2)
-            dd = strDate.slice(3,5)
-            yyyy = strDate.slice(6,10)
-            return yyyy + '-' + mm + '-' + dd;
-          case "YYYY/MM/DD":
-            yyyy = strDate.slice(0,4)
-            mm = strDate.slice(5,7)
-            dd = strDate.slice(8,10)
-            return yyyy + '-' + mm + '-' + dd;
-          default:
-            console.log('Could not convert date string ' + strDate + ' to Iso')
-            return strDate
-        }
       }
     },
 
@@ -136,7 +72,11 @@ import { constants } from 'crypto';
       'modal-value-date': require('components/SharedModals/ModalValueDate.vue').default,
       'modal-value': require('components/SharedModals/ModalValue.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default,
-    }      
+    },
+
+    mounted () {      
+      this.loanValueToSubmit.date = moment().format(this.getDateFormat)
+    }         
   }
 </script>
 

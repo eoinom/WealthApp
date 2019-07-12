@@ -6,11 +6,11 @@
       clearable
       autogrow
       type="text"
-      :value="accountName" 
-      ref="accountName" 
+      :value="name" 
+      ref="name" 
       class="col"
       :label="label"
-      @input="$emit('update:accountName', $event)"
+      @input="$emit('update:name', $event)"
       :rules="[val => !!val || 'Field is required']" 
     />
   </div>    
@@ -18,7 +18,7 @@
 
 <script>
   export default {
-    props: ['accountName', 'label'],
+    props: ['name', 'label'],
   }
 </script>
 

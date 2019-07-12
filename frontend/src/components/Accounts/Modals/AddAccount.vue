@@ -7,7 +7,7 @@
       <q-card-section>
 
         <modal-name 
-          :accountName.sync="accountToSubmit.accountName" 
+          :name.sync="accountToSubmit.accountName" 
           label="Account name"
           ref="modalAccountName"/>  
 
@@ -70,8 +70,8 @@
     methods: {
       ...mapActions('accounts', ['addAccount']),      
       submitForm() {
-        this.$refs.modalAccountName.$refs.accountName.validate()
-        if (!this.$refs.modalAccountName.$refs.accountName.hasError) {
+        this.$refs.modalAccountName.$refs.name.validate()
+        if (!this.$refs.modalAccountName.$refs.name.hasError) {
           this.submitAccount()
         }
       },
@@ -87,7 +87,7 @@
       'modal-description': require('components/SharedModals/ModalDescription.vue').default,
       'modal-type': require('components/SharedModals/ModalType.vue').default,
       'modal-institution': require('components/SharedModals/ModalInstitution.vue').default,
-      'modal-currency': require('components/SharedModals/ModalCurrency.vue').default,
+      'modal-currency': require('components/SharedModals/ModalCurrencySelect.vue').default,
       'modal-active': require('components/SharedModals/ModalActive.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default
     }      

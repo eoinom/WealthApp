@@ -7,14 +7,19 @@
       <q-card-section>
 
         <modal-name 
-          :loanName.sync="loanToSubmit.loanName" 
+          :name.sync="loanToSubmit.loanName" 
           label="Loan name"
           ref="modalLoanName"/>  
 
         <modal-description 
           :description.sync="loanToSubmit.description" 
           label="Loan description"
-          ref="modalLoanDescription"/>    
+          ref="modalLoanDescription"/>   
+
+        <modal-institution 
+          :institution.sync="loanToSubmit.institution" 
+          label="Institution"
+          ref="modalLoanInstitution"/>   
 
         <modal-type 
           :type.sync="loanToSubmit.type" 
@@ -22,10 +27,7 @@
           :options="loanTypes"
           ref="modalLoanType"/>   
 
-        <modal-institution 
-          :institution.sync="loanToSubmit.institution" 
-          label="Institution"
-          ref="modalLoanInstitution"/>  
+        
 
         <modal-currency 
           :currencyCode.sync="loanToSubmit.currencyCode" 
@@ -55,10 +57,18 @@
         loanToSubmit: {
           loanName: '',          
           description: '',
-          type: '',
           institution: '',
-          currencyCode: '',
-          isActive: false
+          type: '',
+          startPrincipal: 0.00,
+          startDate: '',
+          totalTerm: 0,
+          fixedTerm: 0,
+          rateType: '',
+          aprRate: 0.00,
+          repaymentFrequency: '',
+          repaymentAmount: 0.00,
+          isActive: false,
+          currencyCode: '',          
         }
       }
     },
@@ -71,8 +81,8 @@
       ...mapActions('loans', ['addLoan']),   
 
       submitForm() {
-        this.$refs.modalLoanName.$refs.loanName.validate()
-        if (!this.$refs.modalLoanName.$refs.loanName.hasError) {
+        this.$refs.modalLoanName.$refs.name.validate()
+        if (!this.$refs.modalLoanName.$refs.name.hasError) {
           this.submitLoan()
         }
       },
@@ -88,7 +98,7 @@
       'modal-description': require('components/SharedModals/ModalDescription.vue').default,
       'modal-type': require('components/SharedModals/ModalType.vue').default,
       'modal-institution': require('components/SharedModals/ModalInstitution.vue').default,
-      'modal-currency': require('components/SharedModals/ModalCurrency.vue').default,
+      'modal-currency': require('components/SharedModals/ModalCurrencySelect.vue').default,
       'modal-active': require('components/SharedModals/ModalActive.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default
     }      

@@ -94,7 +94,7 @@
 
                 <!-- Date -->
                 <q-td key="date" :props="props">
-                  {{ props.row.date }}
+                  {{ formatDate_Iso2User(props.row.date) }}
                   <q-popup-edit 
                     v-model="popupEditDate" 
                     @show="() => showPopupDate(props.row, 'date')" 
@@ -111,7 +111,6 @@
 
                 <!-- Value -->
                 <q-td key="value" :props="props">
-                  <!-- {{ props.row.value.toFixed(2) }} -->
                   {{ toLocaleFixed(props.row.value, 2) }}
 
                   <q-popup-edit 
@@ -252,7 +251,6 @@
 
     computed: {
       ...mapGetters('loans', ['loans', 'loanValuesByLoanId', 'loanName']),
-      ...mapGetters('main', ['getDateFormat']),
 
       selectedLoanName() {
         return this.loanName( this.selectedLoanId() )

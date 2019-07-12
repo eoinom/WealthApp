@@ -37,7 +37,8 @@ const getDefaultState = () => {
       }
     },    
     accountIds: [],
-    initialFirstaccountId: 0,    
+    currencyCodes: [ 'AUD', 'CAD', 'EUR', 'GBP', 'USD', 'NZD' ],
+    initialFirstAccountId: 0,    
     selectedAccountId: 0,
     selectedAccountCurrencySymbol: '€',    
     tableColumns: [

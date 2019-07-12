@@ -4,8 +4,10 @@ import * as actions from './actions'
 
 const getDefaultState = () => {
   return {
-    authenticated: false,    
-    dateFormat: 'YYYY-MM-DD',
+    authenticated: false, 
+    currencyCodes: [ 'AUD', 'CAD', 'EUR', 'GBP', 'USD', 'NZD' ],   
+    // dateFormat: 'YYYY-MM-DD',
+    dateFormat: 'DD/MM/YYYY',
     user: {
       userId: 0,
       email: '',

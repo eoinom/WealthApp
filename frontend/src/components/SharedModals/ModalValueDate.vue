@@ -5,8 +5,8 @@
       label="Date"
       autofocus
       clearable
-      :value="accountValueDate"
-      @input="$emit('update:accountValueDate', $event)"
+      :value="valueDate"
+      @input="$emit('update:valueDate', $event)"
       class="col" >
       <template v-slot:append> 
         <!-- <q-icon 
@@ -18,9 +18,11 @@
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
             <q-date 
-              :value="accountValueDate" 
+              :value="valueDate" 
               :mask="getDateFormat"
-              @input="$refs.qDateProxy.hide(); $emit('update:accountValueDate', $event)" />
+              today-btn
+              :options="date => dateOptionsFn(date)"
+              @input="$refs.qDateProxy.hide(); $emit('update:valueDate', $event)" />
           </q-popup-proxy>
         </q-icon>              
       </template>
@@ -30,12 +32,17 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  var moment = require('moment');
 
   export default {    
-    props: ['accountValueDate'],
+    props: ['valueDate'],
     computed: {   
-      ...mapGetters('main', ['getDateFormat']),
-      
+      ...mapGetters('main', ['getDateFormat'])      
+    },
+    methods: {
+      dateOptionsFn(date) {
+        return moment(date, "YYYY/MM/DD") <= moment()
+      }
     }
   }
 </script>

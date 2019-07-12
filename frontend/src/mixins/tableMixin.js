@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 export const tableMixin = {
   data () {
     return {
@@ -23,15 +25,7 @@ export const tableMixin = {
       this.popupEditValue = row[col];
     },
     dateOptionsFn(date) {
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth()+1; 
-      var yyyy = today.getFullYear();
-      if(dd<10) 
-      dd='0'+dd;
-      if(mm<10) 
-      mm='0'+mm;
-      return date <= yyyy + '/' + mm + '/' + dd;
+      return moment(date, "YYYY/MM/DD") <= moment()
     },
     customTableSort(rows, sortBy, descending) {
       let data = [...rows]
@@ -40,57 +34,14 @@ export const tableMixin = {
         data.sort((a, b) => {
           let x = descending ? b : a
           let y = descending ? a : b
+
           if (sortBy === 'date') {
             // string sort
             // return x[sortBy] > y[sortBy] ? 1 : x[sortBy] < y[sortBy] ? -1 : 0
             
             // date sort
-            var xDate = new Date();
-            var yDate = new Date();
-            var dd = '';
-            var mm = '';
-            var yyyy = '';
-            
-            switch(this.getDateFormat) {
-              case "YYYY-MM-DD":
-              case "MM/DD/YYYY":
-              xDate = new Date(x[sortBy]);
-              yDate = new Date(y[sortBy]);
-              break;
-              case "DD-MM-YYYY":
-              case "DD/MM/YYYY":
-              dd = x[sortBy].slice(0,2)
-              mm = x[sortBy].slice(3,5)
-              yyyy = x[sortBy].slice(6,10)
-              xDate = new Date(yyyy + '-' + mm + '-' + dd);
-              dd = y[sortBy].slice(0,2)
-              mm = y[sortBy].slice(3,5)
-              yyyy = y[sortBy].slice(6,10)
-              yDate = new Date(yyyy + '-' + mm + '-' + dd);
-              break;
-              case "MM-DD-YYYY":
-              mm = x[sortBy].slice(0,2)
-              dd = x[sortBy].slice(3,5)
-              yyyy = x[sortBy].slice(6,10)
-              xDate = new Date(yyyy + '-' + mm + '-' + dd);
-              mm = y[sortBy].slice(0,2)
-              dd = y[sortBy].slice(3,5)
-              yyyy = y[sortBy].slice(6,10)
-              yDate = new Date(yyyy + '-' + mm + '-' + dd);
-              break;
-              case "YYYY/MM/DD":
-              yyyy = x[sortBy].slice(0,4)
-              mm = x[sortBy].slice(5,7)
-              dd = x[sortBy].slice(8,10)
-              xDate = new Date(yyyy + '-' + mm + '-' + dd);
-              yyyy = y[sortBy].slice(0,4)
-              mm = y[sortBy].slice(5,7)
-              dd = y[sortBy].slice(8,10)
-              yDate = new Date(yyyy + '-' + mm + '-' + dd);
-              break;
-              default:
-              // do nothing
-            }
+            var xDate = moment(x.date, "YYYY-MM-DD");
+            var yDate = moment(y.date, "YYYY-MM-DD");
             return xDate - yDate;
           }
           else {

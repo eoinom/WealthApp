@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 
 function resetState ({ commit }) {
   commit('resetState')
@@ -7,15 +9,19 @@ function initialiseAccounts ({ commit }, accounts) {
   for (var i = 0; i < Object.keys(accounts).length; i++) {
     var id = accounts[i].accountId
     if (i === 0) {
-      commit('setInitialFirstaccountId', id)
+      commit('setInitialFirstAccountId', id)
     }
     commit('addAccount', accounts[i])
+    commit('sortAccountValues', accounts[i].accountId)
   } 
 };
 
-async function addAccount ({ commit, state }, account) {
+async function addAccount ({ commit, rootState }, account) {
+  account.userId = rootState.main.user.userId
+  account.quotedCurrency = account.currencyCode
+  delete account.currencyCode
   console.log('account to add:')
-  console.log(account)
+  console.log(account)  
   
   //send mutation to graphql with account to add to db
   const axios = require("axios");
@@ -44,21 +50,13 @@ async function addAccount ({ commit, state }, account) {
         }
         `,
         variables: {
-          account: {
-            accountName: account.accountName,
-            description: account.description,
-            type: account.type,
-            institution: account.institution,
-            isActive: account.isActive,                
-            quotedCurrency: account.currencyCode,
-            userId: state.user.userId
-          }
+          account: account
         },
       }
     });            
     
     // get back details of new account from database and add to local store
-    if (response.data.data.account_mutations.addAccount != null) {          
+    if (response.data.data.account_mutations.addAccount != null) {     
       commit('addAccount', response.data.data.account_mutations.addAccount)
     }   
   } catch (error) {
@@ -66,7 +64,10 @@ async function addAccount ({ commit, state }, account) {
   }
 };
 
-async function updateAccount ({ commit, state }, account) {
+async function updateAccount ({ commit, rootState }, account) {
+  account.userId = rootState.main.user.userId
+  account.quotedCurrency = account.currencyCode
+  delete account.currencyCode
   console.log('account to update:')
   console.log(account)
 
@@ -97,16 +98,7 @@ async function updateAccount ({ commit, state }, account) {
         }
         `,
         variables: {
-          account: {
-            accountId: account.accountId,
-            accountName: account.accountName,
-            description: account.description,
-            type: account.type,
-            institution: account.institution,
-            isActive: account.isActive,                
-            quotedCurrency: account.currencyCode,
-            userId: state.user.userId
-          }
+          account: account
         },
       }
     });            
@@ -120,7 +112,7 @@ async function updateAccount ({ commit, state }, account) {
   }
 }
 
-async function deleteAccount ({ commit, state, rootState, dispatch }, accountId) {
+async function deleteAccount ({ commit, state, rootState }, accountId) {
   console.log('accountId for deletion: ' + accountId)
   
   //send mutation to graphql with accountId to delete from db
@@ -150,15 +142,14 @@ async function deleteAccount ({ commit, state, rootState, dispatch }, accountId)
   } catch (error) {
     console.error(error); 
   }
-  
-  // update the selectedAccountId
-  var newSelectedAccId = 0
-  if (state.accountIds.length > 0) {
-    newSelectedAccId = state.accountIds[0]
-  }
-  var selectedId = rootState.accounts.selectedAccountId
-  if (selectedId == accountId) {
-    dispatch('accounts/updateSelectedAccountId', newSelectedAccId, {root:true})
+
+  if (state.selectedAccountId == accountId) {
+    // update the selectedAccountId
+    var newSelectedId = 0
+    if (state.accountIds.length > 0) {
+      newSelectedId = state.accountIds[0]
+    }
+    commit('updateSelectedAccountId', newSelectedId)
   }
 }
 
@@ -188,11 +179,7 @@ async function addAccountValue ({ commit }, accountValue) {
         }
         `,
         variables: {
-          accountValue: {
-            date: accountValue.date,
-            value: accountValue.value,
-            accountId: accountValue.accountId
-          }
+          accountValue: accountValue
         },
       }
     });            
@@ -200,13 +187,14 @@ async function addAccountValue ({ commit }, accountValue) {
     // get back details of new account from database and add to local store
     if (response.data.data.accountValue_mutations.addAccountValue != null) {       
       commit('addAccountValue', response.data.data.accountValue_mutations.addAccountValue)
+      commit('sortAccountValues', accountValue.accountId)
     }   
   } catch (error) {
     console.error(error); 
   }
 }
 
-async function updateAccountValue ({ commit }, accountValue) {
+async function updateAccountValue ({ commit, rootState }, accountValue) {
   console.log('account value to update:')
   console.log(accountValue)
   
@@ -243,8 +231,9 @@ async function updateAccountValue ({ commit }, accountValue) {
     });            
     
     // get back details of new account from database and add to local store
-    if (response.data.data.accountValue_mutations.updateAccountValue != null) {       
+    if (response.data.data.accountValue_mutations.updateAccountValue != null) { 
       commit('updateAccountValue', response.data.data.accountValue_mutations.updateAccountValue)
+      commit('sortLoanValues', accountValue.account.accountId)
     }   
   } catch (error) {
     console.error(error); 

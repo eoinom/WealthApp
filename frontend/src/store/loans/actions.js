@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 
 function resetState ({ commit }) {
   commit('resetState')
@@ -7,13 +9,17 @@ function initialiseLoans ({ commit }, loans) {
   for (var i = 0; i < Object.keys(loans).length; i++) {
     var id = loans[i].loanId
     if (i === 0) {
-      commit('setInitialFirstloanId', id)
+      commit('setInitialFirstLoanId', id)
     }
     commit('addLoan', loans[i])
+    commit('sortLoanValues', loans[i].loanId)
   } 
 };
 
-async function addLoan ({ commit, state }, loan) {
+async function addLoan ({ commit, rootState }, loan) {  
+  loan.userId = rootState.main.user.userId
+  loan.quotedCurrency = loan.currencyCode
+  delete loan.currencyCode
   console.log('loan to add:')
   console.log(loan)
   
@@ -33,26 +39,26 @@ async function addLoan ({ commit, state }, loan) {
               description
               type
               institution
+              startPrincipal
+              startDate
+              totalTerm
+              fixedTerm
+              rateType
+              aprRate
+              repaymentFrequency
+              repaymentAmount
               isActive
               quotedCurrency {
                 code
                 nameLong
                 nameShort
-              }
+              }              
             }
           }
         }
         `,
         variables: {
-          loan: {
-            loanName: loan.loanName,
-            description: loan.description,
-            type: loan.type,
-            institution: loan.institution,
-            isActive: loan.isActive,                
-            quotedCurrency: loan.currencyCode,
-            userId: state.user.userId
-          }
+          loan: loan
         },
       }
     });            
@@ -66,7 +72,10 @@ async function addLoan ({ commit, state }, loan) {
   }
 };
 
-async function updateLoan ({ commit, state }, loan) {
+async function updateLoan ({ commit, rootState }, loan) {
+  loan.userId = rootState.main.user.userId
+  loan.quotedCurrency = loan.currencyCode
+  delete loan.currencyCode
   console.log('loan to update:')
   console.log(loan)
 
@@ -97,16 +106,7 @@ async function updateLoan ({ commit, state }, loan) {
         }
         `,
         variables: {
-          loan: {
-            loanId: loan.loanId,
-            loanName: loan.loanName,
-            description: loan.description,
-            type: loan.type,
-            institution: loan.institution,
-            isActive: loan.isActive,                
-            quotedCurrency: loan.currencyCode,
-            userId: state.user.userId
-          }
+          loan: loan
         },
       }
     });            
@@ -120,7 +120,7 @@ async function updateLoan ({ commit, state }, loan) {
   }
 }
 
-async function deleteLoan ({ commit, state, rootState, dispatch }, loanId) {
+ async function deleteLoan ({ commit, state, /*dispatch*/ }, loanId) {
   console.log('loanId for deletion: ' + loanId)
   
   //send mutation to graphql with loanId to delete from db
@@ -149,16 +149,15 @@ async function deleteLoan ({ commit, state, rootState, dispatch }, loanId) {
     }   
   } catch (error) {
     console.error(error); 
-  }
+  }  
   
-  // update the selectedLoanId
-  var newSelectedAccId = 0
-  if (state.loanIds.length > 0) {
-    newSelectedAccId = state.loanIds[0]
-  }
-  var selectedId = rootState.loans.selectedLoanId
-  if (selectedId == loanId) {
-    dispatch('loans/updateSelectedLoanId', newSelectedAccId, {root:true})
+  if (state.selectedLoanId == loanId) {
+    // update the selectedLoanId
+    var newSelectedId = 0
+    if (state.loanIds.length > 0) {
+      newSelectedId = state.loanIds[0]
+    }
+    commit('updateSelectedLoanId', newSelectedId)
   }
 }
 
@@ -188,11 +187,7 @@ async function addLoanValue ({ commit }, loanValue) {
         }
         `,
         variables: {
-          loanValue: {
-            date: loanValue.date,
-            value: loanValue.value,
-            loanId: loanValue.loanId
-          }
+          loanValue: loanValue
         },
       }
     });            
@@ -200,6 +195,7 @@ async function addLoanValue ({ commit }, loanValue) {
     // get back details of new loan from database and add to local store
     if (response.data.data.loanValue_mutations.addLoanValue != null) {       
       commit('addLoanValue', response.data.data.loanValue_mutations.addLoanValue)
+      commit('sortLoanValues', loanValue.loanId)
     }   
   } catch (error) {
     console.error(error); 
@@ -243,8 +239,9 @@ async function updateLoanValue ({ commit }, loanValue) {
     });            
     
     // get back details of new loan from database and add to local store
-    if (response.data.data.loanValue_mutations.updateLoanValue != null) {       
-      commit('updateLoanValue', response.data.data.loanValue_mutations.updateLoanValue)
+    if (response.data.data.loanValue_mutations.updateLoanValue != null) {    
+      commit('updateLoanValue', response.data.data.accountValue_mutations.updateLoanValue)
+      commit('sortLoanValues', loanValue.loan.loanId)
     }   
   } catch (error) {
     console.error(error); 

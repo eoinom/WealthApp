@@ -93,7 +93,7 @@
       'modal-description': require('components/SharedModals/ModalDescription.vue').default,
       'modal-type': require('components/SharedModals/ModalType.vue').default,
       'modal-institution': require('components/SharedModals/ModalInstitution.vue').default,
-      'modal-currency': require('components/SharedModals/ModalCurrency.vue').default,
+      'modal-currency': require('components/SharedModals/ModalCurrencySelect.vue').default,
       'modal-active': require('components/SharedModals/ModalActive.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default
     },

@@ -5,11 +5,11 @@
       type="number"             
       :decimals="2"
       step="0.01"
-      :value="accountValue" 
+      :value="value" 
       :prefix="currencySymbol"
-      @input="$emit('update:accountValue', $event)"
+      @input="$emit('update:value', $event)"
       :rules="[val => !!val || 'Field is required']"
-      ref="accountValue"
+      ref="value"
       label="Value" 
       class="col"
       clearable />
@@ -20,15 +20,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['accountValue', 'currencySymbol'],
-    
-    data () {
-      return {
-        accountVal: this.accountValue
-      }
-    }
-  }
-
-  
+    props: ['value', 'currencySymbol'],
+  }  
 </script>
 
