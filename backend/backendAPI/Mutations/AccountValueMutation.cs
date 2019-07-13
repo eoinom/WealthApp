@@ -25,6 +25,8 @@ namespace backendAPI.Mutations
                     AccountValue newAccountValue = new AccountValue() {
                         Date = (System.DateTime)JToken.FromObject(accountValueArg).SelectToken("date"),
                         Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
+                        RateToUserCurrency = (double)JToken.FromObject(accountValueArg).SelectToken("rateToUserCurrency"),
+                        ValueUserCurrency = (decimal)JToken.FromObject(accountValueArg).SelectToken("valueUserCurrency")
                     };
                    
                     var accountId = JToken.FromObject(accountValueArg).SelectToken("accountId");
@@ -52,6 +54,8 @@ namespace backendAPI.Mutations
                         AccountValueId = (int)JToken.FromObject(accountValueArg).SelectToken("accountValueId"),
                         Date = (System.DateTime)JToken.FromObject(accountValueArg).SelectToken("date"),
                         Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
+                        RateToUserCurrency = (double)JToken.FromObject(accountValueArg).SelectToken("rateToUserCurrency"),
+                        ValueUserCurrency = (decimal)JToken.FromObject(accountValueArg).SelectToken("valueUserCurrency")
                     };
 
                     Account account = new Account();

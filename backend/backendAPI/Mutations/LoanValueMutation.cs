@@ -25,6 +25,8 @@ namespace backendAPI.Mutations
                     LoanValue newLoanValue = new LoanValue() {
                         Date = (System.DateTime)JToken.FromObject(loanValueArg).SelectToken("date"),
                         Value = (decimal)JToken.FromObject(loanValueArg).SelectToken("value"),
+                        RateToUserCurrency = (double)JToken.FromObject(loanValueArg).SelectToken("rateToUserCurrency"),
+                        ValueUserCurrency = (decimal)JToken.FromObject(loanValueArg).SelectToken("valueUserCurrency")
                     };
                    
                     var loanId = JToken.FromObject(loanValueArg).SelectToken("loanId");
@@ -52,6 +54,8 @@ namespace backendAPI.Mutations
                         LoanValueId = (int)JToken.FromObject(loanValueArg).SelectToken("loanValueId"),
                         Date = (System.DateTime)JToken.FromObject(loanValueArg).SelectToken("date"),
                         Value = (decimal)JToken.FromObject(loanValueArg).SelectToken("value"),
+                        RateToUserCurrency = (double)JToken.FromObject(loanValueArg).SelectToken("rateToUserCurrency"),
+                        ValueUserCurrency = (decimal)JToken.FromObject(loanValueArg).SelectToken("valueUserCurrency")
                     };
 
                     Loan loan = new Loan();
