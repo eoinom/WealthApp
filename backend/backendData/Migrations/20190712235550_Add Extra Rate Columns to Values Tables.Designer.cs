@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backendData;
 
 namespace backendData.Migrations
 {
     [DbContext(typeof(backendDbContext))]
-    partial class backendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190712235550_Add Extra Rate Columns to Values Tables")]
+    partial class AddExtraRateColumnstoValuesTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,13 +62,14 @@ namespace backendData.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<double>("RateToUserCurrency");
+                    b.Property<decimal>("RateToUserCurrency")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValueUserCurrency")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("ValueUserCurrency");
 
                     b.HasKey("AccountValueId");
 
@@ -114,15 +117,16 @@ namespace backendData.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<double>("RateToUserCurrency");
+                    b.Property<decimal>("RateToUserCurrency")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Source");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValueUserCurrency")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("ValueUserCurrency");
 
                     b.HasKey("AssetValueId");
 
@@ -192,13 +196,14 @@ namespace backendData.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<double>("RateToUserCurrency");
+                    b.Property<decimal>("RateToUserCurrency")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValueUserCurrency")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("ValueUserCurrency");
 
                     b.HasKey("CreditCardValueId");
 
@@ -246,13 +251,14 @@ namespace backendData.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<double>("RateToUserCurrency");
+                    b.Property<decimal>("RateToUserCurrency")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValueUserCurrency")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("ValueUserCurrency");
 
                     b.HasKey("CryptoAccountValueId");
 
@@ -382,13 +388,14 @@ namespace backendData.Migrations
 
                     b.Property<int>("LoanId");
 
-                    b.Property<double>("RateToUserCurrency");
+                    b.Property<decimal>("RateToUserCurrency")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValueUserCurrency")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("ValueUserCurrency");
 
                     b.HasKey("LoanValueId");
 
