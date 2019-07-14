@@ -18,8 +18,6 @@ function initialiseLoans ({ commit }, loans) {
 
 async function addLoan ({ commit, rootState }, loan) {  
   loan.userId = rootState.main.user.userId
-  loan.quotedCurrency = loan.currencyCode
-  delete loan.currencyCode
   console.log('loan to add:')
   console.log(loan)
   
@@ -74,8 +72,6 @@ async function addLoan ({ commit, rootState }, loan) {
 
 async function updateLoan ({ commit, rootState }, loan) {
   loan.userId = rootState.main.user.userId
-  loan.quotedCurrency = loan.currencyCode
-  delete loan.currencyCode
   console.log('loan to update:')
   console.log(loan)
 

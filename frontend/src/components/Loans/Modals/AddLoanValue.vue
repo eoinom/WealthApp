@@ -11,9 +11,10 @@
           ref="modalLoanValueDate"
           />  
 
-        <modal-value 
-          :value.sync="loanValueToSubmit.value" 
+        <modal-currency-value 
+          :currencyValue.sync="loanValueToSubmit.value" 
           :currencySymbol="selectedLoanCurrencySymbol"
+          label="Value"
           ref="modalLoanValue"/>    
 
       </q-card-section>
@@ -70,7 +71,7 @@
     components: {
       'modal-header': require('components/SharedModals/ModalHeader.vue').default,
       'modal-value-date': require('components/SharedModals/ModalValueDate.vue').default,
-      'modal-value': require('components/SharedModals/ModalValue.vue').default,
+      'modal-currency-value': require('components/SharedModals/ModalCurrencyValue.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default,
     },
 

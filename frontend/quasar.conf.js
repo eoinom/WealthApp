@@ -68,7 +68,10 @@ module.exports = function (ctx) {
         'QPopupProxy',
         'QPopupEdit',
         'QTime',
-        'QSelect'
+        'QSelect',
+        'QSlider',
+        'QBadge',
+        'QRadio'
       ],
 
       directives: [

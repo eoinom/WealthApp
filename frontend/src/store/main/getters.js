@@ -17,6 +17,14 @@ const user = state => {
   return state.user
 }
 
+const userDisplayCurrency = state => {
+  return state.user.displayCurrency
+}
+
+const userDisplayCurrencyCode = state => {
+  return state.user.displayCurrency.code
+}
+
 const userFullName = state => {
   return state.user.firstName + ' ' + state.user.lastName
 }
@@ -31,6 +39,8 @@ export {
   currencyCodes,
   getDateFormat,
   user,
+  userDisplayCurrency,
+  userDisplayCurrencyCode,
   userFullName,
   userEmail  
 }

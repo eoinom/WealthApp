@@ -46,7 +46,9 @@ const getDefaultState = () => {
       }
     },    
     loanIds: [],
-    initialFirstLoanId: 0,    
+    initialFirstLoanId: 0,
+    rateTypes: ['Fixed', 'Variable'],
+    repaymentPeriods: ['Weekly', 'Fortnightly', 'Monthly', 'Quarterly', 'Bi-Annually', 'Annually'],
     selectedLoanId: 0,
     selectedLoanCurrencySymbol: '€',    
     tableColumns: [

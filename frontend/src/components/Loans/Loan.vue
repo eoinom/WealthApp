@@ -40,11 +40,11 @@
           Type: {{ loan.type }}
           <br />Currency: {{ loan.quotedCurrency.code }}
           <br />Balance: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + getLoanBalance(loan.loanId) }}
-          <br />Start Principal: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) +toLocaleFixed(loan.startPrincipal, 2) }}
-          <br />Start Date: {{ loan.startDate }}
+          <br />Start Principal: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + toLocaleFixed(loan.startPrincipal, 2) }}
+          <br />Start Date: {{ getFormattedDate(loan.startDate) }}
           <br />Total Term: {{ getTermStr(loan.totalTerm, loan.repaymentFrequency) }}
           <br />Rate: {{ (100*loan.aprRate).toFixed(2) + '% (' + loan.rateType + ')' }}
-          <br />Repayment: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + loan.repaymentAmount + ' ' + loan.repaymentFrequency }}
+          <br />Repayment: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + toLocaleFixed(loan.repaymentAmount) + ' ' + loan.repaymentFrequency }}
         </div>  
         <div class="col institutionLogo" v-if="getInstitutionUrl(loan.institution) != ''">
           <img :src="getInstitutionLogoSrc(loan.institution, undefined)">
@@ -76,7 +76,8 @@
     mixins: [institutionUrlsMixin],
     data() {
       return {
-        showEditLoan: false
+        showEditLoan: false,
+        formattedDate: ''
       }      
     },
 
@@ -86,6 +87,7 @@
     
     methods: {
       ...mapActions('loans', ['updateSelectedLoanId', 'updateSelectedLoanCurrencySymbol', 'updateTableColumn', 'deleteLoan']),
+      ...mapActions('main', ['formatDate_Iso2User']),
 
       promptToDeleteLoan(id) {
         this.$q.dialog({
@@ -105,6 +107,10 @@
       log: function(str) {
         console.log(str);
       },
+      getFormattedDate: function(date) {        
+        this.formatDate_Iso2User(date).then(res => {this.formattedDate = res})        
+        return this.formattedDate 
+      },
       getLoanBalance: function (loanId) {
         try {
           var numOfValues = this.loanValuesByLoanId(loanId).length;
@@ -121,28 +127,6 @@
           console.error(error); 
           return " Not available";
         }        
-      },
-      getCurrencySymbol: function (shortName) {
-        try {
-          switch ( shortName.toLowerCase() ) {
-            case 'euro':
-              return '€';
-              break;
-            case 'dollar':
-            case 'peso':
-              return '$';
-              break;
-            case 'pound':
-              return '£';
-              break;
-            default:
-              return '';
-          }
-        }
-        catch (error) {
-          console.error(error); 
-          return "";
-        } 
       },
       getTermStr: function (totalTerm, repaymentFrequency) {
         try {

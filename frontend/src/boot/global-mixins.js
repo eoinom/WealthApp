@@ -5,7 +5,7 @@ var moment = require('moment');
 export default /* async */ ({ Vue /* app, router, Vue, ... */ }) => {  
   Vue.mixin({
     computed: {
-      ...mapGetters('main', ['getDateFormat']),
+      ...mapGetters('main', ['getDateFormat', 'userDisplayCurrencyCode']),
     },
     methods: {
       formatDate_Iso2User(date) {   
@@ -28,6 +28,37 @@ export default /* async */ ({ Vue /* app, router, Vue, ... */ }) => {
           minimumFractionDigits: decimals,
           maximumFractionDigits: decimals
         })
+      },
+      getCurrencySymbol(shortNameOrCode) {
+        try {
+          if (shortNameOrCode === undefined || shortNameOrCode === '') {
+            shortNameOrCode = this.userDisplayCurrencyCode
+          }
+          switch ( shortNameOrCode.toLowerCase() ) {
+            case 'eur':
+            case 'euro':
+              return '€';
+              break;
+            case 'aud':
+            case 'cad':
+            case 'usd':
+            case 'nzd':
+            case 'dollar':
+            case 'peso':
+              return '$';
+              break;
+            case 'gbp':
+            case 'pound':
+              return '£';
+              break;
+            default:
+              return '';
+          }
+        }
+        catch (error) {
+          console.error(error); 
+          return "";
+        } 
       }
     }
   })
