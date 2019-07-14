@@ -171,6 +171,8 @@ async function addAccountValue ({ commit }, accountValue) {
               accountValueId  
               date
               value
+              rateToUserCurrency
+              valueUserCurrency
               account {
                 accountId
               }
@@ -212,6 +214,8 @@ async function updateAccountValue ({ commit, rootState }, accountValue) {
               accountValueId  
               date
               value
+              rateToUserCurrency
+              valueUserCurrency
               account {
                 accountId
               }

@@ -307,6 +307,8 @@
                         accountValueId
                         date
                         value
+                        rateToUserCurrency
+                        valueUserCurrency
                         account {
                           accountId
                         }
@@ -336,6 +338,8 @@
                         loanValueId
                         date
                         value
+                        rateToUserCurrency
+                        valueUserCurrency
                         loan {
                           loanId
                         }

@@ -175,6 +175,8 @@ async function addLoanValue ({ commit }, loanValue) {
               loanValueId  
               date
               value
+              rateToUserCurrency
+              valueUserCurrency
               loan {
                 loanId
               }
@@ -216,6 +218,8 @@ async function updateLoanValue ({ commit }, loanValue) {
               loanValueId  
               date
               value
+              rateToUserCurrency
+              valueUserCurrency
               loan {
                 loanId
               }

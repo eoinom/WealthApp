@@ -28,6 +28,8 @@ const getDefaultState = () => {
             accountValueId: 0,
             date: '',
             value: 0.00,
+            rateToUserCurrency: 0.000,
+            valueUserCurrency: 0.00,
             account: {
               accountId: 0
             }
