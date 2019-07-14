@@ -6,7 +6,6 @@ const getDefaultState = () => {
   return {
     authenticated: false, 
     currencyCodes: [ 'AUD', 'CAD', 'EUR', 'GBP', 'USD', 'NZD' ],   
-    // dateFormat: 'YYYY-MM-DD',
     dateFormat: 'DD/MM/YYYY',
     user: {
       userId: 0,
@@ -15,8 +14,13 @@ const getDefaultState = () => {
       lastName: '',
       newsletterSub: false,
       country: {},
-      displayCurrency: {},
-      acounts: {}
+      displayCurrency: {
+        code: 'EUR',
+        nameShort: 'Euro',
+        nameLong: 'Euro'
+      },
+      accounts: {},
+      loans: {}
     }
   }
 }

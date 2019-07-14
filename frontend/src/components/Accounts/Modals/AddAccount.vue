@@ -8,18 +8,18 @@
 
         <modal-name 
           :name.sync="accountToSubmit.accountName" 
-          label="Account name"
+          label="Account Name"
           ref="modalAccountName"/>  
 
         <modal-description 
           :description.sync="accountToSubmit.description" 
-          label="Account description"
+          label="Description"
           ref="modalAccountDescription"/>    
 
-        <modal-type 
-          :type.sync="accountToSubmit.type" 
-          label="Account type"
-          :options="accountTypes"
+        <modal-select 
+          :selectValue.sync="accountToSubmit.type" 
+          :selectArr="accountTypes"
+          label="Type"
           ref="modalAccountType"/>   
 
         <modal-institution 
@@ -82,14 +82,14 @@
     },
 
     components: {
-      'modal-header': require('components/SharedModals/ModalHeader.vue').default,
-      'modal-name': require('components/SharedModals/ModalName.vue').default,
-      'modal-description': require('components/SharedModals/ModalDescription.vue').default,
-      'modal-type': require('components/SharedModals/ModalType.vue').default,
-      'modal-institution': require('components/SharedModals/ModalInstitution.vue').default,
-      'modal-currency': require('components/SharedModals/ModalCurrencySelect.vue').default,
-      'modal-active': require('components/SharedModals/ModalActive.vue').default,
-      'modal-buttons': require('components/SharedModals/ModalButtons.vue').default
+      'modal-active':       require('components/SharedModals/ModalActive.vue').default,
+      'modal-buttons':      require('components/SharedModals/ModalButtons.vue').default,
+      'modal-currency':     require('components/SharedModals/ModalCurrencySelect.vue').default,
+      'modal-description':  require('components/SharedModals/ModalDescription.vue').default,
+      'modal-header':       require('components/SharedModals/ModalHeader.vue').default,
+      'modal-institution':  require('components/SharedModals/ModalInstitution.vue').default,
+      'modal-name':         require('components/SharedModals/ModalName.vue').default,
+      'modal-select':       require('components/SharedModals/ModalSelect.vue').default      
     }      
   }
 </script>

@@ -2,15 +2,12 @@
   <div class="row q-mb-sm">        
     <q-input 
       outlined
-      type="number"             
-      :decimals="2"
-      step="0.01"
-      :value="value" 
-      :prefix="currencySymbol"
-      @input="$emit('update:value', $event)"
+      type="number"        
+      :value="intValue" 
+      :label="label"
+      @input="$emit('update:intValue', $event)"
       :rules="[val => !!val || 'Field is required']"
-      ref="value"
-      label="Value" 
+      ref="intValue"
       class="col"
       clearable />
   </div>    
@@ -20,7 +17,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['value', 'currencySymbol'],
+    props: ['intValue', 'label'],
   }  
 </script>
 

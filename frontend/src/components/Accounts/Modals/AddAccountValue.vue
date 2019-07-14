@@ -11,9 +11,10 @@
           ref="modalAccountValueDate"
           />  
 
-        <modal-value 
-          :value.sync="accountValueToSubmit.value" 
+        <modal-currency-value 
+          :currencyValue.sync="accountValueToSubmit.value" 
           :currencySymbol="selectedAccountCurrencySymbol"
+          label="Value"
           ref="modalAccountValue"/>    
 
       </q-card-section>
@@ -54,8 +55,8 @@
       submitForm() {
         // this.$refs.modalAccountValueDate.$refs.accountValueDate.validate()
         // Need to do date validation
-        this.$refs.modalAccountValue.$refs.value.validate()
-        if (!this.$refs.modalAccountValue.$refs.value.hasError) {
+        this.$refs.modalAccountValue.$refs.currencyValue.validate()
+        if (!this.$refs.modalAccountValue.$refs.currencyValue.hasError) {
           this.submitAccountValue()
         }
       },
@@ -75,7 +76,7 @@
     components: {
       'modal-header': require('components/SharedModals/ModalHeader.vue').default,
       'modal-value-date': require('components/SharedModals/ModalValueDate.vue').default,
-      'modal-value': require('components/SharedModals/ModalValue.vue').default,
+      'modal-currency-value': require('components/SharedModals/ModalCurrencyValue.vue').default,
       'modal-buttons': require('components/SharedModals/ModalButtons.vue').default,
     },
 

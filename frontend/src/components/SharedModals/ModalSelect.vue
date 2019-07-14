@@ -2,12 +2,12 @@
   <div class="row q-mb-sm">        
     <q-select 
       outlined 
-      :options="options"
-      :value="type" 
-      @input="$emit('update:type', $event)"
-      :rules="[val => !!val || 'Field is required']"
-      ref="type"
+      :options="selectArr"
+      :value="selectValue" 
       :label="label" 
+      @input="$emit('update:selectValue', $event)"
+      :rules="[val => !!val || 'Field is required']"
+      ref="selectValue"      
       class="col" 
     />
   </div>    
@@ -15,7 +15,7 @@
 
 <script>
   export default {
-    props: ['type', 'label', 'options'],
+    props: ['selectValue', 'selectArr', 'label'],
     data () {
       return {
         model: null

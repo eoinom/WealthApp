@@ -55,6 +55,14 @@ const loanTypes = state => {
   return state.loanTypes
 }
 
+const rateTypes = state => {
+  return state.rateTypes
+}
+
+const repaymentPeriods = state => {
+  return state.repaymentPeriods
+}
+
 const selectedLoanId = state => {
   return state.selectedLoanId
 }
@@ -77,6 +85,8 @@ export {
   loanValuesByLoanId,
   loanBalance,
   loanTypes,
+  rateTypes,
+  repaymentPeriods,
   selectedLoanId,
   selectedLoanCurrencySymbol,
   tableColumns
