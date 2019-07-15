@@ -20,11 +20,11 @@ namespace backendDataAccess.Repositories
         {
             if (value.Account != null)
             {
-                Account bankAccount = _dbContext.Accounts
+                Account account = _dbContext.Accounts
                                             //.Include(x => x.AccountValues)
                                             .Include(x => x.QuotedCurrency)
                                             .SingleOrDefault(x => x.AccountId == value.Account.AccountId);
-                value.Account = bankAccount;
+                value.Account = account;
             }
 
             _dbContext.AccountValues.Add(value);

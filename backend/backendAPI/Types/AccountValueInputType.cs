@@ -10,8 +10,8 @@ namespace backendAPI.Types
             Field<IntGraphType>("accountValueId");
             Field<NonNullGraphType<DateGraphType>>("date");
             Field<NonNullGraphType<DecimalGraphType>>("value");
-            Field<NonNullGraphType<FloatGraphType>>("rateToUserCurrency");
-            Field<NonNullGraphType<DecimalGraphType>>("valueUserCurrency");
+            Field<FloatGraphType>("rateToUserCurrency");
+            Field<DecimalGraphType>("valueUserCurrency");
             Field<IntGraphType>("accountId");
         }
     }

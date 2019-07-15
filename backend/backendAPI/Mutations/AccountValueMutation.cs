@@ -1,15 +1,19 @@
-﻿using backendAPI.Types;
+﻿using backendAPI.ExternalAPIs;
+using backendAPI.Types;
 using backendData.Models;
 using backendDataAccess.Repositories.Contracts;
 using GraphQL.Types;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Threading.Tasks;
+
 
 namespace backendAPI.Mutations
 {
     public class AccountValueMutation : ObjectGraphType
     {
-        public AccountValueMutation(IAccountValueRepository accountValueRepository)
+
+        public AccountValueMutation(IAccountValueRepository accountValueRepository, IAccountRepository accountRepository, IUserRepository userRepository)
         {
             Name = "AccountValueMutations";
 
@@ -24,17 +28,60 @@ namespace backendAPI.Mutations
 
                     AccountValue newAccountValue = new AccountValue() {
                         Date = (System.DateTime)JToken.FromObject(accountValueArg).SelectToken("date"),
-                        Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
-                        RateToUserCurrency = (double)JToken.FromObject(accountValueArg).SelectToken("rateToUserCurrency"),
-                        ValueUserCurrency = (decimal)JToken.FromObject(accountValueArg).SelectToken("valueUserCurrency")
+                        Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value")
                     };
-                   
+
                     var accountId = JToken.FromObject(accountValueArg).SelectToken("accountId");
                     if (accountId != null)
                     {
                         Account account = new Account();
                         account.AccountId = (int)accountId;
                         newAccountValue.Account = account;
+                    }
+
+                    if (JToken.FromObject(accountValueArg).Contains("rateToUserCurrency"))
+                    {
+                        newAccountValue.RateToUserCurrency = (double)JToken.FromObject(accountValueArg).SelectToken("rateToUserCurrency");
+
+                        if (JToken.FromObject(accountValueArg).Contains("valueUserCurrency"))
+                        {
+                            newAccountValue.ValueUserCurrency = (decimal)JToken.FromObject(accountValueArg).SelectToken("valueUserCurrency");
+                        }
+                        else
+                        {
+                            newAccountValue.ValueUserCurrency = newAccountValue.Value * (decimal)newAccountValue.RateToUserCurrency;
+                        }
+                    }
+                    else
+                    {
+                        // get exchange rate from external API
+                        Account account = accountRepository.GetById(newAccountValue.Account.AccountId);
+                        User user = userRepository.GetById(account.User.UserId);
+                        string baseCurrency = account.QuotedCurrency.Code;
+                        string toCurrency = user.DisplayCurrency.Code;
+                        if (baseCurrency == toCurrency)
+                        {
+                            newAccountValue.RateToUserCurrency = 1.0;
+                            newAccountValue.ValueUserCurrency = newAccountValue.Value;
+                        }
+                        else
+                        {
+                            string apiRequest = newAccountValue.Date.ToString("yyyy-MM-dd");
+                            if (baseCurrency == "EUR")
+                            {
+                                apiRequest += "?symbols=" + toCurrency;
+                            }
+                            else
+                            {
+                                apiRequest += "?base=" + baseCurrency + "&symbols=" + toCurrency;
+                            }
+
+                            var exchangeRates = new ExchangeRates();
+                            Task<string> task = Task.Run<string>(async () => await exchangeRates.GetExchangeRate(apiRequest));
+
+                            newAccountValue.RateToUserCurrency = (double)JObject.Parse(task.Result).SelectToken("rates." + toCurrency);
+                            newAccountValue.ValueUserCurrency = newAccountValue.Value * (decimal)newAccountValue.RateToUserCurrency;
+                        }
                     }
 
                     return accountValueRepository.Add(newAccountValue);
@@ -53,17 +100,66 @@ namespace backendAPI.Mutations
                     {
                         AccountValueId = (int)JToken.FromObject(accountValueArg).SelectToken("accountValueId"),
                         Date = (System.DateTime)JToken.FromObject(accountValueArg).SelectToken("date"),
-                        Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value"),
-                        RateToUserCurrency = (double)JToken.FromObject(accountValueArg).SelectToken("rateToUserCurrency"),
-                        ValueUserCurrency = (decimal)JToken.FromObject(accountValueArg).SelectToken("valueUserCurrency")
+                        Value = (decimal)JToken.FromObject(accountValueArg).SelectToken("value")
                     };
-
-                    Account account = new Account();
+                    
                     var accountId = JToken.FromObject(accountValueArg).SelectToken("accountId");
                     if (accountId != null)
                     {
+                        Account account = new Account();
                         account.AccountId = (int)accountId;
                         newAccountValue.Account = account;
+                    }
+
+                    AccountValue accountValueToUpdate = accountValueRepository.GetById(newAccountValue.AccountValueId);
+
+                    if (JToken.FromObject(accountValueArg).Contains("rateToUserCurrency"))
+                    {
+                        newAccountValue.RateToUserCurrency = (double)JToken.FromObject(accountValueArg).SelectToken("rateToUserCurrency");
+
+                        if (JToken.FromObject(accountValueArg).Contains("valueUserCurrency"))
+                        {
+                            newAccountValue.ValueUserCurrency = (decimal)JToken.FromObject(accountValueArg).SelectToken("valueUserCurrency");
+                        }
+                        else
+                        {
+                            newAccountValue.ValueUserCurrency = newAccountValue.Value * (decimal)newAccountValue.RateToUserCurrency;
+                        }
+                    }
+                    else if (accountValueToUpdate.Date == newAccountValue.Date && accountValueToUpdate.RateToUserCurrency > 0) {
+                        newAccountValue.RateToUserCurrency = accountValueToUpdate.RateToUserCurrency;
+                        newAccountValue.ValueUserCurrency = newAccountValue.Value * (decimal)newAccountValue.RateToUserCurrency;
+                    }
+                    else
+                    {
+                        // get exchange rate from external API
+                        Account account = accountRepository.GetById(newAccountValue.Account.AccountId);
+                        User user = userRepository.GetById(account.User.UserId);
+                        string baseCurrency = account.QuotedCurrency.Code;
+                        string toCurrency = user.DisplayCurrency.Code;
+                        if (baseCurrency == toCurrency)
+                        {
+                            newAccountValue.RateToUserCurrency = 1.0;
+                            newAccountValue.ValueUserCurrency = newAccountValue.Value;
+                        }
+                        else
+                        {
+                            string apiRequest = newAccountValue.Date.ToString("yyyy-MM-dd");
+                            if (baseCurrency == "EUR")
+                            {
+                                apiRequest += "?symbols=" + toCurrency;
+                            }
+                            else
+                            {
+                                apiRequest += "?base=" + baseCurrency + "&symbols=" + toCurrency;
+                            }
+
+                            var exchangeRates = new ExchangeRates();
+                            Task<string> task = Task.Run<string>(async () => await exchangeRates.GetExchangeRate(apiRequest));
+
+                            newAccountValue.RateToUserCurrency = (double)JObject.Parse(task.Result).SelectToken("rates." + toCurrency);
+                            newAccountValue.ValueUserCurrency = newAccountValue.Value * (decimal)newAccountValue.RateToUserCurrency;
+                        }
                     }
 
                     return accountValueRepository.Update(newAccountValue);

@@ -20,11 +20,11 @@ namespace backendDataAccess.Repositories
         {
             if (value.Loan != null)
             {
-                Loan bankLoan = _dbContext.Loans
+                Loan loan = _dbContext.Loans
                                             //.Include(x => x.LoanValues)
                                             .Include(x => x.QuotedCurrency)
                                             .SingleOrDefault(x => x.LoanId == value.Loan.LoanId);
-                value.Loan = bankLoan;
+                value.Loan = loan;
             }
 
             _dbContext.LoanValues.Add(value);
