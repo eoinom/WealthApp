@@ -298,6 +298,14 @@ function updateTableColumn({ commit }, payload) {
   commit('updateTableColumn', payload)
 }
 
+function addToVisibleColumns({ commit }, columnName) {
+  commit('addToVisibleColumns', columnName)
+}
+
+function removeFromVisibleColumns({ commit }, columnName) {
+  commit('removeFromVisibleColumns', columnName)
+}
+
 export {
   resetState,
   initialiseAccounts,
@@ -311,5 +319,7 @@ export {
   deleteAccountValues,
   updateSelectedAccountId,
   updateSelectedAccountCurrencySymbol,
-  updateTableColumn
+  updateTableColumn,
+  addToVisibleColumns,
+  removeFromVisibleColumns
 }

@@ -37,7 +37,7 @@ const getDefaultState = () => {
             loanValueId: 0,
             date: '',
             value: 0.00,
-            rateToUserCurrency: 0.000,
+            rateToUserCurrency: 0.0000,
             valueUserCurrency: 0.00,
             loan: {
               loanId: 0
@@ -66,12 +66,29 @@ const getDefaultState = () => {
       { 
         name: 'value', 
         align: 'center', 
-        label: 'Value (EUR €)', 
+        label: 'Value (USD $)', 
         field: row => row.value,
         // format: val => Number(val).toFixed(2),
         sortable: true 
+      },
+      { 
+        name: 'rateToUserCurrency', 
+        align: 'center', 
+        label: 'Rate', 
+        field: row => row.rateToUserCurrency,
+        // format: val => Number(val).toFixed(2),
+        sortable: true 
+      },
+      { 
+        name: 'valueUserCurrency', 
+        align: 'center', 
+        label: 'Value (EUR €)', 
+        field: row => row.valueUserCurrency,
+        // format: val => Number(val).toFixed(2),
+        sortable: true 
       }
-    ]
+    ],
+    visibleColumns: ['date', 'value']
   }
 }
 

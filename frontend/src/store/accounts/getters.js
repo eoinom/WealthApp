@@ -67,6 +67,10 @@ const tableColumns = state => {
   return state.tableColumns
 }
 
+const visibleColumns = state => {
+  return state.visibleColumns
+}
+
 export {
   getInitialFirstAccountId,
   accounts,
@@ -79,5 +83,6 @@ export {
   accountTypes,
   selectedAccountId,
   selectedAccountCurrencySymbol,
-  tableColumns
+  tableColumns,
+  visibleColumns
 }

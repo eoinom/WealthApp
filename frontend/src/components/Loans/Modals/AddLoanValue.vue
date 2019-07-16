@@ -55,8 +55,8 @@
       submitForm() {
         // this.$refs.modalLoanValueDate.$refs.loanValueDate.validate()
         // Need to do date validation
-        this.$refs.modalLoanValue.$refs.value.validate()
-        if (!this.$refs.modalLoanValue.$refs.value.hasError) {
+        this.$refs.modalLoanValue.$refs.currencyValue.validate()
+        if (!this.$refs.modalLoanValue.$refs.currencyValue.hasError) {
           this.submitLoanValue()
         }
       },

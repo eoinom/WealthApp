@@ -1,11 +1,6 @@
 <template>
   <q-card               
-    @click="
-      updateSelectedAccountId(account.accountId);
-      var symbol = getCurrencySymbol(account.quotedCurrency.nameShort);
-      updateSelectedAccountCurrencySymbol(symbol);
-      updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + account.quotedCurrency.code + ' ' + symbol + ')' } });
-      "
+    @click="updateForSelectedId()"
     class="my-card text-white"
     style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)" 
     >
@@ -78,10 +73,13 @@
 
     computed: {
       ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'accountBalance', 'selectedAccountId']),
+      ...mapGetters('main', ['userDisplayCurrencyCode'])
     },
 
     methods: {
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteAccount']),      
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateSelectedAccountCurrencySymbol', 'updateTableColumn', 'deleteAccount', 
+      'addToVisibleColumns', 'removeFromVisibleColumns']),      
+
       promptToDeleteAccount(id) {
         this.$q.dialog({
           title: 'Confirm',
@@ -117,28 +115,23 @@
           return " Not available";
         }        
       },
-      getCurrencySymbol: function (shortName) {
-        try {
-          switch ( shortName.toLowerCase() ) {
-            case 'euro':
-              return '€';
-              break;
-            case 'dollar':
-            case 'peso':
-              return '$';
-              break;
-            case 'pound':
-              return '£';
-              break;
-            default:
-              return '';
-          }
+      updateForSelectedId: function () {
+        this.updateSelectedAccountId(this.account.accountId);
+        var symbol = this.getCurrencySymbol(this.account.quotedCurrency.nameShort);
+        this.updateSelectedAccountCurrencySymbol(symbol);
+        this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + this.account.quotedCurrency.code + ' ' + symbol + ')' } });
+        
+        if (this.userDisplayCurrencyCode !== this.account.quotedCurrency.code) {
+          symbol = this.getCurrencySymbol(this.userDisplayCurrencyCode);
+          this.updateTableColumn({ columnNo: 3, columnObj: { label: 'Value (' + this.userDisplayCurrencyCode + ' ' + symbol + ')' } })
+          this.addToVisibleColumns('rateToUserCurrency')
+          this.addToVisibleColumns('valueUserCurrency')
         }
-        catch (error) {
-          console.error(error); 
-          return "";
-        } 
-      },
+        else {
+          this.removeFromVisibleColumns('rateToUserCurrency')
+          this.removeFromVisibleColumns('valueUserCurrency')
+        }        
+      }
     },
 
     components: {

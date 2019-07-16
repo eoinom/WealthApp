@@ -110,6 +110,18 @@ function updateTableColumn(state, payload) {
   Object.assign(state.tableColumns[payload.columnNo], payload.columnObj)
 }
 
+function addToVisibleColumns(state, columnName) {
+  if (!state.visibleColumns.includes(columnName)) {
+    state.visibleColumns.push(columnName)
+  }
+}
+
+function removeFromVisibleColumns(state, columnName) {
+  if (state.visibleColumns.includes(columnName)) {
+    Vue.delete(state.visibleColumns, state.visibleColumns.indexOf(columnName))
+  }
+}
+
 export {
   resetState,
   addLoan,
@@ -127,5 +139,7 @@ export {
   setInitialFirstLoanId,
   updateSelectedLoanId,
   updateSelectedLoanCurrencySymbol,
-  updateTableColumn
+  updateTableColumn,
+  addToVisibleColumns,
+  removeFromVisibleColumns
 }

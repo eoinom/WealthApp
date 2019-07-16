@@ -302,6 +302,14 @@ function updateTableColumn({ commit }, payload) {
   commit('updateTableColumn', payload)
 }
 
+function addToVisibleColumns({ commit }, columnName) {
+  commit('addToVisibleColumns', columnName)
+}
+
+function removeFromVisibleColumns({ commit }, columnName) {
+  commit('removeFromVisibleColumns', columnName)
+}
+
 export {
   resetState,
   initialiseLoans,
@@ -315,5 +323,7 @@ export {
   deleteLoanValues,
   updateSelectedLoanId,
   updateSelectedLoanCurrencySymbol,
-  updateTableColumn
+  updateTableColumn,  
+  addToVisibleColumns,
+  removeFromVisibleColumns
 }

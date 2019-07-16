@@ -40,12 +40,13 @@
       <div class="col-auto q-ml-sm">
         <h5 class="q-my-md">Account Values</h5>
         
-        <div class="q-pa-md">
-          <!-- Account Values Table -->
+        <!-- Account Values Table -->
+        <div class="q-pa-md">          
           <q-table
             title="AccountValues"
             :data="selectedAccountValues"
             :columns="tableColumns()"
+            :visible-columns="visibleColumns"
             row-key="date"            
             :filter="filter"
             :loading="loading"
@@ -125,7 +126,17 @@
                       dense 
                       autofocus />
                   </q-popup-edit>
-                </q-td>                
+                </q-td>   
+
+                <!-- RateToUserCurrency -->
+                <q-td key="rateToUserCurrency" :props="props">
+                  {{ props.row.rateToUserCurrency.toFixed(4) }}
+                </q-td>    
+
+                <!-- ValueUserCurrency -->
+                <q-td key="valueUserCurrency" :props="props">
+                  {{ toLocaleFixed(props.row.valueUserCurrency, 2) }}
+                </q-td>                         
               </q-tr>              
             </template>
           </q-table>
@@ -179,7 +190,8 @@
 
     methods: {           
       ...mapGetters('accounts', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues']),
+      ...mapActions('accounts', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues', 'updateSelectedAccountCurrencySymbol',
+      'updateTableColumn', 'addToVisibleColumns', 'removeFromVisibleColumns']),
 
       onUpdateAccountValue(val, row, col) {
         // this.setLoading(true);
@@ -251,8 +263,8 @@
     },
 
     computed: {
-      ...mapGetters('accounts', ['accounts', 'accountValuesByAccountId', 'accountName']),
-      // ...mapGetters('main', ['getDateFormat']),
+      ...mapGetters('accounts', ['accounts', 'accountById', 'accountValuesByAccountId', 'accountName', 'visibleColumns']),
+      ...mapGetters('main', ['userDisplayCurrencyCode']),
 
       selectedAccountName() {
         return this.accountName( this.selectedAccountId() )
@@ -262,7 +274,7 @@
         return storeAccountVals.map((b, idx) => Object.assign({ index: idx }, b));   // return a cloned array
       },
 
-      // CHART PROPERTIES
+// CHART PROPERTIES
       chartOptions() {
         return {
           chart: {
@@ -283,7 +295,11 @@
           }],
            title: {
             text: this.selectedAccountName,
-            align: 'center'
+            align: 'center',
+            style: {
+              fontSize:  '20px',
+              color:  '#027BE3'
+            },
           },
           labels: ['2001-01-28', '2001-03-28', '2001-05-28', '2001-07-28', '2001-09-28', '2001-11-28'],
           xaxis: {
@@ -327,6 +343,25 @@
 
     mounted () {      
       this.updateSelectedAccountId( this.getInitialFirstAccountId() )
+
+      var selectedAccount = this.accountById(this.getInitialFirstAccountId())      
+      var symbol = this.getCurrencySymbol(selectedAccount.quotedCurrency.nameShort);
+      this.updateSelectedAccountCurrencySymbol(symbol);
+      this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + selectedAccount.quotedCurrency.code + ' ' + symbol + ')' } });
+      if (this.userDisplayCurrencyCode !== selectedAccount.quotedCurrency.code) {
+        symbol = this.getCurrencySymbol(this.userDisplayCurrencyCode);
+        console.log('userDisplayCurrencyCode: ' + this.userDisplayCurrencyCode);
+        console.log('symbol: ' + symbol);
+        
+        // this.updateSelectedAccountCurrencySymbol(symbol);
+        this.updateTableColumn({ columnNo: 3, columnObj: { label: 'Value (' + this.userDisplayCurrencyCode + ' ' + symbol + ')' } })
+        this.addToVisibleColumns('rateToUserCurrency')
+        this.addToVisibleColumns('valueUserCurrency')
+      }
+      else {
+        this.removeFromVisibleColumns('rateToUserCurrency')
+        this.removeFromVisibleColumns('valueUserCurrency')
+      }
     }
   }
 </script>

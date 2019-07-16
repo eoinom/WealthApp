@@ -40,12 +40,13 @@
       <div class="col-auto q-ml-sm">
         <h5 class="q-my-md">Loan Values</h5>
         
+        <!-- Loan Values Table -->
         <div class="q-pa-md">
-          <!-- Loan Values Table -->
           <q-table
             title="LoanValues"
             :data="selectedLoanValues"
             :columns="tableColumns()"
+            :visible-columns="visibleColumns"
             row-key="date"            
             :filter="filter"
             :loading="loading"
@@ -70,7 +71,7 @@
               </div>
 
               <div class="col">
-                <div class="text-h6 text-primary text-center">{{ selectedLoanName }}</div>
+                <div class="text-h6 text-liabilities text-center">{{ selectedLoanName }}</div>
               </div>
 
               <div class="col-2">
@@ -125,7 +126,17 @@
                       dense 
                       autofocus />
                   </q-popup-edit>
-                </q-td>                
+                </q-td>   
+
+                <!-- RateToUserCurrency -->
+                <q-td key="rateToUserCurrency" :props="props">
+                  {{ props.row.rateToUserCurrency.toFixed(4) }}
+                </q-td>    
+
+                <!-- ValueUserCurrency -->
+                <q-td key="valueUserCurrency" :props="props">
+                  {{ toLocaleFixed(props.row.valueUserCurrency, 2) }}
+                </q-td>                 
               </q-tr>              
             </template>
           </q-table>
@@ -172,13 +183,15 @@
     data () {
       return {
         showAddLoan: false,
-        showAddLoanValue: false
+        showAddLoanValue: false,
+        visiblecolumns: ['date', 'value', 'valueUserCurrency']
       }
     },  
 
     methods: {           
       ...mapGetters('loans', ['getInitialFirstLoanId', 'selectedLoanId', 'tableColumns']),
-      ...mapActions('loans', ['updateSelectedLoanId', 'updateLoanValue', 'deleteLoanValues']),
+      ...mapActions('loans', ['updateSelectedLoanId', 'updateLoanValue', 'deleteLoanValues', 'updateSelectedLoanCurrencySymbol',
+      'updateTableColumn', 'addToVisibleColumns', 'removeFromVisibleColumns']),
 
       onUpdateLoanValue(val, row, col) {
         // this.setLoading(true);
@@ -250,7 +263,8 @@
     },
 
     computed: {
-      ...mapGetters('loans', ['loans', 'loanValuesByLoanId', 'loanName']),
+      ...mapGetters('loans', ['loans', 'loanById', 'loanValuesByLoanId', 'loanName', 'visibleColumns']),
+      ...mapGetters('main', ['userDisplayCurrencyCode']),
 
       selectedLoanName() {
         return this.loanName( this.selectedLoanId() )
@@ -283,7 +297,11 @@
           }],
            title: {
             text: this.selectedLoanName,
-            align: 'center'
+            align: 'center',
+            style: {
+              fontSize:  '20px',
+              color:  '#a24a01'
+            },
           },
           labels: ['2001-01-28', '2001-03-28', '2001-05-28', '2001-07-28', '2001-09-28', '2001-11-28'],
           xaxis: {
@@ -330,6 +348,25 @@
 
     mounted () {      
       this.updateSelectedLoanId( this.getInitialFirstLoanId() )
+
+      var selectedLoan = this.loanById(this.getInitialFirstLoanId())      
+      var symbol = this.getCurrencySymbol(selectedLoan.quotedCurrency.nameShort);
+      this.updateSelectedLoanCurrencySymbol(symbol);
+      this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + selectedLoan.quotedCurrency.code + ' ' + symbol + ')' } });
+      if (this.userDisplayCurrencyCode !== selectedLoan.quotedCurrency.code) {
+        symbol = this.getCurrencySymbol(this.userDisplayCurrencyCode);
+        console.log('userDisplayCurrencyCode: ' + this.userDisplayCurrencyCode);
+        console.log('symbol: ' + symbol);
+        
+        // this.updateSelectedLoanCurrencySymbol(symbol);
+        this.updateTableColumn({ columnNo: 3, columnObj: { label: 'Value (' + this.userDisplayCurrencyCode + ' ' + symbol + ')' } })
+        this.addToVisibleColumns('rateToUserCurrency')
+        this.addToVisibleColumns('valueUserCurrency')
+      }
+      else {
+        this.removeFromVisibleColumns('rateToUserCurrency')
+        this.removeFromVisibleColumns('valueUserCurrency')
+      }
     }
   }
 </script>

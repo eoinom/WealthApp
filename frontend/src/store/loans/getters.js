@@ -75,6 +75,10 @@ const tableColumns = state => {
   return state.tableColumns
 }
 
+const visibleColumns = state => {
+  return state.visibleColumns
+}
+
 export {
   getInitialFirstLoanId,
   loans,
@@ -89,5 +93,6 @@ export {
   repaymentPeriods,
   selectedLoanId,
   selectedLoanCurrencySymbol,
-  tableColumns
+  tableColumns,
+  visibleColumns
 }
