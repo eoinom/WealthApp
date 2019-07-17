@@ -203,10 +203,10 @@
             this.timer = setTimeout(() => {
               this.$q.loading.hide()
               this.timer = void 0
-              this.$router.push('/accounts')
+              this.$router.push('/dashboard')
             }, 2000)
 
-            // this.$router.push('/accounts')                                        
+            // this.$router.push('/dashboard')                                        
           }
           else {
             this.$q.notify({
