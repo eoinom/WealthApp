@@ -1,8 +1,7 @@
 <template>
   <q-card               
     @click="updateForSelectedId()"
-    class="my-card text-white"
-    style="background: radial-gradient(circle, #BB5601 0%, #883F01 100%)" 
+    class="loan-card text-white"
     >
     <q-card-section>
       <div class="row">        
@@ -198,5 +197,9 @@
     max-width: 150px;
     max-height: 70px;
     height: auto;
+  }
+
+  .loan-card {
+    background: radial-gradient(circle, #BB5601 0%, #883F01 100%)
   }
 </style>
