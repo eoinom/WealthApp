@@ -2,7 +2,6 @@
   <q-card               
     class="total-card text-black"
     :style="cardStyle" 
-    @mouseover="mouseOver()"
     >
     <q-card-section>  
       <!-- <div class="row text-h6">{{ title }}</div> -->
@@ -47,7 +46,7 @@
 
   export default {
     name: 'CardTotal',
-    props: ['title', 'currencySymbol', 'total', 'decimalPlaces', 'cardStyle', 'iconName', 'hoverText', 'breakdown'],
+    props: ['title', 'currencySymbol', 'total', 'decimalPlaces', 'cardStyle', 'iconName', 'breakdown'],
 
     data() {
       return {      

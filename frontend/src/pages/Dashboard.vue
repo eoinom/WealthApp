@@ -1,18 +1,17 @@
 <template>
   <q-page padding>
-    
+
     <div class="row">
       <div class="col" />
       <div class="col-3">
         <card-total 
           title = "Total Assets"
-          currencySymbol = '€'
-          total = 5496.54
+          :currencySymbol = userCurrencySymbol
+          :total = assetsTotal
           decimalPlaces = 2
           cardStyle = 'background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)'
           iconName = 'account_balance_wallet'
-          hoverText = 'Bank Accounts total = €4265.32<br/>Cash total = €125.23'
-          :breakdown = "breakdown"
+          :breakdown = assetsBreakdown
         />
       </div>
       <div class="col" />
@@ -20,11 +19,12 @@
       <div class="col-3">
         <card-total 
           :title = "'Total Liabilities'"
-          currencySymbol = "€"
-          total = 5496.54
+          :currencySymbol = userCurrencySymbol
+          :total = liabilitiesTotal
           decimalPlaces = 2
           cardStyle = "background: radial-gradient(circle, #BB5601 0%, #883F01 100%)"
           iconName = 'fas fa-hand-holding-usd'
+          :breakdown = liabilitiesBreakdown
         />
       </div>
       <div class="col" />
@@ -32,8 +32,8 @@
       <div class="col-3">
         <card-total 
           :title = "'Total Net Worth'"
-          currencySymbol = "€"
-          total = 5496.54
+          :currencySymbol = "userCurrencySymbol"
+          :total = netWorthTotal
           decimalPlaces = 2
           cardStyle = "background: radial-gradient(circle, #01BB56 0%, #01883F 100%)"
           iconName = 'fas fa-balance-scale-left'
@@ -42,11 +42,11 @@
       <div class="col" />
     </div>
 
-    <div class="row justify-center q-ma-md">
+    <!-- <div class="row justify-center q-ma-md">
       <div class="col-12 q-ml-sm">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
       </div>
-    </div>
+    </div> -->
   </q-page>
 </template>
 
@@ -56,34 +56,16 @@
   import { mapActions } from 'vuex'
 
   export default {
-    el: 'Dashboard',
+    // el: 'Dashboard',
 
     data: function() {
-      return {
-        breakdown: [
-          {
-            name: 'accounts',
-            symbol: '€',
-            value: 4500.12
-          },
-          {
-            name: 'cash',
-            symbol: '€',
-            value: 200.00
-          },
-          {
-            name: 'others',
-            symbol: '€',
-            value: 1125.50
-          }
-        ]
+      return {        
       }
     },
 
     methods: {
-      ...mapGetters('accounts', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
-      ...mapActions('accounts', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues', 'updateSelectedAccountCurrencySymbol',
-      'updateTableColumn', 'addToVisibleColumns', 'removeFromVisibleColumns']),
+      ...mapGetters('accounts', ['selectedAccountId']),
+      ...mapGetters('loans', []),
 
       updateChart() {
         const max = 90;
@@ -106,8 +88,84 @@
     },
 
     computed: {
-      ...mapGetters('accounts', ['accounts', 'accountById', 'accountValuesByAccountId', 'accountName', 'visibleColumns']),
+      ...mapGetters('accounts', ['accounts', 'accountBalanceUserCurrency', 'accountById', 'accountValuesByAccountId', 'accountName']),
+      ...mapGetters('loans', ['loans', 'loanBalanceUserCurrency', 'loanById', 'loanValuesByLoanId', 'loanName']),
       ...mapGetters('main', ['userDisplayCurrencyCode']),
+
+      userCurrencySymbol() {
+        return this.getCurrencySymbol(this.userDisplayCurrencyCode)
+      },
+
+      accountsTotal() {
+        var total = 0.00
+        var accounts = this.accounts        
+        for (var i = 0; i < Object.keys(accounts).length; i++) {
+          var id = Object.keys(accounts)[i]
+          console.log('in accountsTotal');          
+          console.log('id: ');
+          console.log(id);
+          
+          var balance = this.accountBalanceUserCurrency(id)
+          console.log('balance = ' + this.accountBalanceUserCurrency(id));
+          if (balance > 0) {
+            total = total + balance
+            console.log('this.accountBalanceUserCurrency(id): ');
+            console.log(this.accountBalanceUserCurrency(id));
+          }
+        }
+        console.log('accountsTotal =' + total);
+        return total
+      },
+
+      assetsBreakdown() {
+        var breakdown = []
+        var obj = {}
+        obj.name = "Accounts"
+        obj.symbol = this.userCurrencySymbol
+        obj.value = this.accountsTotal
+        // Vue.set(breakdown, 0, obj)
+        breakdown[0] = obj
+        return breakdown
+      },
+
+      assetsTotal() {
+        console.log('assetsTotal =' + this.accountsTotal);
+        return this.accountsTotal
+      },
+
+      loansTotal() {
+        var total = 0.00
+        var loans = this.loans
+        for (var i = 0; i < Object.keys(loans).length; i++) {
+          var id = Object.keys(loans)[i]
+          var balance = this.loanBalanceUserCurrency(id)
+          if (balance > 0 ) {
+            total = total + this.loanBalanceUserCurrency(id)
+          }
+        }
+        console.log('loansTotal =' + total);
+        return total
+      },
+
+      liabilitiesBreakdown() {
+        var breakdown = []
+        var obj = {}
+        obj.name = "Loans"
+        obj.symbol = this.userCurrencySymbol
+        obj.value = this.loansTotal
+        // Vue.set(breakdown, 0, obj)
+        breakdown[0] = obj
+        return breakdown
+      },
+
+      liabilitiesTotal() {
+        console.log('liabilitiesTotal =' + this.loansTotal);
+        return this.loansTotal        
+      },
+
+      netWorthTotal() {
+        return this.assetsTotal - this.liabilitiesTotal
+      },
 
 // CHART PROPERTIES
       chartOptions() {
@@ -169,6 +227,9 @@
         }]
       }
       // END OF CHART PROPERTIES 
+    },
+
+    mounted () {    
     },
 
     components : {
