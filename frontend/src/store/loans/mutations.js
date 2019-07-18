@@ -35,13 +35,10 @@ function deleteLoan (state, loanId) {
   }
 }
 
-// function updateLoanBalance = (state, loanId) {
-//   // To do
-// }
-
-// function updateLoanBalances = (state) {
-//   // To do
-// }
+function updateLoanBalance (state, payload) {
+  Vue.set(state.loans[payload.loanId], "balance", payload.balance)
+  Vue.set(state.loans[payload.loanId], "balanceUserCurrency", payload.balanceUserCurrency)
+}
 
 function addLoanValue (state, loanValue) {
   var loanVals = state.loans[loanValue.loan.loanId].loanValues
@@ -127,8 +124,7 @@ export {
   addLoan,
   updateLoan,
   deleteLoan,
-  // updateLoanBalance,
-  // updateLoanBalances,
+  updateLoanBalance,
   addLoanValue,
   updateLoanValue,
   // updateLoanValues,

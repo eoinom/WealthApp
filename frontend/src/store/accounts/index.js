@@ -35,7 +35,8 @@ const getDefaultState = () => {
             }
           }
         ],
-        // balance: 0.00  // Not implemented yet
+        balance: 0.00,
+        balanceUserCurrency: 0.00
       }
     },    
     accountIds: [],

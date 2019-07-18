@@ -5,14 +5,22 @@ function resetState ({ commit }) {
   commit('resetState')
 };
 
-function initialiseAccounts ({ commit }, accounts) {
+function initialiseAccounts ({ commit, state }, accounts) {
   for (var i = 0; i < Object.keys(accounts).length; i++) {
     var id = accounts[i].accountId
     if (i === 0) {
       commit('setInitialFirstAccountId', id)
     }
     commit('addAccount', accounts[i])
-    commit('sortAccountValues', accounts[i].accountId)
+    commit('sortAccountValues', id)
+
+    // get the balance and update in the store
+    var numOfValues = accounts[i].accountValues.length;
+    if (numOfValues > 0) {
+      var balance = state.accounts[id].accountValues[ numOfValues - 1 ].value;
+      var balanceUser = state.accounts[id].accountValues[ numOfValues - 1 ].valueUserCurrency;
+      commit('updateAccountBalance', {accountId: id, balance: balance, balanceUserCurrency: balanceUser})
+    }
   } 
 };
 
@@ -153,6 +161,26 @@ async function deleteAccount ({ commit, state, rootState }, accountId) {
   }
 }
 
+function updateAccountBalance ({ commit }, payload) {
+  commit('updateAccountBalance', payload)
+}
+
+function updateAccountBalances ({ commit, state }, payload) {
+  for (var i = 0; i < Object.keys(state.accounts).length; i++) {
+    var id = Object.keys(state.accounts)[i].accountId
+
+    commit('sortAccountValues', id)
+
+    // get the balance and update in the store
+    var numOfValues = state.accounts[id].accountValues.length;
+    if (numOfValues > 0) {
+      var balance = state.accounts[id].accountValues[ numOfValues - 1 ].value;
+      var balanceUser = state.accounts[id].accountValues[ numOfValues - 1 ].valueUserCurrency;
+      commit('updateAccountBalance', {accountId: id, balance: balance, balanceUserCurrency: balanceUser})
+    }
+  } 
+}
+
 async function addAccountValue ({ commit }, accountValue) {
   console.log('account value to add:')
   console.log(accountValue)
@@ -237,7 +265,13 @@ async function updateAccountValue ({ commit, rootState }, accountValue) {
     // get back details of new account from database and add to local store
     if (response.data.data.accountValue_mutations.updateAccountValue != null) { 
       commit('updateAccountValue', response.data.data.accountValue_mutations.updateAccountValue)
-      commit('sortLoanValues', accountValue.account.accountId)
+      commit('sortAccountValues', accountValue.account.accountId)
+
+      // get the balance and update in the store
+      var id = accountValue.account.accountId
+      var numOfValues = state.accounts[id].accountValues.length;
+      var balance = state.accounts[id].accountValues[ numOfValues - 1 ].value;
+      commit('updateAccountBalance', {accountId: id, balance: balance})
     }   
   } catch (error) {
     console.error(error); 
@@ -312,6 +346,8 @@ export {
   addAccount,
   updateAccount,
   deleteAccount,
+  updateAccountBalance,
+  updateAccountBalances,
   addAccountValue,
   updateAccountValue,
   // updateAccountValues,

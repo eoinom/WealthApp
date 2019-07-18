@@ -41,14 +41,17 @@ const loanValuesByLoanId = state => (id) => {
 }
 
 const loanBalance = state => (loanId) => {
-  try {
-    var numOfValues = state.loans[loanId].loanValues.length;
-    return state.loans[loanId].loanValues[ numOfValues - 1 ].value;
+  if (state.loans[loanId].loanValues.length === 0) {
+    return -1
   }
-  catch (error) {
-    console.error(error); 
-    return -1;
-  }   
+  return state.loans[loanId].balance
+}
+
+const loanBalanceUserCurrency = state => (loanId) => {
+  if (state.loans[loanId].loanValues.length === 0) {
+    return -1
+  }
+  return state.loans[loanId].balanceUserCurrency
 }
 
 const loanTypes = state => {
@@ -88,6 +91,7 @@ export {
   loanValueById,
   loanValuesByLoanId,
   loanBalance,
+  loanBalanceUserCurrency,
   loanTypes,
   rateTypes,
   repaymentPeriods,

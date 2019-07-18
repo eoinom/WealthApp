@@ -41,14 +41,20 @@ const accountValuesByAccountId = state => (id) => {
 }
 
 const accountBalance = state => (accountId) => {
-  try {
-    var numOfValues = state.accounts[accountId].accountValues.length;
-    return state.accounts[accountId].accountValues[ numOfValues - 1 ].value;
+  if (state.accounts[accountId].accountValues.length === 0) {
+    return -1
   }
-  catch (error) {
-    console.error(error); 
-    return -1;
-  }   
+  return state.accounts[accountId].balance
+}
+
+const accountBalanceUserCurrency = state => (accountId) => { 
+  console.log('state.accounts[accountId].accountValues.length:');
+  console.log(state.accounts[accountId].accountValues.length);
+  
+  if (state.accounts[accountId].accountValues.length === 0) {
+    return -1
+  }
+  return state.accounts[accountId].balanceUserCurrency
 }
 
 const accountTypes = state => {
@@ -80,6 +86,7 @@ export {
   accountValueById,
   accountValuesByAccountId,
   accountBalance,
+  accountBalanceUserCurrency,
   accountTypes,
   selectedAccountId,
   selectedAccountCurrencySymbol,

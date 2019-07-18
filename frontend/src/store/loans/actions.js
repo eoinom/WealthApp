@@ -5,7 +5,7 @@ function resetState ({ commit }) {
   commit('resetState')
 };
 
-function initialiseLoans ({ commit }, loans) {
+function initialiseLoans ({ commit, state }, loans) {
   for (var i = 0; i < Object.keys(loans).length; i++) {
     var id = loans[i].loanId
     if (i === 0) {
@@ -13,6 +13,14 @@ function initialiseLoans ({ commit }, loans) {
     }
     commit('addLoan', loans[i])
     commit('sortLoanValues', loans[i].loanId)
+
+    // get the balance and update in the store
+    var numOfValues = loans[i].loanValues.length;
+    if (numOfValues > 0) {
+      var balance = state.loans[id].loanValues[ numOfValues - 1 ].value;
+      var balanceUser = state.loans[id].loanValues[ numOfValues - 1 ].valueUserCurrency;
+      commit('updateLoanBalance', {loanId: id, balance: balance, balanceUserCurrency: balanceUser})
+    }
   } 
 };
 
@@ -157,6 +165,26 @@ async function updateLoan ({ commit, rootState }, loan) {
   }
 }
 
+function updateLoanBalance ({ commit }, payload) {
+  commit('updateLoanBalance', payload)
+}
+
+function updateLoanBalances ({ commit, state }, payload) {
+  for (var i = 0; i < Object.keys(state.loans).length; i++) {
+    var id = Object.keys(state.loans)[i].loanId
+
+    commit('sortLoanValues', id)
+
+    // get the balance and update in the store
+    var numOfValues = state.loans[id].loanValues.length;
+    if (numOfValues > 0) {
+      var balance = state.loans[id].loanValues[ numOfValues - 1 ].value;
+      var balanceUser = state.loans[id].loanValues[ numOfValues - 1 ].valueUserCurrency;
+      commit('updateLoanBalance', {loanId: id, balance: balance, balanceUserCurrency: balanceUser})
+    }
+  } 
+}
+
 async function addLoanValue ({ commit }, loanValue) {
   console.log('loan value to add:')
   console.log(loanValue)
@@ -240,8 +268,14 @@ async function updateLoanValue ({ commit }, loanValue) {
     
     // get back details of new loan from database and add to local store
     if (response.data.data.loanValue_mutations.updateLoanValue != null) {    
-      commit('updateLoanValue', response.data.data.accountValue_mutations.updateLoanValue)
+      commit('updateLoanValue', response.data.data.loanValue_mutations.updateLoanValue)
       commit('sortLoanValues', loanValue.loan.loanId)
+
+      // get the balance and update in the store
+      var id = loanValue.loan.loanId
+      var numOfValues = state.loans[id].loanValues.length;
+      var balance = state.loans[id].loanValues[ numOfValues - 1 ].value;
+      commit('updateLoanBalance', {loanId: id, balance: balance})
     }   
   } catch (error) {
     console.error(error); 
@@ -316,6 +350,8 @@ export {
   addLoan,
   updateLoan,
   deleteLoan,
+  updateLoanBalance,
+  updateLoanBalances,
   addLoanValue,
   updateLoanValue,
   // updateLoanValues,
