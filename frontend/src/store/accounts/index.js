@@ -79,7 +79,8 @@ const getDefaultState = () => {
         sortable: true 
       }
     ],
-    visibleColumns: ['date', 'value']
+    visibleColumns: ['date', 'value'],
+    totalAccountsBalances: []
   }
 }
 

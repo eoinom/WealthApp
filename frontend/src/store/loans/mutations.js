@@ -40,6 +40,10 @@ function updateLoanBalance (state, payload) {
   Vue.set(state.loans[payload.loanId], "balanceUserCurrency", payload.balanceUserCurrency)
 }
 
+function updateTotalLoansBalances (state, payload) {
+  state.totalLoansBalances = payload
+}
+
 function addLoanValue (state, loanValue) {
   var loanVals = state.loans[loanValue.loan.loanId].loanValues
   Vue.set(loanVals, loanVals.length, loanValue)
@@ -125,6 +129,7 @@ export {
   updateLoan,
   deleteLoan,
   updateLoanBalance,
+  updateTotalLoansBalances,
   addLoanValue,
   updateLoanValue,
   // updateLoanValues,

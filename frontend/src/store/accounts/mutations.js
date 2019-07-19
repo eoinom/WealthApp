@@ -40,6 +40,10 @@ function updateAccountBalance (state, payload) {
   Vue.set(state.accounts[payload.accountId], "balanceUserCurrency", payload.balanceUserCurrency)
 }
 
+function updateTotalAccountsBalances (state, payload) {
+  state.totalAccountsBalances = payload
+}
+
 function addAccountValue (state, accountValue) {
   var accountVals = state.accounts[accountValue.account.accountId].accountValues
   Vue.set(accountVals, accountVals.length, accountValue)  
@@ -125,6 +129,7 @@ export {
   updateAccount,
   deleteAccount,
   updateAccountBalance,
+  updateTotalAccountsBalances,
   addAccountValue,
   updateAccountValue,
   // updateAccountValues,

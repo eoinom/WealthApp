@@ -6,8 +6,9 @@ function resetState ({ commit }) {
 };
 
 function initialiseAccounts ({ commit, state }, accounts) {
-  for (var i = 0; i < Object.keys(accounts).length; i++) {
-    var id = accounts[i].accountId
+  var accountIdsWithVals = []   // for getting the total accounts balances below
+  for (let i = 0; i < Object.keys(accounts).length; i++) {
+    let id = accounts[i].accountId
     if (i === 0) {
       commit('setInitialFirstAccountId', id)
     }
@@ -17,11 +18,64 @@ function initialiseAccounts ({ commit, state }, accounts) {
     // get the balance and update in the store
     var numOfValues = accounts[i].accountValues.length;
     if (numOfValues > 0) {
-      var balance = state.accounts[id].accountValues[ numOfValues - 1 ].value;
-      var balanceUser = state.accounts[id].accountValues[ numOfValues - 1 ].valueUserCurrency;
+      accountIdsWithVals.push(id)
+      let balance = state.accounts[id].accountValues[ numOfValues - 1 ].value;
+      let balanceUser = state.accounts[id].accountValues[ numOfValues - 1 ].valueUserCurrency;
       commit('updateAccountBalance', {accountId: id, balance: balance, balanceUserCurrency: balanceUser})
     }
   } 
+
+  // Calculate the total accounts balances 
+  // first copy accountValues arrays from each account (with values in it) into another container array
+  let allAccountVals = []
+  for (let i = 0; i < accountIdsWithVals.length; i++) {
+    allAccountVals.push( state.accounts[accountIdsWithVals[i]].accountValues.slice(0) )   // use slice to push a clone of the array 
+  }  
+  // get all dates
+  let allDatesArr = []
+  for (let i = 0; i < accountIdsWithVals.length; i++) {
+    let accountDates = allAccountVals[i].map(a => a.date);
+    for(let j = 0; j < accountDates.length; j++){
+      allDatesArr[allDatesArr.length + j] = accountDates[j]
+    }
+  }
+  //remove the empty elements:
+  let allDates = allDatesArr.filter(function () { return true });
+  // sort the dates
+  allDates.sort(function(a, b) {
+    let dateA = new Date(a);
+    let dateB = new Date(b);
+    return dateA - dateB;
+  });  
+  // create object to store total balances and initialise with a key for each date and a corresponding 0.0 value
+  let allAccountBals = {}
+  for (let i = 0; i < allDates.length; i++) {
+    allAccountBals[ allDates[i] ] = 0.0
+  }
+  // then for each key value pair, for each account, get accountVal with date closest (but lower) then the current key (date of pair)
+  // add the valueUserCurrency to the value part of the pair (the total balance for that date)
+  for (let i = 0; i < allDates.length; i++) {
+    let date = allDates[i]    
+    let balance = 0.0
+    for (let j = 0; j < accountIdsWithVals.length; j++) {
+      var nearestBal = 0.0
+      for (let k = 0; k < allAccountVals[j].length; k++) {      
+        if (allAccountVals[j][k].date <= date) {
+            nearestBal = allAccountVals[j][k].valueUserCurrency
+        }
+        else {          
+          break;
+        }
+      }        
+      balance = balance + nearestBal
+      // round to two decimals (https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary)
+      balance = Math.round((balance + 0.00001) * 100) / 100
+    }
+    allAccountBals[date] = balance
+  }
+  console.log('allAccountBals (after) =');
+  console.log(allAccountBals); 
+  commit('updateTotalAccountsBalances', allAccountBals)
 };
 
 async function addAccount ({ commit, rootState }, account) {

@@ -14,7 +14,10 @@ export default /* async */ ({ Vue /* app, router, Vue, ... */ }) => {
       },
       formatDate_User2Iso(date) {        
         return moment(date, this.getDateFormat).format("YYYY-MM-DD")
-      },      
+      },  
+      roundNumTo2Dp(num){
+        return Math.round((balance + 0.00001) * 100) / 100
+      },
 
       // https://stackoverflow.com/questions/31581011/how-to-use-tolocalestring-and-tofixed2-in-javascript
       // Number.prototype.toLocaleFixed = function(n) {
