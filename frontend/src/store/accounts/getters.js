@@ -69,6 +69,10 @@ const selectedAccountCurrencySymbol = state => {
   return state.selectedAccountCurrencySymbol
 }
 
+const totalAccountsBalances = state => {
+  return state.totalAccountsBalances
+}
+
 const tableColumns = state => {
   return state.tableColumns
 }
@@ -90,6 +94,7 @@ export {
   accountTypes,
   selectedAccountId,
   selectedAccountCurrencySymbol,
+  totalAccountsBalances,
   tableColumns,
   visibleColumns
 }

@@ -7,6 +7,10 @@ const currencyCodes = state => {
   return state.currencyCodes
 }
 
+const getChart_XY_DataFromObj = state => {
+  return state.getChart_XY_DataFromObj()
+}
+
 const getDateFormat = state => {
   return state.dateFormat
 }
@@ -37,6 +41,7 @@ const userEmail = state => {
 export {
   authenticated,
   currencyCodes,
+  getChart_XY_DataFromObj,
   getDateFormat,
   user,
   userDisplayCurrency,

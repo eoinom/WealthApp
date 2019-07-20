@@ -49,7 +49,7 @@
     props: ['title', 'currencySymbol', 'total', 'decimalPlaces', 'cardStyle', 'iconName', 'breakdown'],
 
     data() {
-      return {      
+      return { 
         startVal: 0,
         endVal: this.total,
         duration: 2.5,
@@ -90,7 +90,7 @@
     methods: {
       onReady: function(instance, CountUp) {
         const that = this;
-        instance.update(that.endVal + 100);
+        instance.update(that.endVal);
       }
     },
 

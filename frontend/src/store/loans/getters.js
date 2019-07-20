@@ -74,6 +74,10 @@ const selectedLoanCurrencySymbol = state => {
   return state.selectedLoanCurrencySymbol
 }
 
+const totalLoansBalances = state => {
+  return state.totalLoansBalances
+}
+
 const tableColumns = state => {
   return state.tableColumns
 }
@@ -97,6 +101,7 @@ export {
   repaymentPeriods,
   selectedLoanId,
   selectedLoanCurrencySymbol,
+  totalLoansBalances,
   tableColumns,
   visibleColumns
 }
