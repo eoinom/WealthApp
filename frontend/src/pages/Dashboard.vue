@@ -42,15 +42,24 @@
       <div class="col" />
     </div>
 
-    <div class="row justify-center q-ma-md">
-      <div class="col-12 q-ml-sm">
-        <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="netWorthSeries"></apexchart>
+    <div class="row justify-center q-ma-lg">
+      <div class="col q-ma-md">
+        <apexchart width="100%" height="300" type="area" :options="assetsLiabilitiesAreaChartOptions" :series="assetsLiabilitiesSeries"></apexchart>
+      </div>      
+    <!-- </div>
+
+    <div class="row justify-center q-ma-lg"> -->
+      <div class="col q-ma-md">
+        <apexchart width="100%" height="300" type="area" :options="netWorthAreaChartOptions" :series="netWorthSeries"></apexchart>
       </div>
     </div>
 
-    <div class="row justify-center q-ma-md">
-      <div class="col-12 q-ml-sm">
-        <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="assetsLiabilitiesSeries"></apexchart>
+    <div class="row justify-center">
+      <div class="col">
+        <apexchart width="100%" height="300" type="donut" :options="accountsPieChartOptions" :series="accountsPieChartOptions.series"></apexchart>
+      </div>
+      <div class="col">
+        <apexchart width="100%" height="300" type="donut" :options="loansPieChartOptions" :series="loansPieChartOptions.series"></apexchart>
       </div>
     </div>
   </q-page>
@@ -245,7 +254,7 @@
       },
 
 // CHART PROPERTIES
-      chartOptions() {
+      areaChartOptions() {
         // Make sure to update the whole options config and not just a single property to allow the Vue watch catch the change.
         return {
           chart: {
@@ -278,6 +287,30 @@
           }
         }
       },
+      netWorthAreaChartOptions() {          
+        var options = Object.assign({}, this.areaChartOptions)
+        options.title = {
+          text: 'Net Worth',
+          align: 'center',
+          style: {
+            fontSize:  '20px',
+            color:  '#027BE3'
+          },
+        }
+        return options
+      },
+      assetsLiabilitiesAreaChartOptions() {          
+        var options = Object.assign({}, this.areaChartOptions)
+        options.title = {
+          text: 'Assets and Liabilities',
+          align: 'center',
+          style: {
+            fontSize:  '20px',
+            color:  '#027BE3'
+          },
+        }
+        return options
+      },
       netWorthSeries() {
         var netWorthData = this.$store.state.main.getChart_XY_DataFromObj(this.totalNetWorthBalances)
         var series = [
@@ -293,7 +326,88 @@
           { name: "Loans", data: loansData }
         ]
         return series
-      }
+      },
+      pieChartOptions() {  
+        var mainState = this.$store.state.main
+        var options = {
+          dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+              return val.toFixed(1) + "%"
+            },
+            style: {
+              fontSize: '16px',
+              // fontFamily: 'Helvetica, Arial, sans-serif',
+              // colors: undefined
+            }
+          },
+          plotOptions: {
+            pie: {
+              customScale: 1.0,
+              offsetX: 120,
+              donut: {                
+                labels: {
+                  show: true,
+                  value: {
+                    formatter: function (val) {
+                      return mainState.toUserCurrency(val)
+                    },
+                  }
+                }
+              }
+            }
+          }
+        }
+        return options
+      },
+      accountsPieChartOptions() {          
+        var labels = []
+        var series = []
+        this.accountIdsWithVals.forEach(id => {
+          if (this.accounts[id].balanceUserCurrency > 0) {
+            labels.push(this.accounts[id].accountName)
+            series.push(this.accounts[id].balanceUserCurrency)
+          }
+        });
+        var options = Object.assign({}, this.pieChartOptions)
+        options.series = series
+        options.labels = labels
+        options.title = {
+          text: 'Account Balances',
+          align: 'center',
+          margin: 20,
+          offsetX: -75,
+          style: {
+            fontSize:  '20px',
+            color:  '#027BE3'
+          },
+        }
+        return options
+      },
+      loansPieChartOptions() {        
+        var labels = []
+        var series = []
+        this.loanIdsWithVals.forEach(id => {
+          if (this.loans[id].balanceUserCurrency > 0) {
+            labels.push(this.loans[id].loanName)
+            series.push(this.loans[id].balanceUserCurrency)
+          }
+        });
+        var options = Object.assign({}, this.pieChartOptions)
+        options.series = series
+        options.labels = labels
+        options.title = {
+          text: 'Loan Balances',
+          align: 'center',
+          margin: 20,
+          offsetX: -75,
+          style: {
+            fontSize:  '20px',
+            color:  '#a24a01'
+          },
+        }
+        return options
+      }      
       // END OF CHART PROPERTIES 
     },
 

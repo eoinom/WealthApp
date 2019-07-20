@@ -31,6 +31,26 @@ const getDefaultState = () => {
         chartData[i] = {x: dates[i], y: values[i] }
       }
       return chartData
+    },
+    toLocaleFixed: function(num, decimals) {      
+      return num.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      })
+    },
+    toUserCurrency: function(num) {      
+      return parseFloat(num).toLocaleString(undefined, {
+        style: 'currency',
+        currency: this.user.displayCurrency.code,
+        currencyDisplay: 'symbol'
+      })
+    },
+    toCurrency: function(num, currencyCode) {      
+      return parseFloat(num).toLocaleString(undefined, {
+        style: 'currency',
+        currency: currencyCode,
+        currencyDisplay: 'symbol'
+      })
     }
   }
 }
