@@ -18,6 +18,21 @@ const accountById = state => (id) => {
   return state.accounts[id]
 }
 
+const accountIds = state => {
+  return state.accountIds
+}
+
+const accountIdsWithVals = state => {
+  let accountIdsWithVals = []
+  for (var i = 0; i < state.accountIds.length; i++) {
+    let id = state.accountIds[i]
+    if (state.accounts[id].hasOwnProperty('accountValues') && state.accounts[id].accountValues.length > 0) {
+      accountIdsWithVals.push(id)
+    }
+  }
+  return accountIdsWithVals
+}
+
 const accountName = state => (id) => {
   var account = state.accounts[id]
   return account.accountName
@@ -85,6 +100,8 @@ export {
   getInitialFirstAccountId,
   accounts,
   accountById,
+  accountIds,
+  accountIdsWithVals,
   accountName,
   accountValues,
   accountValueById,

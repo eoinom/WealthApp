@@ -24,11 +24,15 @@ function updateUser ({ commit }, user) {
   commit('updateAuth', true)
 }
 
+function updateTotalNetWorthBalances({ commit }, totalNetWorthBals) {
+  commit('updateTotalNetWorthBalances', totalNetWorthBals)
+}
 
 export {
   formatDate_Iso2User,
   formatDate_User2Iso,
   logout,
   // login,
-  updateUser
+  updateUser,
+  updateTotalNetWorthBalances
 }

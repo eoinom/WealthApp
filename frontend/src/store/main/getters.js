@@ -15,6 +15,10 @@ const getDateFormat = state => {
   return state.dateFormat
 }
 
+const totalNetWorthBalances = state => {
+  return state.totalNetWorthBalances
+}
+
 const user = state => {
   console.log('state');
   console.log(state);  
@@ -43,6 +47,7 @@ export {
   currencyCodes,
   getChart_XY_DataFromObj,
   getDateFormat,
+  totalNetWorthBalances,
   user,
   userDisplayCurrency,
   userDisplayCurrencyCode,

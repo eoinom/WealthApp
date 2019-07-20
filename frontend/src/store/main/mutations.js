@@ -15,9 +15,14 @@ function updateAuth (state, authenticated) {
   state.authenticated = authenticated
 }
 
+function updateTotalNetWorthBalances (state, totalNetWorthBals) {
+  state.totalNetWorthBalances = totalNetWorthBals
+}
+
 
 export {
   resetState,
   updateUser,
-  updateAuth
+  updateAuth,
+  updateTotalNetWorthBalances
 }

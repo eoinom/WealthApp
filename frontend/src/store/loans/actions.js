@@ -6,7 +6,6 @@ function resetState ({ commit }) {
 };
 
 function initialiseLoans ({ commit, state }, loans) {
-  var loanIdsWithVals = []   // for getting the total accounts balances below
   for (var i = 0; i < Object.keys(loans).length; i++) {
     var id = loans[i].loanId
     if (i === 0) {
@@ -18,64 +17,11 @@ function initialiseLoans ({ commit, state }, loans) {
     // get the balance and update in the store
     var numOfValues = loans[i].loanValues.length;
     if (numOfValues > 0) {
-      loanIdsWithVals.push(id)
       var balance = state.loans[id].loanValues[ numOfValues - 1 ].value;
       var balanceUser = state.loans[id].loanValues[ numOfValues - 1 ].valueUserCurrency;
       commit('updateLoanBalance', {loanId: id, balance: balance, balanceUserCurrency: balanceUser})
     }
   } 
-
-  // Calculate the total loans balances 
-  // first copy loanValues arrays from each loan (with values in it) into another container array
-  let allLoanVals = []
-  for (let i = 0; i < loanIdsWithVals.length; i++) {
-    allLoanVals.push( state.loans[loanIdsWithVals[i]].loanValues.slice(0) )   // use slice to push a clone of the array 
-  }  
-  // get all dates
-  let allDatesArr = []
-  for (let i = 0; i < loanIdsWithVals.length; i++) {
-    let loanDates = allLoanVals[i].map(a => a.date);
-    for(let j = 0; j < loanDates.length; j++){
-      allDatesArr[allDatesArr.length + j] = loanDates[j]
-    }
-  }
-  //remove the empty elements:
-  let allDates = allDatesArr.filter(function () { return true });
-  // sort the dates
-  allDates.sort(function(a, b) {
-    let dateA = new Date(a);
-    let dateB = new Date(b);
-    return dateA - dateB;
-  });  
-  // create object to store total balances and initialise with a key for each date and a corresponding 0.0 value
-  let allLoanBals = {}
-  for (let i = 0; i < allDates.length; i++) {
-    allLoanBals[ allDates[i] ] = 0.0
-  }
-  // then for each key value pair, for each loan, get loanVal with date closest (but lower) then the current key (date of pair)
-  // add the valueUserCurrency to the value part of the pair (the total balance for that date)
-  for (let i = 0; i < allDates.length; i++) {
-    let date = allDates[i]    
-    let balance = 0.0
-    for (let j = 0; j < loanIdsWithVals.length; j++) {
-      var nearestBal = 0.0
-      for (let k = 0; k < allLoanVals[j].length; k++) {      
-        if (allLoanVals[j][k].date <= date) {
-            nearestBal = allLoanVals[j][k].valueUserCurrency
-        }
-        else {          
-          break;
-        }
-      }        
-      balance = balance + nearestBal
-      // round to two decimals (https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary)
-      balance = Math.round((balance + 0.00001) * 100) / 100
-    }
-    allLoanBals[date] = balance
-  }
-  console.log('allLoanBals (after) =');
-  console.log(allLoanBals); 
-  commit('updateTotalLoansBalances', allLoanBals)
 };
 
 async function addLoan ({ commit, rootState }, loan) {  
@@ -386,6 +332,10 @@ function updateSelectedLoanCurrencySymbol({ commit }, symbol) {
   commit('updateSelectedLoanCurrencySymbol', symbol)
 }
 
+function updateTotalLoansBalances({ commit }, allLoanBals) {
+  commit('updateTotalLoansBalances', allLoanBals)
+}
+
 function updateTableColumn({ commit }, payload) {
   commit('updateTableColumn', payload)
 }
@@ -413,6 +363,7 @@ export {
   deleteLoanValues,
   updateSelectedLoanId,
   updateSelectedLoanCurrencySymbol,
+  updateTotalLoansBalances,
   updateTableColumn,  
   addToVisibleColumns,
   removeFromVisibleColumns

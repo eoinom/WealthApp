@@ -18,6 +18,21 @@ const loanById = state => (id) => {
   return state.loans[id]
 }
 
+const loanIds = state => {
+  return state.loanIds
+}
+
+const loanIdsWithVals = state => {
+  let loanIdsWithVals = []
+  for (var i = 0; i < state.loanIds.length; i++) {
+    let id = state.loanIds[i]
+    if (state.loans[id].hasOwnProperty('loanValues') && state.loans[id].loanValues.length > 0) {
+      loanIdsWithVals.push(id)
+    }
+  }
+  return loanIdsWithVals
+}
+
 const loanName = state => (id) => {
   var loan = state.loans[id]
   return loan.loanName
@@ -90,6 +105,8 @@ export {
   getInitialFirstLoanId,
   loans,
   loanById,
+  loanIds,
+  loanIdsWithVals,
   loanName,
   loanValues,
   loanValueById,

@@ -44,6 +44,12 @@
 
     <div class="row justify-center q-ma-md">
       <div class="col-12 q-ml-sm">
+        <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="netWorthSeries"></apexchart>
+      </div>
+    </div>
+
+    <div class="row justify-center q-ma-md">
+      <div class="col-12 q-ml-sm">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="assetsLiabilitiesSeries"></apexchart>
       </div>
     </div>
@@ -64,14 +70,116 @@
     },
 
     methods: {
-      ...mapGetters('accounts', ['selectedAccountId']),
-      ...mapGetters('loans', []),
+      ...mapActions('accounts', ['updateTotalAccountsBalances']),
+      ...mapActions('loans', ['updateTotalLoansBalances']),
+      ...mapActions('main', ['updateTotalNetWorthBalances']),
+
+      calculateLineGraphSeries() {  
+        // Calculate the total accounts, loans and net worth balances (for each date where a value exists in any account or loan account)
+
+        // copy accountValues arrays from each account (with values in it) into another container array
+        let allAccountVals = []
+        for (let i = 0; i < this.accountIdsWithVals.length; i++) {
+          allAccountVals.push( this.accounts[this.accountIdsWithVals[i]].accountValues.slice(0) )   // use slice to push a clone of the array 
+        }  
+        // copy loanValues arrays from each loan (with values in it) into another container array
+        let allLoanVals = []
+        for (let i = 0; i < this.loanIdsWithVals.length; i++) {
+          allLoanVals.push( this.loans[this.loanIdsWithVals[i]].loanValues.slice(0) )   // use slice to push a clone of the array 
+        }   
+
+        // get all dates
+        let allDatesArr = []
+        for (let i = 0; i < this.accountIdsWithVals.length; i++) {
+          let accountDates = allAccountVals[i].map(a => a.date);
+          for(let j = 0; j < accountDates.length; j++){
+            allDatesArr[allDatesArr.length + j] = accountDates[j]
+          }
+        }
+        for (let i = 0; i < this.loanIdsWithVals.length; i++) {
+          let loanDates = allLoanVals[i].map(a => a.date);
+          for(let j = 0; j < loanDates.length; j++){
+            allDatesArr[allDatesArr.length + j] = loanDates[j]
+          }
+        }
+        //remove the empty elements:
+        let allDates = allDatesArr.filter(function () { return true });
+        // sort the dates
+        allDates.sort(function(a, b) {
+          let dateA = new Date(a);
+          let dateB = new Date(b);
+          return dateA - dateB;
+        });  
+
+        // create objects to store total balances and initialise with a key for each date and a corresponding 0.0 value
+        let allAccountBals = {}
+        let allLoanBals = {}
+        let allNetWorthBals = {}
+        for (let i = 0; i < allDates.length; i++) {
+          allAccountBals[ allDates[i] ] = 0.0
+          allLoanBals[ allDates[i] ] = 0.0
+          allNetWorthBals[ allDates[i] ] = 0.0
+        }
+
+        // for each key value pair, for each account, get accountVal with date closest (but lower) then the current key (date of pair)
+        // add the valueUserCurrency to the value part of the pair (the total balance for that date)
+        for (let i = 0; i < allDates.length; i++) {
+          let date = allDates[i]    
+          let balance = 0.0
+          for (let j = 0; j < allAccountVals.length; j++) {
+            var nearestBal = 0.0
+            for (let k = 0; k < allAccountVals[j].length; k++) {      
+              if (allAccountVals[j][k].date <= date) {
+                  nearestBal = allAccountVals[j][k].valueUserCurrency
+              }
+              else {          
+                break;
+              }
+            }        
+            balance = balance + nearestBal
+            // round to two decimals (https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary)
+            balance = Math.round((balance + 0.00001) * 100) / 100
+          }
+          allAccountBals[date] = balance
+        }
+        this.updateTotalAccountsBalances(allAccountBals)
+
+        // now do for loans
+        for (let i = 0; i < allDates.length; i++) {
+          let date = allDates[i]    
+          let balance = 0.0
+          for (let j = 0; j < allLoanVals.length; j++) {
+            var nearestBal = 0.0
+            for (let k = 0; k < allLoanVals[j].length; k++) {      
+              if (allLoanVals[j][k].date <= date) {
+                  nearestBal = allLoanVals[j][k].valueUserCurrency
+              }
+              else {          
+                break;
+              }
+            }        
+            balance = balance + nearestBal
+            balance = Math.round((balance + 0.00001) * 100) / 100
+          }
+          allLoanBals[date] = balance
+        }
+        this.updateTotalLoansBalances(allLoanBals)
+
+        // now get net worth balances
+        for (let i = 0; i < allDates.length; i++) {
+          let date = allDates[i]    
+          let balance = allAccountBals[date] - allLoanBals[date]
+          balance = Math.round((balance + 0.00001) * 100) / 100
+          allNetWorthBals[date] = balance
+        }
+        this.updateTotalNetWorthBalances(allNetWorthBals)
+      }
     },
 
     computed: {
-      ...mapGetters('accounts', ['accounts', 'accountBalanceUserCurrency', 'totalAccountsBalances', 'accountById', 'accountValuesByAccountId', 'accountName']),
-      ...mapGetters('loans', ['loans', 'loanBalanceUserCurrency', 'totalLoansBalances', 'loanById', 'loanValuesByLoanId', 'loanName']),
-      ...mapGetters('main', ['userDisplayCurrencyCode']),
+      ...mapGetters('accounts', ['accounts', 'accountBalanceUserCurrency', 'accountIdsWithVals', 'totalAccountsBalances', 'accountById', 'accountValuesByAccountId', 'accountName']),
+      ...mapGetters('loans', ['loans', 'loanBalanceUserCurrency', 'loanIdsWithVals', 'totalLoansBalances', 'loanById', 'loanValuesByLoanId', 'loanName']),
+      ...mapGetters('main', ['totalNetWorthBalances', 'userDisplayCurrencyCode']),
 
       userCurrencySymbol() {
         return this.getCurrencySymbol(this.userDisplayCurrencyCode)
@@ -170,20 +278,19 @@
           }
         }
       },
+      netWorthSeries() {
+        var netWorthData = this.$store.state.main.getChart_XY_DataFromObj(this.totalNetWorthBalances)
+        var series = [
+          { name: "Net Worth", data: netWorthData }
+        ]
+        return series
+      },
       assetsLiabilitiesSeries() {
-
         var accountsData = this.$store.state.main.getChart_XY_DataFromObj(this.totalAccountsBalances)
         var loansData = this.$store.state.main.getChart_XY_DataFromObj(this.totalLoansBalances)
-
         var series = [
-          {
-            name: "Accounts",
-            data: accountsData
-          },
-          {
-            name: "Loans",
-            data: loansData
-          }
+          { name: "Accounts", data: accountsData },
+          { name: "Loans", data: loansData }
         ]
         return series
       }
@@ -191,6 +298,7 @@
     },
 
     mounted () {    
+      this.calculateLineGraphSeries()
     },
 
     components : {

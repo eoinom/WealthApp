@@ -22,13 +22,12 @@ const getDefaultState = () => {
       accounts: {},
       loans: {}
     },
+    totalNetWorthBalances: [],
     getChart_XY_DataFromObj: function(obj) {
       let dates = Object.keys(obj)
       let values = Object.values(obj)
-      // let chartData = []
       let chartData = new Array(dates.length) // initialising the array size for increased performance
       for (var i = 0; i < dates.length; i++) {
-        // chartData.push( {x: dates[i], y: values[i] } )
         chartData[i] = {x: dates[i], y: values[i] }
       }
       return chartData
