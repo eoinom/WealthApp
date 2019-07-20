@@ -10,12 +10,12 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.1.4",
+    "@quasar/extras": "^1.2.0",
     "apexcharts": "^3.8.1",
     "axios": "^0.19.0",
     "countup.js": "^2.0.4",
     "moment": "^2.24.0",
-    "quasar": "^1.0.4",
+    "quasar": "^1.0.5",
     "vue-apexcharts": "^1.4.0",
     "vue-countup-v2": "^4.0.0"
   },
