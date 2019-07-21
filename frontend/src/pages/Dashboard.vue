@@ -44,22 +44,71 @@
 
     <div class="row justify-center q-ma-lg">
       <div class="col q-ma-md">
-        <apexchart width="100%" height="300" type="area" :options="assetsLiabilitiesAreaChartOptions" :series="assetsLiabilitiesSeries"></apexchart>
+        <apexchart 
+          width="100%" 
+          height="300" 
+          type="area" 
+          :options="assetsLiabilitiesAreaChartOptions" 
+          :series="assetsLiabilitiesSeries" 
+        />
       </div>      
     <!-- </div>
 
     <div class="row justify-center q-ma-lg"> -->
       <div class="col q-ma-md">
-        <apexchart width="100%" height="300" type="area" :options="netWorthAreaChartOptions" :series="netWorthSeries"></apexchart>
+        <apexchart 
+          width="100%" 
+          height="300" 
+          type="area" 
+          :options="netWorthAreaChartOptions" 
+          :series="netWorthSeries" 
+        />
       </div>
     </div>
 
     <div class="row justify-center">
       <div class="col">
-        <apexchart width="100%" height="300" type="donut" :options="accountsPieChartOptions" :series="accountsPieChartOptions.series"></apexchart>
+        <apexchart 
+          width="100%" 
+          height="300" 
+          type="donut" 
+          :options="accountsPieChartOptions" 
+          :series="accountsPieChartOptions.series" 
+        />
       </div>
       <div class="col">
-        <apexchart width="100%" height="300" type="donut" :options="loansPieChartOptions" :series="loansPieChartOptions.series"></apexchart>
+        <apexchart 
+          width="100%" 
+          height="300" 
+          type="donut" 
+          :options="loansPieChartOptions" 
+          :series="loansPieChartOptions.series" 
+        />
+      </div>
+    </div>
+
+    <div class="row justify-center">
+      <br /><br /><br />
+    </div>
+
+    <div class="row justify-center">
+      <div class="col">
+        <apexchart 
+          width="100%" 
+          height="600" 
+          type="bar" 
+          :options="accountsBarChartOptions" 
+          :series="accountsBarChartOptions.series" 
+        />
+      </div>
+      <div class="col">
+        <apexchart 
+          width="100%" 
+          height="600" 
+          type="bar"
+          :options="loansBarChartOptions" 
+          :series="loansBarChartOptions.series" 
+        />
       </div>
     </div>
   </q-page>
@@ -376,7 +425,7 @@
           text: 'Account Balances',
           align: 'center',
           margin: 20,
-          offsetX: -75,
+          offsetX: 0,
           style: {
             fontSize:  '20px',
             color:  '#027BE3'
@@ -400,14 +449,109 @@
           text: 'Loan Balances',
           align: 'center',
           margin: 20,
-          offsetX: -75,
+          offsetX: 0,
           style: {
             fontSize:  '20px',
             color:  '#a24a01'
           },
         }
         return options
-      }      
+      },
+      barChartOptions() {  
+        var mainState = this.$store.state.main
+        var options = {
+          dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+              // return val.toFixed(1) + "%"
+              return mainState.toUserCurrency(val)
+            },
+            style: {
+              fontSize: '16px',
+              // fontFamily: 'Helvetica, Arial, sans-serif',
+              // colors: undefined
+            }
+          },
+          plotOptions: {
+            bar: {
+              horizontal: false,
+              endingShape: 'flat',
+              columnWidth: '70%',
+              barHeight: '70%',
+              distributed: false,
+              colors: {
+                  ranges: [{
+                      from: 0,
+                      to: 0,
+                      color: undefined
+                  }],
+                  backgroundBarColors: [],
+                  backgroundBarOpacity: 1,
+              },
+              dataLabels: {
+                  position: 'top',
+                  maxItems: 100,
+                  hideOverflowingLabels: true,
+              }
+            }
+          }
+        }
+        return options
+      },
+      accountsBarChartOptions() {   
+        var dataObj = {}
+        this.accountIdsWithVals.forEach(id => {
+          if (this.accounts[id].balanceUserCurrency > 0) {
+            dataObj[this.accounts[id].accountName] = this.accounts[id].balanceUserCurrency
+          }
+        });
+        var dataArr = this.$store.state.main.getChart_XY_DataFromObj(dataObj)
+        var series = [
+          { name: "Accounts", data: dataArr }
+        ]
+        var options = Object.assign({}, this.barChartOptions)
+        options.series = series
+        options.title = {
+          text: 'Account Balances',
+          align: 'center',
+          margin: 20,
+          offsetX: 0,
+          style: {
+            fontSize:  '20px',
+            color:  '#027BE3'
+          },
+        }
+        return options
+      },
+      loansBarChartOptions() {        
+        var dataObj = {}
+        this.loanIdsWithVals.forEach(id => {
+          if (this.loans[id].balanceUserCurrency > 0) {
+            dataObj[this.loans[id].loanName] = this.loans[id].balanceUserCurrency
+          }
+        });
+        var dataArr = this.$store.state.main.getChart_XY_DataFromObj(dataObj)
+        var series = [
+          { name: "Loans", data: dataArr }
+        ]
+        var options = Object.assign({}, this.barChartOptions)
+        options.colors = ['#a24a01']
+        options.series = series
+        options.title = {
+          text: 'Loan Balances',
+          align: 'center',
+          margin: 20,
+          offsetX: 0,
+          style: {
+            fontSize:  '20px',
+            color:  '#a24a01'
+          },
+        }
+        console.log('loans Bar Chart options');
+        console.log(options);
+        
+        return options
+      }
       // END OF CHART PROPERTIES 
     },
 
