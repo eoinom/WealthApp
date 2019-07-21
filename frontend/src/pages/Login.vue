@@ -27,7 +27,7 @@
               <q-input
                 ref="email"
                 filled
-                v-model="email"
+                v-model="userForm.email"
                 type="email" 
                 label="Email *"
                 lazy-rules
@@ -39,7 +39,7 @@
               </q-input>
 
               <q-input 
-                v-model="password" 
+                v-model="userForm.password" 
                 label="Password *"
                 filled 
                 :type="isPwd ? 'password' : 'text'" 
@@ -67,16 +67,16 @@
                 <q-input
                   ref="firstName"
                   filled
-                  v-model="firstName"
+                  v-model="userForm.firstName"
                   label="First name *"
                   lazy-rules
                   :rules="[ val => val && val.length > 0 || 'Please type something']"
                 />
 
                 <q-input
-                  ref="surname"
+                  ref="lastName"
                   filled
-                  v-model="surname"
+                  v-model="userForm.lastName"
                   label="Surname *"
                   lazy-rules
                   :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -85,7 +85,7 @@
                 <q-input
                   ref="email"
                   filled
-                  v-model="email"
+                  v-model="userForm.email"
                   type="email" 
                   label="Email *"
                   lazy-rules
@@ -97,7 +97,7 @@
                 </q-input>
 
                 <q-input 
-                  v-model="password" 
+                  v-model="userForm.password" 
                   label="Choose Password *"
                   filled 
                   :type="isPwd ? 'password' : 'text'" 
@@ -114,7 +114,7 @@
                 </q-input>
 
                 <q-input 
-                  v-model="confirmPassword" 
+                  v-model="userForm.confirmPassword" 
                   label="Confirm Password *"
                   filled 
                   :type="isPwd ? 'password' : 'text'" 
@@ -129,15 +129,27 @@
                     />
                   </template>
                 </q-input>
+
+                <modal-select                   
+                  :selectValue.sync="userCountry"
+                  :selectArr="countries"
+                  :isFilled = true
+                  label="Country"
+                  ref="modalUserCountry"/> 
+
+                <modal-currency 
+                  :currencyCode.sync = "userForm.displayCurrency"
+                  :isFilled = true
+                  ref="modalUserDisplayCurrency"/>   
                 
                 <q-checkbox
-                  v-model="subscribed"
+                  v-model="userForm.newsletterSub"
                   color="secondary"
                   label="Do you wish to subscribe for updates?"
                 />
 
                 <q-checkbox
-                  v-model="agreeTerms"
+                  v-model="userForm.agreeTerms"
                   color="secondary"
                   label="Do you agree with the terms & conditions?"
                 />
@@ -163,19 +175,24 @@
   export default {
     data () {
       return {
-        email: '',
-        password: '',
-        confirmPassword: '',
         isPwd: true,
-        firstName: '',
-        surname: '',
-        subscribed: true,
-        agreeTerms: false,
         tab: 'login',
-        // authenticated: false
+        userCountry: '',
+        userForm: {
+          email: '',
+          password: '',
+          confirmPassword: '',          
+          firstName: '',
+          lastName: '',
+          countryIso2Code: '',
+          displayCurrency: '',
+          newsletterSub: true,
+          agreeTerms: false    
+        }
       }
     },
     computed: {
+      ...mapGetters('main', ['countries', 'countryCodes']),
     },
     methods: {      
       ...mapActions('main', ['login', 'updateUser']),
@@ -186,9 +203,9 @@
       onSubmitLogin () { 
         this.$q.loading.show({
           delay: 400, // ms
-          message: 'Loading accounts<br/><span class="text-white">Hang on...</span>'
+          message: 'Logging you in<br/><span class="text-white">Hang on...</span>'
         })
-        this.login(this.email, this.password).then(authorised => {          
+        this.login(this.userForm.email, this.userForm.password).then(authorised => {          
           if (authorised) {
             console.log("user:");
             console.log(this.user());
@@ -213,7 +230,7 @@
               color: 'red-7',
               textColor: 'white',
               icon: 'fas fa-exclamation-triangle',
-              message: 'Invalid credentials, please try again.'
+              message: 'Something went wrong, please check your login details and try again.'
             })
             this.$q.loading.hide()
             this.$router.push('/login')
@@ -231,13 +248,21 @@
       },
 
       onResetLogin () {
-        this.email = null
-        this.password = null
-        this.confirmPassword = false
+        this.userForm.email = null
+        this.userForm.password = null
+        this.userForm.confirmPassword = false
       },
 
-      onSubmitRegister () {
-        if (this.agreeTerms !== true) {
+      onSubmitRegister () { 
+        if (this.userForm.password !== this.userForm.confirmPassword) {
+          this.$q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'fas fa-exclamation-triangle',
+          message: 'Passwords do not match'
+          })
+        }
+        else if (this.userForm.agreeTerms !== true) {
           this.$q.notify({
           color: 'red-5',
           textColor: 'white',
@@ -246,23 +271,63 @@
           })
         }
         else {
-          this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'fas fa-check-circle',
-          message: 'Submitted'
+          // this.$q.notify({
+          // color: 'green-4',
+          // textColor: 'white',
+          // icon: 'fas fa-check-circle',
+          // message: 'Submitted'
+          // })
+        // }
+          delete this.userForm.confirmPassword
+          delete this.userForm.agreeTerms          
+          let country = this.userCountry
+          let index = this.countries.findIndex(function f(c) {return c === country})   
+          this.userForm.countryIso2Code = this.countryCodes[index]         
+
+          this.$q.loading.show({
+            delay: 400, // ms
+            message: 'Creating your account<br/><span class="text-white">Hang on...</span>'
           })
-        }
+          this.register(this.userForm).then(authorised => {          
+            if (authorised) {
+              console.log("user:");
+              console.log(this.user());
+              this.$q.notify({
+                color: 'green-4',
+                textColor: 'white',
+                icon: 'fas fa-check-circle',
+                message: 'Account successfully created. Welcome ' + this.user().firstName + '!'
+              });
+
+              // hiding for 2s
+              this.timer = setTimeout(() => {
+                this.$q.loading.hide()
+                this.timer = void 0
+                this.$router.push('/dashboard')
+              }, 2000)                                      
+            }
+            else {
+              this.$q.notify({
+                color: 'red-7',
+                textColor: 'white',
+                icon: 'fas fa-exclamation-triangle',
+                message: 'Something went wrong, please try again.'
+              })
+              this.$q.loading.hide()
+              this.$router.push('/login')
+            }
+          }); 
+        }       
       },
 
       onResetRegister () {
-        this.firstName = null
-        this.surname = null
-        this.email = null
-        this.password = null
-        this.confirmPassword = null
-        this.subscribed = true
-        this.agreeTerms = false
+        this.userForm.firstName = null
+        this.userForm.lastName = null
+        this.userForm.email = null
+        this.userForm.password = null
+        this.userForm.confirmPassword = null
+        this.userForm.newsletterSub = true
+        this.userForm.agreeTerms = false
       },
 
 
@@ -352,17 +417,65 @@
             }
           });            
           
-          if (response.data.data.user_queries.userLogin != null) {
-            
+          if (response.data.data.user_queries.userLogin != null) {            
             this.updateUser(response.data.data.user_queries.userLogin);
             this.initialiseAccounts(response.data.data.user_queries.userLogin.accounts);
             this.initialiseLoans(response.data.data.user_queries.userLogin.loans);
-
             if (this.user() != null) {
               return true
             }
           }          
           console.log("Login failed")
+          return false
+
+        } catch (error) {
+            console.error(error); 
+        }
+        return false
+      },
+
+      async register(user) {                
+        const axios = require("axios")
+        try {
+          var response = await axios({
+            method: "POST",
+            url: "/",
+            data: {
+              query: `                    
+              mutation ($user: UserInputType!) {
+                user_mutations {
+                  addUser(user: $user) {
+                    userId
+                    firstName
+                    lastName
+                    email
+                    newsletterSub
+                    country {
+                      iso2Code
+                      name
+                    }
+                    displayCurrency {
+                      code
+                      nameShort
+                      nameLong 
+                    }                    
+                  }
+                }  
+              }
+              `,
+              variables: {
+                user: user
+              },
+            }
+          });            
+          
+          if (response.data.data.user_mutations.addUser != null) {            
+            this.updateUser(response.data.data.user_mutations.addUser);
+            if (this.user() != null) {
+              return true
+            }
+          }          
+          console.log("User registration failed")
           return false
             
         } catch (error) {
@@ -377,7 +490,12 @@
           this.$q.loading.hide()
         }
       }
-    }
+    },
+
+    components: {
+      'modal-currency':     require('components/SharedModals/ModalCurrencySelect.vue').default,
+      'modal-select':       require('components/SharedModals/ModalSelect.vue').default      
+    } 
   }
 </script>
 

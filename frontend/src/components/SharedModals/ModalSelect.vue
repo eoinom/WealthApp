@@ -9,13 +9,14 @@
       :rules="[val => !!val || 'Field is required']"
       ref="selectValue"      
       class="col" 
+      :filled = "isFilled"
     />
   </div>    
 </template>
 
 <script>
   export default {
-    props: ['selectValue', 'selectArr', 'label'],
+    props: ['selectValue', 'selectArr', 'label', 'isFilled'],
     data () {
       return {
         model: null

@@ -3,6 +3,14 @@ const authenticated = state => {
   return state.authenticated
 }
 
+const countries = state => {
+  return state.countries
+}
+
+const countryCodes = state => {
+  return state.countryCodes
+}
+
 const currencyCodes = state => {
   return state.currencyCodes
 }
@@ -40,6 +48,8 @@ const userEmail = state => {
 
 export {
   authenticated,
+  countries,
+  countryCodes,
   currencyCodes,
   getDateFormat,
   totalNetWorthBalances,

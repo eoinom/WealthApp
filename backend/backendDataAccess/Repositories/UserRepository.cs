@@ -29,7 +29,11 @@ namespace backendDataAccess.Repositories
             _dbContext.Entry<User>(user).State = EntityState.Detached;
             _dbContext.Entry<Currency>(user.DisplayCurrency).State = EntityState.Detached;
             _dbContext.SaveChanges();
-            return user;
+
+            return _dbContext.Users.AsNoTracking()
+                .Include(x => x.Country)
+                .Include(x => x.DisplayCurrency)
+                .SingleOrDefault(x => x.Email == user.Email && x.Password == user.Password);
         }
 
         public bool CheckCredentials(string email, string password)

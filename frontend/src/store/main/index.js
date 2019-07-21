@@ -5,7 +5,9 @@ import * as actions from './actions'
 const getDefaultState = () => {
   return {
     authenticated: false, 
-    currencyCodes: [ 'AUD', 'CAD', 'EUR', 'GBP', 'USD', 'NZD' ],   
+    countries: [ 'Australia', 'Canada', 'France', 'Germany', 'Ireland', 'Italy', 'Netherlands', 'Poland', 'Portugal', 'Spain', 'United Kingdomn', 'United States', 'New Zealand' ],   
+    countryCodes: [ 'AU', 'CA', 'FR', 'DE', 'IE', 'IT', 'NL', 'PL', 'PT', 'ES', 'GB', 'US', 'NZ' ],   
+    currencyCodes: [ 'AUD', 'CAD', 'EUR', 'GBP', 'PLN', 'USD', 'NZD' ],   
     dateFormat: 'DD/MM/YYYY',
     user: {
       userId: 0,

@@ -9,6 +9,7 @@
       ref="currencyCode"
       label="Currency" 
       class="col" 
+      :filled = "isFilled"
     />
   </div>    
 </template>
@@ -17,7 +18,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['currencyCode'],
+    props: ['currencyCode', 'isFilled'],
     data () {
       return {
         model: null
