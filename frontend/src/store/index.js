@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 import main from './main'
 import accounts from './accounts'
@@ -20,6 +21,7 @@ export default function (/* { ssrContext } */) {
       accounts,
       loans 
     },
+    plugins: [createPersistedState()],
 
     // enable strict mode (adds overhead!)
     // for dev mode only
