@@ -10,6 +10,7 @@ function formatDate_User2Iso({ state }, date) {
 
 function logout ({ commit }) {
   commit('resetState')
+  commit('updateAuth', false) // should already be done in resetState anyway
 }
 
 // login ({ commit }, payload) {

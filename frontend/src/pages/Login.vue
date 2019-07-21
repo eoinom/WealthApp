@@ -195,10 +195,10 @@
       ...mapGetters('main', ['countries', 'countryCodes']),
     },
     methods: {      
-      ...mapActions('main', ['login', 'updateUser']),
+      ...mapActions('main', ['updateUser']),
       ...mapActions('accounts', ['initialiseAccounts']),
       ...mapActions('loans', ['initialiseLoans']),
-      ...mapGetters('main', ['authenticated', 'user']),
+      ...mapGetters('main', ['user']),
 
       onSubmitLogin () { 
         this.$q.loading.show({

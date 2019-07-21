@@ -1,13 +1,16 @@
 import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 var moment = require('moment');
 
 // "async" is optional
 export default /* async */ ({ Vue /* app, router, Vue, ... */ }) => {  
   Vue.mixin({
     computed: {
-      ...mapGetters('main', ['getDateFormat', 'userDisplayCurrencyCode']),
+      ...mapGetters('main', ['authenticated', 'getDateFormat', 'userDisplayCurrencyCode']),      
     },
     methods: {
+      ...mapActions('main', ['logout']),
+
       formatDate_Iso2User(date) {   
         console.log('format: ' + this.getDateFormat)     
         return moment(date, "YYYY-MM-DD").format(this.getDateFormat)
@@ -63,6 +66,21 @@ export default /* async */ ({ Vue /* app, router, Vue, ... */ }) => {
           return "";
         } 
       }
-    }
+    },
+    beforeMount () {    
+      if (this.$router !== undefined) {
+        let currentPath = this.$router.history.current.path
+        if (currentPath !== '/login' && currentPath !== '/' && currentPath !== '/#' && !this.authenticated) {
+          this.logout()
+          this.$router.push('/login')
+          this.$q.notify({
+            color: 'red-7',
+            textColor: 'white',
+            icon: 'fas fa-exclamation-triangle',
+            message: 'Please login first!'
+          })
+        }
+      }
+    },
   })
 }
