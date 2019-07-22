@@ -45,6 +45,18 @@ namespace backendAPI
                     builder.WithOrigins("http://localhost:8080")
                       .AllowAnyHeader()
                       .AllowAnyMethod();
+
+                    builder.WithOrigins("https://spa.eoinom.now.sh")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+
+                    builder.WithOrigins("https://wealthapp.io")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+
+                    builder.WithOrigins("https://www.wealthapp.io")
+                     .AllowAnyHeader()
+                     .AllowAnyMethod();
                 });
             });
                         
