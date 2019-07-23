@@ -47,7 +47,22 @@ namespace backendDataAccess.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            return _dbContext.Users.AsNoTracking();
+            return _dbContext.Users.AsNoTracking()
+                .Include(x => x.Country)
+                .Include(x => x.DisplayCurrency)
+                .Include(x => x.Accounts)
+                    .ThenInclude(a => a.QuotedCurrency)
+                .Include(x => x.Accounts)
+                    .ThenInclude(a => a.AccountValues)
+                //.Include(x => x.CreditCards)
+                //    .ThenInclude(c => c.QuotedCurrency)
+                //.Include(x => x.CreditCards)
+                //    .ThenInclude(c => c.CreditCardValues)
+                .Include(x => x.Loans)
+                    .ThenInclude(l => l.QuotedCurrency)
+                .Include(x => x.Loans)
+                    .ThenInclude(l => l.LoanValues)
+                .AsNoTracking();
         }
 
         public User GetById(int id)
