@@ -15,8 +15,8 @@
         </q-toolbar-title>
 
         <div class="q-gutter-md">
-          <q-icon name="notifications" style="font-size: 2em;"/>
-          <q-icon name="settings" style="font-size: 2em;"/>
+          <!-- <q-icon name="notifications" style="font-size: 2em;"/> -->
+          <!-- <q-icon name="settings" style="font-size: 2em;"/> -->
           <q-avatar>
             <img src="https://cdn.quasar.dev/img/avatar1.jpg">
             <q-menu>
@@ -130,11 +130,11 @@
           //   icon: 'home',
           //   to: '/properties'
           // },
-          {
-            label: 'Credit Cards',
-            icon: 'credit_card',
-            to: '/loans'
-          },
+          // {
+          //   label: 'Credit Cards',
+          //   icon: 'credit_card',
+          //   to: '/loans'
+          // },
           {
             label: 'Loans',
             icon: 'fas fa-hand-holding-usd',
