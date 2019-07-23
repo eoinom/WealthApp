@@ -21,7 +21,16 @@ export default function (/* { ssrContext } */) {
       accounts,
       loans 
     },
-    plugins: [createPersistedState()],
+    // plugins: [createPersistedState()],
+    plugins: [createPersistedState({
+      key: 'vuex',
+      reducer (val) {                           // https://github.com/robinvdvleuten/vuex-persistedstate/issues/88
+        if(val.main.authenticated === false) {
+          return {}
+        }
+        return val
+      }
+    })],
 
     // enable strict mode (adds overhead!)
     // for dev mode only
