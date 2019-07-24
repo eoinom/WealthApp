@@ -91,16 +91,22 @@ namespace backendDataAccess.Repositories
                 .Include(x => x.User)
                     .ThenInclude(u => u.DisplayCurrency)
                 .Include(x => x.LoanValues)
-                .SingleOrDefault(x => x.LoanId == loanUpdates.LoanId);
+                .SingleOrDefault(x => x.LoanId == loanUpdates.LoanId && x.User.UserId == loanUpdates.User.UserId);
 
             if (loan != null)
             {
                 loan.LoanName = loanUpdates.LoanName;
-                loan.Description = loanUpdates.Description;
-                loan.Type = loanUpdates.Type;
+                loan.Description = loanUpdates.Description;                
                 loan.Institution = loanUpdates.Institution;
-                loan.QuotedCurrency = loanUpdates.QuotedCurrency;
                 loan.IsActive = loanUpdates.IsActive;
+                loan.Type = loanUpdates.Type;
+                loan.StartPrincipal = loanUpdates.StartPrincipal;
+                loan.RateType = loanUpdates.RateType;
+                loan.TotalTerm = loanUpdates.TotalTerm;
+                loan.FixedTerm = loanUpdates.FixedTerm;
+                loan.AprRate = loanUpdates.AprRate;
+                loan.StartDate = loanUpdates.StartDate;
+                loan.QuotedCurrency = loanUpdates.QuotedCurrency;
 
                 _dbContext.SaveChanges();
 
