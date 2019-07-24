@@ -10,15 +10,56 @@ namespace backendDataAccess.Tests
     public class UserRepositoryTests : backendDataAccessTestBase
     {
         [Fact]
-        public void GetAll_ReturnsCorrectType()
+        public void Add_ReturnsNewlyCreatedUser()
         {
             // Arrange
             var userRepo = new UserRepository(_context);
 
             // Act
-            var result = userRepo.GetAll();
+            var result = userRepo.Add(new User
+            {
+                UserId = 7,
+                Email = "shane@gmail.com",
+                Password = "pass1234",
+                FirstName = "Shane",
+                LastName = "Reilly",
+                Country = _context.Countries.FirstOrDefault(x => x.Iso2Code == "IE"),
+                NewsletterSub = true,
+                DisplayCurrency = _context.Currencies.FirstOrDefault(x => x.Code == "EUR")
+            });
 
             // Assert
+            Assert.IsType<User>(result);
+            Assert.Equal("shane@gmail.com", result.Email);
+        }
+
+        [Fact]
+        public void CheckCredentials_ReturnsTrueIfCredentialsCorrect()
+        {
+            var userRepo = new UserRepository(_context);
+
+            var result = userRepo.CheckCredentials("smithie@gmail.com", "jackspassw0rd");
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void CheckCredentials_ReturnsFalseIfCredentialsIncorrect()
+        {
+            var userRepo = new UserRepository(_context);
+
+            var result = userRepo.CheckCredentials("smithie@gmail.com", "jackspassword");
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void GetAll_ReturnsCorrectType()
+        {            
+            var userRepo = new UserRepository(_context);
+            
+            var result = userRepo.GetAll();
+            
             Assert.IsAssignableFrom<IEnumerable<User>>(result);
         }
 
@@ -52,46 +93,6 @@ namespace backendDataAccess.Tests
             var result = userRepo.GetById(33);
 
             Assert.Null(result);
-        }
-        
-        [Fact]
-        public void Add_ReturnsNewlyCreatedUser()
-        {
-            var userRepo = new UserRepository(_context);
-
-            var result = userRepo.Add(new User {
-                UserId = 7,
-                Email = "shane@gmail.com",
-                Password = "pass1234",
-                FirstName = "Shane",
-                LastName = "Reilly",
-                Country = _context.Countries.FirstOrDefault(x => x.Iso2Code == "IE"),
-                NewsletterSub = true,
-                DisplayCurrency = _context.Currencies.FirstOrDefault(x => x.Code == "EUR")
-            });
-
-            Assert.IsType<User>(result);
-            Assert.Equal("shane@gmail.com", result.Email);
-        }
-
-        [Fact]
-        public void CheckCredentials_ReturnsTrueIfCredentialsCorrect()
-        {
-            var userRepo = new UserRepository(_context);
-
-            var result = userRepo.CheckCredentials("smithie@gmail.com", "jackspassw0rd");
-
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void CheckCredentials_ReturnsFalseIfCredentialsIncorrect()
-        {
-            var userRepo = new UserRepository(_context);
-
-            var result = userRepo.CheckCredentials("smithie@gmail.com", "jackspassword");
-
-            Assert.False(result);
         }
 
         [Fact]
