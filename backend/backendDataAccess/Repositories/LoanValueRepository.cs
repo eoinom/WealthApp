@@ -82,27 +82,42 @@ namespace backendDataAccess.Repositories
                 .SingleOrDefault(x => x.LoanValueId == valueId);
         }
 
-        public LoanValue Update(LoanValue value)
-        {            
-            if (value.Loan != null)
+        public LoanValue Update(LoanValue valueUpdates)
+        {
+            if (valueUpdates.Loan != null)
             {
-                Loan bankLoan = _dbContext.Loans
-                                            .Include(x => x.QuotedCurrency)
-                                            .SingleOrDefault(x => x.LoanId == value.Loan.LoanId);
-                value.Loan = bankLoan;
+                valueUpdates.Loan = _dbContext.Loans.AsNoTracking()
+                                        .Include(x => x.QuotedCurrency)
+                                        .SingleOrDefault(x => x.LoanId == valueUpdates.Loan.LoanId);
             }
 
-            _dbContext.LoanValues.Update(value);
-            _dbContext.SaveChanges();
+            var loanValue = _dbContext.LoanValues
+                .Include(x => x.Loan)
+                    .ThenInclude(u => u.QuotedCurrency)
+                .Include(x => x.Loan)
+                    .ThenInclude(u => u.User)
+                    .ThenInclude(u => u.DisplayCurrency)
+                .SingleOrDefault(x => x.LoanValueId == valueUpdates.LoanValueId && x.Loan.LoanId == valueUpdates.Loan.LoanId);
 
-            //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
-            //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
-            _dbContext.Entry<LoanValue>(value).State = EntityState.Detached;
-            _dbContext.Entry<Loan>(value.Loan).State = EntityState.Detached;
-            _dbContext.Entry<Currency>(value.Loan.QuotedCurrency).State = EntityState.Detached;
-            _dbContext.SaveChanges();
+            if (loanValue != null)
+            {
+                loanValue.Date = valueUpdates.Date;
+                loanValue.Value = valueUpdates.Value;
+                loanValue.RateToUserCurrency = valueUpdates.RateToUserCurrency;
+                loanValue.ValueUserCurrency = valueUpdates.ValueUserCurrency;
 
-            return value;
+                _dbContext.SaveChanges();
+
+                //Note: need to detach to avoid tracking error when trying to update the same entry again with the same context
+                //See: https://entityframeworkcore.com/knowledge-base/50987635/the-instance-of-entity-type--item--cannot-be-tracked-because-another-instance-with-the-same-key-value-for---id---is-already-being-tracked
+                _dbContext.Entry<LoanValue>(loanValue).State = EntityState.Detached;
+                _dbContext.Entry<Loan>(loanValue.Loan).State = EntityState.Detached;
+                _dbContext.Entry<Currency>(loanValue.Loan.QuotedCurrency).State = EntityState.Detached;
+                _dbContext.Entry<User>(loanValue.Loan.User).State = EntityState.Detached;
+                _dbContext.Entry<Currency>(loanValue.Loan.User.DisplayCurrency).State = EntityState.Detached;
+                _dbContext.SaveChanges();
+            }
+            return loanValue;
         }
     }
 }
