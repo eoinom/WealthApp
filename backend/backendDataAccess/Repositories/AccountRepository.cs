@@ -91,7 +91,7 @@ namespace backendDataAccess.Repositories
                 .Include(x => x.User)
                     .ThenInclude(u => u.DisplayCurrency)
                 .Include(x => x.AccountValues)
-                .SingleOrDefault(x => x.AccountId == accountUpdates.AccountId);
+                .SingleOrDefault(x => x.AccountId == accountUpdates.AccountId && x.User.UserId == accountUpdates.User.UserId);
 
             if (account != null)
             {
