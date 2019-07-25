@@ -126,16 +126,14 @@
 
   Vue.use(VueMq, {
     breakpoints: {
-      mobile_sm: 450,
-      mobile_md: 767,
-      mobile_lg: 1023,
-      mobile: 1023,
-      tablet_md: 1250,
-      tablet_lg: 1439,
-      tablet: 1439,
-      desktop: Infinity,
+      mobile_sm: 450,     // 0 - 450
+      mobile_md: 767,     // 451 - 767
+      mobile_lg: 1023,    // 768 - 1023
+      tablet_md: 1250,    // 1024 - 1250
+      tablet_lg: 1439,    // 1251 - 1439
+      desktop: Infinity,  // 1440+
     },
-    defaultBreakpoint: 'mobile'
+    defaultBreakpoint: 'mobile_lg'
   })
 
   export default {

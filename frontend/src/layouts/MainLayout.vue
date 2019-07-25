@@ -164,6 +164,9 @@
       handleResize: function() {
         this.window.width = window.innerWidth;
         this.window.height = window.innerHeight;
+        if (this.window.width < 1440) {
+          this.leftDrawerOpen = false
+        }
       }
     },
 

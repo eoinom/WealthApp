@@ -1,149 +1,155 @@
 <template>
   <q-page padding>
 
-    <div class="row justify-center q-ma-md">
-      <div class="col-6 q-mb-lg q-mr-sm">
-        <h5 class="q-my-md">Loans</h5>
+    <div class="row justify-around q-ma-md q-col-gutter-lg">
 
-        <div class="q-mb-sm">
-          <q-btn
-            @click="showAddLoan = true"
-            color="negative"
-            icon="add"
-            label="Add Loan"
-            class="q-mb-sm"
-            rounded
-          />
+<!-- LOANS LIST -->
+      <div :class="$mq | mq({ mobile_sm: 'col-12', mobile_md: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
+        <div class="accounts-list-div">
+          <h5 class="q-my-md">Loans</h5>
+
+          <div class="q-mb-sm">
+            <q-btn
+              @click="showAddLoan = true"
+              color="negative"
+              icon="add"
+              label="Add Loan"
+              class="q-mb-sm"
+              rounded
+            />
+          </div>
+
+          <q-scroll-area 
+            :thumb-style="thumbStyle"
+            :content-style="contentStyle"
+            :content-active-style="contentActiveStyle"
+            class="loans-scroll-area">
+
+            <template v-if="Object.keys(loans).length > 0">
+              
+              <loan
+                v-for="(loan, key) in loans"
+                :key="key"
+                :loan="loan"
+                :id="key"
+                class="q-mb-md q-mr-sm">
+              </loan>
+
+            </template>
+          </q-scroll-area>
         </div>
-
-        <q-scroll-area 
-          :thumb-style="thumbStyle"
-          :content-style="contentStyle"
-          :content-active-style="contentActiveStyle"
-          class=""
-          style="height: 540px; min-width: 400px; max-width: 600px;">
-
-          <template v-if="Object.keys(loans).length > 0">
-            
-            <loan
-              v-for="(loan, key) in loans"
-              :key="key"
-              :loan="loan"
-              :id="key"
-              class="q-mb-md q-mr-sm">
-            </loan>
-
-          </template>
-        </q-scroll-area>
       </div>
 
-      <div class="col-auto q-ml-sm">
-        <h5 class="q-my-md">Loan Values</h5>
-        
-        <!-- Loan Values Table -->
-        <div class="q-pa-md">
-          <q-table
-            title="LoanValues"
-            :data="selectedLoanValues"
-            :columns="tableColumns()"
-            :visible-columns="visibleColumns"
-            row-key="date"            
-            :filter="filter"
-            :loading="loading"
-            :pagination.sync="pagination"
-            :selected-rows-label="getSelectedString"
-            selection="multiple"
-            :selected.sync="selectedValues"
-            :sort-method="customTableSort"
-            binary-state-sort
-            >
-            <template v-slot:top>
-              <div class="col-2">
-                <q-btn 
-                  round 
-                  icon="remove" 
-                  dense 
-                  color="red" 
-                  class="q-mr-md q-my-md"
-                  :disable="loading" 
-                  @click="promptToDeleteLoanValue()" 
-                />
-              </div>
+<!-- LOAN VALUES TABLE -->
+      <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
+        <div class="accounts-table-div">
+          <!-- <h5 class="q-mt-xl q-mb-lg">Loan Values</h5>         -->
+          <h5 :class="$mq | mq({ mobile_sm: 'q-my-md', tablet_md: 'q-my-md', tablet_lg: 'q-mt-xl q-mb-lg'})">Loan Values</h5>        
+          <div>
+            <q-table
+              title="LoanValues"
+              :data="selectedLoanValues"
+              :columns="tableColumns()"
+              :visible-columns="visibleColumns"
+              row-key="date"            
+              :filter="filter"
+              :loading="loading"
+              :pagination.sync="pagination"
+              :selected-rows-label="getSelectedString"
+              selection="multiple"
+              :selected.sync="selectedValues"
+              :sort-method="customTableSort"
+              binary-state-sort
+              >
+              <template v-slot:top>
+                <div class="col-2">
+                  <q-btn 
+                    round 
+                    icon="remove" 
+                    dense 
+                    color="red" 
+                    class="q-mr-md q-my-md"
+                    :disable="loading" 
+                    @click="promptToDeleteLoanValue()" 
+                  />
+                </div>
 
-              <div class="col">
-                <div class="text-h6 text-liabilities text-center">{{ selectedLoanName }}</div>
-              </div>
+                <div class="col">
+                  <div class="text-h6 text-liabilities text-center">{{ selectedLoanName }}</div>
+                </div>
 
-              <div class="col-2">
-                <q-btn 
-                  round 
-                  icon="add" 
-                  dense 
-                  class="q-ml-md q-my-md"
-                  color="primary" 
-                  :disable="loading" 
-                  @click="showAddLoanValue = true" 
-                />
-              </div>
-            </template>            
+                <div class="col-2">
+                  <q-btn 
+                    round 
+                    icon="add" 
+                    dense 
+                    class="q-ml-md q-my-md"
+                    color="primary" 
+                    :disable="loading" 
+                    @click="showAddLoanValue = true" 
+                  />
+                </div>
+              </template>            
 
-            <template v-slot:body="props">
-              <q-tr :props="props">
-                <q-td auto-width>
-                  <q-checkbox v-model="props.selected" />
-                </q-td>
+              <template v-slot:body="props">
+                <q-tr :props="props">
+                  <q-td auto-width>
+                    <q-checkbox v-model="props.selected" />
+                  </q-td>
 
-                <!-- Date -->
-                <q-td key="date" :props="props">
-                  {{ formatDate_Iso2User(props.row.date) }}
-                  <q-popup-edit 
-                    v-model="popupEditDate" 
-                    @show="() => showPopupDate(props.row, 'date')" 
-                     >
-                    <q-date
+                  <!-- Date -->
+                  <q-td key="date" :props="props">
+                    {{ formatDate_Iso2User(props.row.date) }}
+                    <q-popup-edit 
                       v-model="popupEditDate" 
-                      today-btn
-                      mask="YYYY-MM-DD"
-                      :options="dateOptionsFn"
-                      @input="(val, initval) => onUpdateLoanValue(val, props.row, 'date')"
-                    />
-                  </q-popup-edit>
-                </q-td>
+                      @show="() => showPopupDate(props.row, 'date')" 
+                      >
+                      <q-date
+                        v-model="popupEditDate" 
+                        today-btn
+                        mask="YYYY-MM-DD"
+                        :options="dateOptionsFn"
+                        @input="(val, initval) => onUpdateLoanValue(val, props.row, 'date')"
+                      />
+                    </q-popup-edit>
+                  </q-td>
 
-                <!-- Value -->
-                <q-td key="value" :props="props">
-                  {{ toLocaleFixed(props.row.value, 2) }}
+                  <!-- Value -->
+                  <q-td key="value" :props="props">
+                    {{ toLocaleFixed(props.row.value, 2) }}
 
-                  <q-popup-edit 
-                    v-model="popupEditValue" 
-                    @show="() => showPopupValue(props.row, 'value')" 
-                    @save="(val, initval) => onUpdateLoanValue(val, props.row, 'value')"
-                    title="Update value" 
-                    buttons >
-                    <q-input 
-                      type="number" 
+                    <q-popup-edit 
                       v-model="popupEditValue" 
-                      dense 
-                      autofocus />
-                  </q-popup-edit>
-                </q-td>   
+                      @show="() => showPopupValue(props.row, 'value')" 
+                      @save="(val, initval) => onUpdateLoanValue(val, props.row, 'value')"
+                      title="Update value" 
+                      buttons >
+                      <q-input 
+                        type="number" 
+                        v-model="popupEditValue" 
+                        dense 
+                        autofocus />
+                    </q-popup-edit>
+                  </q-td>   
 
-                <!-- RateToUserCurrency -->
-                <q-td key="rateToUserCurrency" :props="props">
-                  {{ props.row.rateToUserCurrency.toFixed(4) }}
-                </q-td>    
+                  <!-- RateToUserCurrency -->
+                  <q-td key="rateToUserCurrency" :props="props">
+                    {{ props.row.rateToUserCurrency.toFixed(4) }}
+                  </q-td>    
 
-                <!-- ValueUserCurrency -->
-                <q-td key="valueUserCurrency" :props="props">
-                  {{ toLocaleFixed(props.row.valueUserCurrency, 2) }}
-                </q-td>                 
-              </q-tr>              
-            </template>
-          </q-table>
+                  <!-- ValueUserCurrency -->
+                  <q-td key="valueUserCurrency" :props="props">
+                    {{ toLocaleFixed(props.row.valueUserCurrency, 2) }}
+                  </q-td>                 
+                </q-tr>              
+              </template>
+            </q-table>
+          </div> 
         </div> 
-      </div> 
+      </div>
     </div>
 
+<!-- LINE/AREA CHART -->
     <div class="row justify-center q-ma-md">
       <div class="col-12 q-ml-sm">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
@@ -151,7 +157,7 @@
     </div>
 
 
-    <br /><br /><br /><br /><br /><br /><br />
+    <br /><br /><br />
     <div class="footerNotes text-center">
       <a href="https://clearbit.com" class="">Logos provided by Clearbit</a>
     </div>
@@ -174,6 +180,20 @@
   import { mapActions } from 'vuex'
   import { scrollAreaMixin } from '../mixins/scrollAreaMixin'
   import { tableMixin } from '../mixins/tableMixin'
+  import Vue from 'vue'
+  import VueMq from 'vue-mq'
+
+  Vue.use(VueMq, {
+    breakpoints: {
+      mobile_sm: 450,     // 0 - 450
+      mobile_md: 767,     // 451 - 767
+      mobile_lg: 1023,    // 768 - 1023
+      tablet_md: 1250,    // 1024 - 1250
+      tablet_lg: 1439,    // 1251 - 1439
+      desktop: Infinity,  // 1440+
+    },
+    defaultBreakpoint: 'mobile_lg'
+  })
 
   export default {
     name: 'UserLoans',
@@ -376,5 +396,21 @@
   .footerNotes a {
     text-decoration: none;
     /* font-size: 12pt; */
+  }
+
+  .loans-list-div {
+    min-width: 485px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .loans-scroll-area {
+    height: 570px; 
+  }
+
+  .loans-table-div {
+    min-width: 485px;
+    max-width: 800px;
+    margin: 0 auto;
   }
 </style>
