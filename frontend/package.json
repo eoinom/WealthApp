@@ -18,6 +18,7 @@
     "quasar": "^1.0.5",
     "vue-apexcharts": "^1.4.0",
     "vue-countup-v2": "^4.0.0",
+    "vue-mq": "^1.0.1",
     "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {

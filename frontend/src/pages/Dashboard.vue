@@ -1,49 +1,47 @@
 <template>
   <q-page padding>
 
-    <div class="row">
-      <div class="col" />
-      <div class="col-3">
+<!-- CARDS -->
+    <div class="row q-col-gutter-md">
+      <div id="cardDiv-networth" :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-4'})">
+        <card-total 
+          :title = "'Total Net Worth'"
+          :currencySymbol = "userCurrencySymbol"
+          :total = netWorthTotal
+          :decimalPlaces = cardDecimalPlaces
+          cardStyle = "background: radial-gradient(circle, #01BB56 0%, #01883F 100%)"
+          iconName = 'fas fa-balance-scale-left'
+        />
+      </div>
+      <div id="cardDiv-assets" :class="$mq | mq({ mobile_sm: 'col-12', mobile_lg: 'col-6', tablet_lg: 'col-4'})">
         <card-total 
           title = "Total Assets"
           :currencySymbol = userCurrencySymbol
           :total = assetsTotal
-          decimalPlaces = 2
+          :decimalPlaces = cardDecimalPlaces
           cardStyle = 'background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)'
           iconName = 'account_balance_wallet'
           :breakdown = assetsBreakdown
         />
       </div>
-      <div class="col" />
-      <div class="col" />
-      <div class="col-3">
+      <div id="cardDiv-liabilities" :class="$mq | mq({ mobile_sm: 'col-12', mobile_lg: 'col-6', tablet_lg: 'col-4'})">
         <card-total 
           :title = "'Total Liabilities'"
           :currencySymbol = userCurrencySymbol
           :total = liabilitiesTotal
-          decimalPlaces = 2
+          :decimalPlaces = cardDecimalPlaces
           cardStyle = "background: radial-gradient(circle, #BB5601 0%, #883F01 100%)"
           iconName = 'fas fa-hand-holding-usd'
           :breakdown = liabilitiesBreakdown
         />
       </div>
-      <div class="col" />
-      <div class="col" />
-      <div class="col-3">
-        <card-total 
-          :title = "'Total Net Worth'"
-          :currencySymbol = "userCurrencySymbol"
-          :total = netWorthTotal
-          decimalPlaces = 2
-          cardStyle = "background: radial-gradient(circle, #01BB56 0%, #01883F 100%)"
-          iconName = 'fas fa-balance-scale-left'
-        />
-      </div>
-      <div class="col" />
     </div>
 
-    <div class="row justify-center q-ma-lg">
-      <div class="col q-ma-md">
+
+<!-- LINE/AREA CHARTS -->
+    <div class="row justify-center q-my-md q-col-gutter-md">
+      <!-- <div class="col-md-12 col-lg-6 q-ma-md"> -->
+      <div class="q-ma-md" :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
           height="300" 
@@ -52,10 +50,9 @@
           :series="assetsLiabilitiesSeries" 
         />
       </div>      
-    <!-- </div>
 
-    <div class="row justify-center q-ma-lg"> -->
-      <div class="col q-ma-md">
+      <!-- <div class="col-md-12 col-lg-6 q-ma-md"> -->
+      <div class="q-ma-md" :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
           height="300" 
@@ -66,8 +63,10 @@
       </div>
     </div>
 
-    <div class="row justify-center">
-      <div class="col">
+<!-- PIE/DONUT CHARTS -->
+    <div class="row justify-center q-col-gutter-md">
+      <!-- <div class="col-md-12 col-lg-6"> -->
+      <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
           height="300" 
@@ -76,7 +75,8 @@
           :series="accountsPieChartOptions.series" 
         />
       </div>
-      <div class="col">
+      <!-- <div class="col-md-12 col-lg-6"> -->
+      <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
           height="300" 
@@ -91,8 +91,10 @@
       <br /><br /><br />
     </div>
 
+<!-- BAR CHARTS -->
     <div class="row justify-center">
-      <div class="col">
+      <!-- <div class="col-sm-12 col-md-6"> -->
+      <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
           height="600" 
@@ -101,7 +103,8 @@
           :series="accountsBarChartOptions.series" 
         />
       </div>
-      <div class="col">
+      <!-- <div class="col-sm-12 col-md-6"> -->
+      <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
           height="600" 
@@ -115,15 +118,35 @@
 </template>
 
 
-<script>
+<script>  
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
+  import Vue from 'vue'
+  import VueMq from 'vue-mq'
+
+  Vue.use(VueMq, {
+    breakpoints: {
+      mobile_sm: 450,
+      mobile_md: 767,
+      mobile_lg: 1023,
+      mobile: 1023,
+      tablet_md: 1250,
+      tablet_lg: 1439,
+      tablet: 1439,
+      desktop: Infinity,
+    },
+    defaultBreakpoint: 'mobile'
+  })
 
   export default {
     // el: 'Dashboard',
 
     data: function() {
-      return {             
+      return {  
+        window: {
+          width: 0,
+          height: 0
+        }
       }
     },
 
@@ -231,6 +254,11 @@
           allNetWorthBals[date] = balance
         }
         this.updateTotalNetWorthBalances(allNetWorthBals)
+      },
+
+      handleResize: function() {
+        this.window.width = window.innerWidth;
+        this.window.height = window.innerHeight;
       }
     },
 
@@ -269,6 +297,15 @@
 
       assetsTotal() {
         return this.accountsTotal
+      },
+
+      cardDecimalPlaces() {
+        // var width = this.window.width
+        // if (this.window.width > 1440)
+        //   return 2
+        // else 
+        //   return 0
+        return 2
       },
 
       loansTotal() {
@@ -393,7 +430,7 @@
           plotOptions: {
             pie: {
               customScale: 1.0,
-              offsetX: 120,
+              offsetX: 80,
               donut: {                
                 labels: {
                   show: true,
@@ -555,8 +592,17 @@
       // END OF CHART PROPERTIES 
     },
 
+    created() {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize();
+    },
+
     mounted () {    
       this.calculateLineGraphSeries()
+    },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize)
     },
 
     components : {
@@ -566,6 +612,56 @@
 </script>
 
 
-<style>
+<style lang="scss">
+
+/* @media only screen and (min-width: 1440px) {
+  .tabletCards {
+    display: none;
+  }
+}
   
+@media only screen and (max-width: 1440px) {
+  .desktopCards {
+    display: none;
+  }
+} */
+
+/* @media only screen and (min-width: 1024px) { */
+
+// @media (min-width $breakpoint-md-min) {
+//   div#cardDiv-networth {
+//     order: 1;
+//   }
+//   div#cardDiv-assets {
+//     order: 2;
+//   }
+//   div#cardDiv-liabilities {
+//     order: 3;
+//   }
+// }
+
+// @media only screen and (min-width: 768px) {
+//   div#cardDiv-assets {
+//     order: 1;
+//   }
+//   div#cardDiv-liabilities {
+//     order: 2;
+//   }
+//   div#cardDiv-networth {
+//     order: 3;
+//   }
+// }
+
+#cardDiv-networth.col-12 { order: 1 }
+#cardDiv-networth.col-4 { order: 3 }
+
+#cardDiv-assets.col-12 { order: 2 }
+#cardDiv-assets.col-6 { order: 2 }
+#cardDiv-assets.col-4 { order: 1 }
+
+#cardDiv-liabilities.col-12 { order: 3 }
+#cardDiv-liabilities.col-6 { order: 3 }
+#cardDiv-liabilities.col-4 { order: 2 }
+
+
 </style>

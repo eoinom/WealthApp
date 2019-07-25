@@ -56,7 +56,8 @@
     <q-drawer
       v-model="leftDrawerOpen"
       :breakpoint="767"
-      :width="220"      
+      :width="220"  
+      :overlay="addDrawerOverlay"
       bordered
       content-class="bg-primary"
     >
@@ -140,16 +141,40 @@
             icon: 'fas fa-hand-holding-usd',
             to: '/loans'
           }
-        ]
+        ],
+        window: {
+          width: 0,
+          height: 0
+        }
       }
     },
     computed: {      
-      ...mapGetters('main', ['userFullName', 'userEmail'])
+      ...mapGetters('main', ['userFullName', 'userEmail']),
+
+      addDrawerOverlay() {
+        if (this.window.width < 1440)
+          return true
+        else
+          return false
+      }
     },
     methods: {
       ...mapActions('main', ['logout']),
-      openURL
-    }
+      openURL,
+      handleResize: function() {
+        this.window.width = window.innerWidth;
+        this.window.height = window.innerHeight;
+      }
+    },
+
+    created() {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize();
+    },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize)
+    },
   }
 </script>
 
