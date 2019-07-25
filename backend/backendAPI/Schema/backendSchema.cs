@@ -4,7 +4,7 @@ using GraphQL;
 
 namespace backendAPI.Schema
 {
-    public class backendSchema :GraphQL.Types.Schema
+    public class backendSchema : GraphQL.Types.Schema
     {
         public backendSchema(IDependencyResolver resolver) : base(resolver)
         {
