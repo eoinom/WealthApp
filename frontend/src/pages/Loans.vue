@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <div class="row justify-around q-ma-md q-col-gutter-lg">
+    <div class="row justify-around q-col-gutter-lg">
 
 <!-- LOANS LIST -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', mobile_md: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
@@ -59,6 +59,7 @@
               :selected.sync="selectedValues"
               :sort-method="customTableSort"
               binary-state-sort
+              :dense="isMobile"
               >
               <template v-slot:top>
                 <div class="col-2">
@@ -149,7 +150,7 @@
     </div>
 
 <!-- LINE/AREA CHART -->
-    <div class="row justify-center q-ma-md">
+    <div class="row justify-center q-my-xl" :class="$mq | mq({ mobile_sm: '', tablet_md: 'q-mx-md', tablet_lg: 'q-mx-md'})">
       <div class="col-12 q-ml-sm">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
       </div>
@@ -203,7 +204,11 @@
       return {
         showAddLoan: false,
         showAddLoanValue: false,
-        visiblecolumns: ['date', 'value', 'valueUserCurrency']
+        isMobile: false,
+        window: {
+          width: 0,
+          height: 0
+        }
       }
     },  
 
@@ -211,6 +216,17 @@
       ...mapGetters('loans', ['getInitialFirstLoanId', 'selectedLoanId', 'tableColumns']),
       ...mapActions('loans', ['updateSelectedLoanId', 'updateLoanValue', 'deleteLoanValues', 'updateSelectedLoanCurrencySymbol',
       'updateTableColumn', 'addToVisibleColumns', 'removeFromVisibleColumns']),
+
+      handleResize: function() {
+        this.window.width = window.innerWidth;
+        this.window.height = window.innerHeight;
+        if (this.window.width < 768) {
+          this.isMobile = true
+        }
+        else {
+          this.isMobile = false
+        }
+      },
 
       onUpdateLoanValue(val, row, col) {
         // this.setLoading(true);
@@ -386,7 +402,16 @@
         this.removeFromVisibleColumns('rateToUserCurrency')
         this.removeFromVisibleColumns('valueUserCurrency')
       }
-    }
+    },
+
+    created() {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize();
+    },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize)
+    },
   }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <div class="row justify-around q-ma-md q-col-gutter-lg">
+    <div class="row justify-around q-col-gutter-lg">
 
 <!-- ACCOUNTS LIST -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', mobile_md: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
@@ -58,6 +58,7 @@
               :selected.sync="selectedValues"
               :sort-method="customTableSort"
               binary-state-sort
+              :dense="isMobile"
               >
               <template v-slot:top>
                 <div class="col-2">
@@ -148,7 +149,7 @@
     </div>
 
 <!-- LINE/AREA CHART -->
-    <div class="row justify-center q-mx-md q-my-xl">
+    <div class="row justify-center q-my-xl" :class="$mq | mq({ mobile_sm: '', tablet_md: 'q-mx-md', tablet_lg: 'q-mx-md'})">
       <div class="col-12 q-ml-sm">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
       </div>
@@ -201,7 +202,12 @@
     data () {
       return {
         showAddAccount: false,
-        showAddAccountValue: false
+        showAddAccountValue: false,
+        isMobile: false,
+        window: {
+          width: 0,
+          height: 0
+        }
       }
     },  
 
@@ -209,6 +215,17 @@
       ...mapGetters('accounts', ['getInitialFirstAccountId', 'selectedAccountId', 'tableColumns']),
       ...mapActions('accounts', ['updateSelectedAccountId', 'updateAccountValue', 'deleteAccountValues', 'updateSelectedAccountCurrencySymbol',
       'updateTableColumn', 'addToVisibleColumns', 'removeFromVisibleColumns']),
+
+      handleResize: function() {
+        this.window.width = window.innerWidth;
+        this.window.height = window.innerHeight;
+        if (this.window.width < 768) {
+          this.isMobile = true
+        }
+        else {
+          this.isMobile = false
+        }
+      },
 
       onUpdateAccountValue(val, row, col) {
         // this.setLoading(true);
@@ -379,7 +396,16 @@
         this.removeFromVisibleColumns('rateToUserCurrency')
         this.removeFromVisibleColumns('valueUserCurrency')
       }
-    }
+    },
+
+    created() {
+      window.addEventListener('resize', this.handleResize)
+      this.handleResize();
+    },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize)
+    },
   }
 </script>
 
