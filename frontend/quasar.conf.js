@@ -180,6 +180,7 @@ module.exports = function (ctx) {
 
     electron: {
       // bundler: 'builder', // or 'packager'
+      bundler: 'builder',
 
       extendWebpack (cfg) {
         // do something with Electron main process Webpack cfg
@@ -196,13 +197,17 @@ module.exports = function (ctx) {
         // protocol: 'myapp://path',
 
         // Window only
-        // win32metadata: { ... }
+        win32metadata: { 
+          CompanyName: 'Wealth Industries',
+          ProductName: 'wealthApp',
+          InternalName: 'wealthApp',
+        }
       },
 
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        // appId: 'quasar-app'
+        appId: 'wealthApp'
       }
     }
   }
