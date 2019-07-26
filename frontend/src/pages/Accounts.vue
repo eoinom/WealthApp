@@ -5,7 +5,7 @@
 
 <!-- ACCOUNTS LIST -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', mobile_md: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
-        <div class="accounts-list-div">
+        <div :class="$mq | mq({ mobile_sm: 'accounts-list-div-mbl', mobile_lg: 'accounts-list-div', tablet_lg: 'accounts-list-div'})">
             <h5 class="q-my-md">Accounts</h5>
             <div class="q-mb-sm">
               <q-btn
@@ -41,7 +41,7 @@
 
 <!-- ACCOUNT VALUES TABLE -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
-        <div class="accounts-table-div">
+        <div :class="$mq | mq({ mobile_sm: 'accounts-table-div-mbl', mobile_lg: 'accounts-table-div', tablet_lg: 'accounts-table-div'})">
           <h5 :class="$mq | mq({ mobile_sm: 'q-my-md', tablet_md: 'q-my-md', tablet_lg: 'q-mt-xl q-mb-md'})">Account Balances</h5>
           <div>          
             <q-table
@@ -150,13 +150,13 @@
 
 <!-- LINE/AREA CHART -->
     <div class="row justify-center q-my-xl" :class="$mq | mq({ mobile_sm: '', tablet_md: 'q-mx-md', tablet_lg: 'q-mx-md'})">
-      <div class="col-12 q-ml-sm">
+      <div class="col-12 q-mr-md">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
       </div>
     </div>
     
 
-    <br /><br /><br />
+    <br />
     <div class="footerNotes text-center">
       <a href="https://clearbit.com" class="">Logos provided by Clearbit</a>
     </div>
@@ -330,6 +330,7 @@
            title: {
             text: this.selectedAccountName,
             align: 'center',
+            offsetY: 20,
             style: {
               fontSize:  '20px',
               color:  '#027BE3'
@@ -422,6 +423,12 @@
     margin: 0 auto;
   }
 
+  .accounts-list-div-mbl {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .accounts-scroll-area {
     height: 560px; 
   }
@@ -429,6 +436,12 @@
   .accounts-table-div {
     min-width: 485px;
     max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .accounts-table-div-mbl {
+    max-width: 100%;
+    width: 100%;
     margin: 0 auto;
   }
 </style>

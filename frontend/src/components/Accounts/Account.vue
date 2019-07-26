@@ -30,12 +30,12 @@
 
     <q-card-section>
       <div class="row"> 
-        <div class="col-9">
+        <div class="col-7">
           Type: {{ account.type }}
           <br />Currency: {{ account.quotedCurrency.code }}
           <br />Balance: {{ getCurrencySymbol(account.quotedCurrency.nameShort) + getAccountBalance(account.accountId) }}
         </div>
-        <div class="col institutionLogo" v-if="getInstitutionUrl(account.institution) != ''">
+        <div class="col self-center institutionLogo" v-if="getInstitutionUrl(account.institution) != ''">
           <img :src="getInstitutionLogoSrc(account.institution, undefined)">
         </div>
       </div>

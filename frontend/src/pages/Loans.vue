@@ -5,9 +5,8 @@
 
 <!-- LOANS LIST -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', mobile_md: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
-        <div class="accounts-list-div">
+        <div :class="$mq | mq({ mobile_sm: 'loans-list-div-mbl', mobile_lg: 'loans-list-div', tablet_lg: 'loans-list-div'})">
           <h5 class="q-my-md">Loans</h5>
-
           <div class="q-mb-sm">
             <q-btn
               @click="showAddLoan = true"
@@ -42,7 +41,7 @@
 
 <!-- LOAN VALUES TABLE -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
-        <div class="accounts-table-div">
+        <div :class="$mq | mq({ mobile_sm: 'loans-table-div-mbl', mobile_lg: 'loans-table-div', tablet_lg: 'loans-table-div'})">
           <h5 :class="$mq | mq({ mobile_sm: 'q-my-md', tablet_md: 'q-my-md', tablet_lg: 'q-mt-xl q-mb-lg'})">Loan Balances</h5>        
           <div>
             <q-table
@@ -151,13 +150,13 @@
 
 <!-- LINE/AREA CHART -->
     <div class="row justify-center q-my-xl" :class="$mq | mq({ mobile_sm: '', tablet_md: 'q-mx-md', tablet_lg: 'q-mx-md'})">
-      <div class="col-12 q-ml-sm">
+      <div class="col-12 q-mr-md">
         <apexchart width="100%" height="500" type="area" :options="chartOptions" :series="series"></apexchart>
       </div>
     </div>
 
 
-    <br /><br /><br />
+    <br />
     <div class="footerNotes text-center">
       <a href="https://clearbit.com" class="">Logos provided by Clearbit</a>
     </div>
@@ -333,6 +332,7 @@
            title: {
             text: this.selectedLoanName,
             align: 'center',
+            offsetY: 20,
             style: {
               fontSize:  '20px',
               color:  '#a24a01'
@@ -428,6 +428,12 @@
     margin: 0 auto;
   }
 
+  .loans-list-div-mbl {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .loans-scroll-area {
     height: 570px; 
   }
@@ -435,6 +441,12 @@
   .loans-table-div {
     min-width: 485px;
     max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .loans-table-div-mbl {
+    max-width: 100%;
+    width: 100%;
     margin: 0 auto;
   }
 </style>

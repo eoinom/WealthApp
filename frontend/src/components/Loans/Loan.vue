@@ -40,7 +40,7 @@
           <br />Rate: {{ (100*loan.aprRate).toFixed(2) + '% (' + loan.rateType + ')' }}
           <br />Repayment: {{ getCurrencySymbol(loan.quotedCurrency.nameShort) + toLocaleFixed(loan.repaymentAmount) + ' ' + loan.repaymentFrequency }}
         </div>  
-        <div class="col institutionLogo" v-if="getInstitutionUrl(loan.institution) != ''">
+        <div class="col self-center institutionLogo" v-if="getInstitutionUrl(loan.institution) != ''">
           <img :src="getInstitutionLogoSrc(loan.institution, undefined)">
         </div>
       </div>
