@@ -87,13 +87,20 @@
     </q-page-container>
 
     <q-footer class="bg-secondary text-white">
-      <q-tabs>
+      <q-tabs >
+        <!-- <q-route-tab 
+          v-for="nav in navs"
+          :key="nav.label"
+          :to="nav.to"
+          :icon="nav.icon" 
+          :label="nav.label" 
+        /> -->
         <q-route-tab 
           v-for="nav in navs"
           :key="nav.label"
           :to="nav.to"
           :icon="nav.icon" 
-          :label="nav.label" />
+        />
       </q-tabs>
     </q-footer>
 
