@@ -40,23 +40,21 @@
 
 <!-- LINE/AREA CHARTS -->
     <div class="row justify-center q-my-md q-col-gutter-md">
-      <!-- <div class="col-md-12 col-lg-6 q-ma-md"> -->
       <div class="q-ma-md" :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
-          width="100%" 
-          height="300" 
           type="area" 
+          :width="assetsLiabilitiesAreaChartOptions.chart.width"
+          :height="assetsLiabilitiesAreaChartOptions.chart.height"
           :options="assetsLiabilitiesAreaChartOptions" 
           :series="assetsLiabilitiesSeries" 
         />
       </div>      
 
-      <!-- <div class="col-md-12 col-lg-6 q-ma-md"> -->
       <div class="q-ma-md" :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
-        <apexchart 
-          width="100%" 
-          height="300" 
+        <apexchart  
           type="area" 
+          :width="netWorthAreaChartOptions.chart.width"
+          :height="netWorthAreaChartOptions.chart.height"
           :options="netWorthAreaChartOptions" 
           :series="netWorthSeries" 
         />
@@ -65,7 +63,6 @@
 
 <!-- PIE/DONUT CHARTS -->
     <div class="row justify-center q-col-gutter-md">
-      <!-- <div class="col-md-12 col-lg-6"> -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
@@ -75,7 +72,6 @@
           :series="accountsPieChartOptions.series" 
         />
       </div>
-      <!-- <div class="col-md-12 col-lg-6"> -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
         <apexchart 
           width="100%" 
@@ -92,23 +88,21 @@
     </div>
 
 <!-- BAR CHARTS -->
-    <div class="row justify-center">
-      <!-- <div class="col-sm-12 col-md-6"> -->
+    <div class="row justify-around q-col-gutter-lg">
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
-        <apexchart 
-          width="100%" 
-          height="600" 
+        <apexchart
           type="bar" 
+          :width="accountsBarChartOptions.chart.width"
+          :height="accountsBarChartOptions.chart.height"
           :options="accountsBarChartOptions" 
           :series="accountsBarChartOptions.series" 
         />
       </div>
-      <!-- <div class="col-sm-12 col-md-6"> -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col'})">
-        <apexchart 
-          width="100%" 
-          height="600" 
+        <apexchart
           type="bar"
+          :width="loansBarChartOptions.chart.width"
+          :height="loansBarChartOptions.chart.height"
           :options="loansBarChartOptions" 
           :series="loansBarChartOptions.series" 
         />
@@ -339,13 +333,17 @@
 
 // CHART PROPERTIES
       areaChartOptions() {
+        var mainState = this.$store.state.main
+        var userCurrencySymbol = this.userCurrencySymbol
         // Make sure to update the whole options config and not just a single property to allow the Vue watch catch the change.
         return {
           chart: {
+            width: "100%",
+            height: 400,
             id: 'assets and liabilities line chart',
             zoom: {
               enabled: true
-            }
+            },               
           },
           dataLabels: {
             enabled: false
@@ -357,18 +355,29 @@
             name: 'Assets',
             data: [1000.00, 2000.50, 1500.54, 1856.42, 2254.24, 2354.11]
           }],
-           title: {
-            text: this.selectedAccountName,
+          title: {
+            text: '',
             align: 'center',
+            offsetY: 20,
             style: {
-              fontSize:  '20px',
-              color:  '#027BE3'
+              fontSize: '20px',
+              color: '#027BE3'
             },
           },
           labels: ['2001-01-28', '2001-03-28', '2001-05-28', '2001-07-28', '2001-09-28', '2001-11-28'],
           xaxis: {
             type: 'datetime',
-          }
+          },
+          yaxis: {
+            labels: {
+              style: {
+                fontSize: '12px'
+              },
+              formatter: function (val) {
+                return userCurrencySymbol + mainState.toLocaleFixed(val, 0)
+              },
+            }
+          },
         }
       },
       netWorthAreaChartOptions() {          
@@ -376,9 +385,10 @@
         options.title = {
           text: 'Net Worth',
           align: 'center',
+          offsetY: 20,
           style: {
-            fontSize:  '20px',
-            color:  '#027BE3'
+            fontSize: '20px',
+            color: '#027BE3'
           },
         }
         return options
@@ -388,9 +398,10 @@
         options.title = {
           text: 'Assets and Liabilities',
           align: 'center',
+          offsetY: 20,
           style: {
-            fontSize:  '20px',
-            color:  '#027BE3'
+            fontSize: '20px',
+            color: '#027BE3'
           },
         }
         return options
@@ -420,7 +431,7 @@
               return val.toFixed(1) + "%"
             },
             style: {
-              fontSize: '16px',
+              fontSize: '15px',
               // fontFamily: 'Helvetica, Arial, sans-serif',
               // colors: undefined
             }
@@ -440,7 +451,41 @@
                 }
               }
             }
-          }
+          },
+          legend: {
+            show: true,
+            showForSingleSeries: false,
+            position: 'right',
+            horizontalAlign: 'center', 
+            floating: false,
+            fontSize: '14px',
+            fontFamily: 'Helvetica, Arial',
+            width: undefined,
+            height: undefined,
+            formatter: undefined,
+            offsetX: 0,
+            offsetY: 0,
+            labels: {
+                colors: undefined,
+                useSeriesColors: false
+            },
+          },
+          responsive: [
+            {
+              breakpoint: 767,
+              options: {
+                plotOptions: {
+                  pie: {
+                    offsetX: 0,
+                  }
+                },
+                legend: {
+                  position: "bottom",
+                  horizontalAlign: 'center', 
+                }
+              }
+            }
+          ]
         }
         return options
       },
@@ -462,8 +507,8 @@
           margin: 20,
           offsetX: 0,
           style: {
-            fontSize:  '20px',
-            color:  '#027BE3'
+            fontSize: '20px',
+            color: '#027BE3'
           },
         }
         return options
@@ -486,20 +531,25 @@
           margin: 20,
           offsetX: 0,
           style: {
-            fontSize:  '20px',
-            color:  '#a24a01'
+            fontSize: '20px',
+            color: '#a24a01'
           },
         }
         return options
       },
       barChartOptions() {  
         var mainState = this.$store.state.main
+        var userCurrencySymbol = this.userCurrencySymbol
         var options = {
+          chart: {
+            width: "100%",
+            height: 500,
+          },
           dataLabels: {
             enabled: true,
             formatter: function (val) {
-              // return val.toFixed(1) + "%"
-              return mainState.toUserCurrency(val)
+              // return mainState.toUserCurrency(val)
+              return userCurrencySymbol + mainState.toLocaleFixed(val, 0)
             },
             style: {
               fontSize: '16px',
@@ -511,25 +561,93 @@
             bar: {
               horizontal: false,
               endingShape: 'flat',
-              columnWidth: '70%',
-              barHeight: '70%',
+              columnWidth: '75%',
               distributed: false,
               colors: {
-                  ranges: [{
-                      from: 0,
-                      to: 0,
-                      color: undefined
-                  }],
-                  backgroundBarColors: [],
-                  backgroundBarOpacity: 1,
+                ranges: [{
+                    from: 0,
+                    to: 0,
+                    color: undefined
+                }],
+                backgroundBarColors: [],
+                backgroundBarOpacity: 1,
               },
               dataLabels: {
-                  position: 'top',
-                  maxItems: 100,
-                  hideOverflowingLabels: true,
+                position: 'top'
               }
             }
-          }
+          },
+          xaxis: {
+            labels: {
+              style: {
+                fontSize: '12px'
+              },
+              formatter: (val) => { return val },
+            }
+          },
+          yaxis: {
+            labels: {
+              style: {
+                fontSize: '12px'
+              },
+              formatter: function (val) {
+              return userCurrencySymbol + mainState.toLocaleFixed(val, 0)
+            },
+            }
+          },
+          responsive: [
+            {
+              breakpoint: 767,
+              options: {
+                plotOptions: {
+                  bar: {
+                    horizontal: true,
+                    endingShape: 'flat',
+                    barHeight: '75%',
+                    distributed: false,
+                    colors: {
+                      ranges: [{
+                        from: 0,
+                        to: 0,
+                        color: undefined
+                      }],
+                      backgroundBarColors: [],
+                      backgroundBarOpacity: 1,
+                    },
+                    dataLabels: {
+                      position: 'top'
+                    }
+                  }
+                },
+                xaxis: {
+                  labels: {
+                    // hideOverlappingLabels: true,
+                    rotate: -45,
+                    rotateAlways: true,
+                    minHeight: 60,
+                    style: {
+                      fontSize: '12px'
+                    },
+                    formatter: function (val) {
+                      return userCurrencySymbol + mainState.toLocaleFixed(val, 0)
+                    },
+                  }
+                },
+                yaxis: {
+                  labels: {
+                    // rotate: 0,
+                    // rotateAlways: true,
+                    // maxHeight: 30,
+                    trim: true,
+                    style: {
+                      fontSize: '12px'
+                    },
+                    // formatter: (val) => { return val },
+                  }
+                },
+              }
+            }
+          ]
         }
         return options
       },
@@ -552,8 +670,8 @@
           margin: 20,
           offsetX: 0,
           style: {
-            fontSize:  '20px',
-            color:  '#027BE3'
+            fontSize: '20px',
+            color: '#027BE3'
           },
         }
         return options
@@ -578,8 +696,8 @@
           margin: 20,
           offsetX: 0,
           style: {
-            fontSize:  '20px',
-            color:  '#a24a01'
+            fontSize: '20px',
+            color: '#a24a01'
           },
         }
         console.log('loans Bar Chart options');
@@ -611,44 +729,6 @@
 
 
 <style lang="scss">
-
-/* @media only screen and (min-width: 1440px) {
-  .tabletCards {
-    display: none;
-  }
-}
-  
-@media only screen and (max-width: 1440px) {
-  .desktopCards {
-    display: none;
-  }
-} */
-
-/* @media only screen and (min-width: 1024px) { */
-
-// @media (min-width $breakpoint-md-min) {
-//   div#cardDiv-networth {
-//     order: 1;
-//   }
-//   div#cardDiv-assets {
-//     order: 2;
-//   }
-//   div#cardDiv-liabilities {
-//     order: 3;
-//   }
-// }
-
-// @media only screen and (min-width: 768px) {
-//   div#cardDiv-assets {
-//     order: 1;
-//   }
-//   div#cardDiv-liabilities {
-//     order: 2;
-//   }
-//   div#cardDiv-networth {
-//     order: 3;
-//   }
-// }
 
 #cardDiv-networth.col-12 { order: 1 }
 #cardDiv-networth.col-4 { order: 3 }
