@@ -37,6 +37,24 @@ namespace backendDataAccess.Tests
         }
 
         [Fact]
+        public void Add_ReturnsNull_GivenAlreadyUsedLoanValueId()
+        {
+            var loanValueRepo = new LoanValueRepository(_context);
+
+            var result = loanValueRepo.Add(new LoanValue
+            {
+                LoanValueId = 1,
+                Date = new DateTime(2019, 2, 7),
+                Value = 1500.50m,
+                RateToUserCurrency = 1.5445,
+                ValueUserCurrency = 2317.52m,
+                Loan = _context.Loans.FirstOrDefault(x => x.LoanId == 1)
+            });
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public void DeleteById_GetByIdReturnsNull_GivenValidLoanValueIdToDelete()
         {
             var loanValueRepo = new LoanValueRepository(_context);

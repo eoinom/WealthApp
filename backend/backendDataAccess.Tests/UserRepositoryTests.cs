@@ -34,6 +34,26 @@ namespace backendDataAccess.Tests
         }
 
         [Fact]
+        public void Add_ReturnsNull_GivenAlreadyUsedUserId()
+        {
+            var userRepo = new UserRepository(_context);
+
+            var result = userRepo.Add(new User
+            {
+                UserId = 1,
+                Email = "shane@gmail.com",
+                Password = "pass1234",
+                FirstName = "Shane",
+                LastName = "Reilly",
+                Country = _context.Countries.FirstOrDefault(x => x.Iso2Code == "IE"),
+                NewsletterSub = true,
+                DisplayCurrency = _context.Currencies.FirstOrDefault(x => x.Code == "EUR")
+            });
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public void CheckCredentials_ReturnsTrueIfCredentialsCorrect()
         {
             var userRepo = new UserRepository(_context);

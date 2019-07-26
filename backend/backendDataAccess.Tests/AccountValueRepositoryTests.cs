@@ -37,6 +37,24 @@ namespace backendDataAccess.Tests
         }
 
         [Fact]
+        public void Add_ReturnsNull_GivenAlreadyUsedAccountValueId()
+        {
+            var accountValueRepo = new AccountValueRepository(_context);
+
+            var result = accountValueRepo.Add(new AccountValue
+            {
+                AccountValueId = 1,
+                Date = new DateTime(2019, 2, 7),
+                Value = 1500.50m,
+                RateToUserCurrency = 1.5445,
+                ValueUserCurrency = 2317.52m,
+                Account = _context.Accounts.FirstOrDefault(x => x.AccountId == 1)
+            });
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public void DeleteById_GetByIdReturnsNull_GivenValidAccountValueIdToDelete()
         {
             var accountValueRepo = new AccountValueRepository(_context);

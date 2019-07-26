@@ -54,6 +54,32 @@ namespace backendDataAccess.Tests
         }
 
         [Fact]
+        public void Add_ReturnsNull_GivenAlreadyUsedLoanId()
+        {
+            var loanRepo = new LoanRepository(_context);
+
+            var result = loanRepo.Add(new Loan
+            {
+                LoanId = 1,
+                LoanName = "My personal Loan",
+                Description = "Personal loan for travelling",
+                Institution = "AIB",
+                IsActive = true,
+                Type = "Personal Loan",
+                StartPrincipal = 5000.00m,
+                RateType = "Variable",
+                TotalTerm = 24,
+                FixedTerm = 6,
+                AprRate = 0.12,
+                StartDate = new DateTime(2019, 02, 10),
+                QuotedCurrency = _context.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                User = _context.Users.FirstOrDefault(x => x.UserId == 2)
+            });
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public void Delete_GetByIdReturnsNull_GivenValidLoanIdToDelete()
         {
             var loanRepo = new LoanRepository(_context);

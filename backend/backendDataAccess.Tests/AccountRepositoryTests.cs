@@ -42,6 +42,26 @@ namespace backendDataAccess.Tests
         }
 
         [Fact]
+        public void Add_ReturnsNull_GivenAlreadyUsedAccountId()
+        {
+            var accountRepo = new AccountRepository(_context);
+
+            var result = accountRepo.Add(new Account
+            {
+                AccountId = 1,
+                AccountName = "Current A/C",
+                Description = "Main current account",
+                Institution = "KBC",
+                IsActive = true,
+                Type = "Current",
+                QuotedCurrency = _context.Currencies.FirstOrDefault(x => x.Code == "EUR"),
+                User = _context.Users.FirstOrDefault(x => x.UserId == 1)
+            });
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public void Delete_GetByIdReturnsNull_GivenValidAccountIdToDelete()
         {
             var accountRepo = new AccountRepository(_context);
