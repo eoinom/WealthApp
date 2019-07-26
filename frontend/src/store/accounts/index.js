@@ -57,7 +57,7 @@ const getDefaultState = () => {
       { 
         name: 'value', 
         align: 'center', 
-        label: 'Value (USD $)', 
+        label: 'Balance (USD $)', 
         field: row => row.value,
         // format: val => Number(val).toFixed(2),
         sortable: true 

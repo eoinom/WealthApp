@@ -167,7 +167,7 @@
         this.updateSelectedLoanId(this.loan.loanId);
         var symbol = this.getCurrencySymbol(this.loan.quotedCurrency.nameShort);
         this.updateSelectedLoanCurrencySymbol(symbol);
-        this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + this.loan.quotedCurrency.code + ' ' + symbol + ')' } });
+        this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Balance (' + this.loan.quotedCurrency.code + ' ' + symbol + ')' } });
         
         if (this.userDisplayCurrencyCode !== this.loan.quotedCurrency.code) {
           symbol = this.getCurrencySymbol(this.userDisplayCurrencyCode);          

@@ -43,8 +43,7 @@
 <!-- LOAN VALUES TABLE -->
       <div :class="$mq | mq({ mobile_sm: 'col-12', tablet_md: 'col-12', tablet_lg: 'col-5'})">
         <div class="accounts-table-div">
-          <!-- <h5 class="q-mt-xl q-mb-lg">Loan Values</h5>         -->
-          <h5 :class="$mq | mq({ mobile_sm: 'q-my-md', tablet_md: 'q-my-md', tablet_lg: 'q-mt-xl q-mb-lg'})">Loan Values</h5>        
+          <h5 :class="$mq | mq({ mobile_sm: 'q-my-md', tablet_md: 'q-my-md', tablet_lg: 'q-mt-xl q-mb-lg'})">Loan Balances</h5>        
           <div>
             <q-table
               title="LoanValues"
@@ -372,7 +371,7 @@
       var selectedLoan = this.loanById(this.getInitialFirstLoanId())      
       var symbol = this.getCurrencySymbol(selectedLoan.quotedCurrency.nameShort);
       this.updateSelectedLoanCurrencySymbol(symbol);
-      this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + selectedLoan.quotedCurrency.code + ' ' + symbol + ')' } });
+      this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Balance (' + selectedLoan.quotedCurrency.code + ' ' + symbol + ')' } });
       if (this.userDisplayCurrencyCode !== selectedLoan.quotedCurrency.code) {
         symbol = this.getCurrencySymbol(this.userDisplayCurrencyCode);
         console.log('userDisplayCurrencyCode: ' + this.userDisplayCurrencyCode);

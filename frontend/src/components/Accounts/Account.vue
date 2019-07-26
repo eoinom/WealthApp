@@ -118,7 +118,7 @@
         this.updateSelectedAccountId(this.account.accountId);
         var symbol = this.getCurrencySymbol(this.account.quotedCurrency.nameShort);
         this.updateSelectedAccountCurrencySymbol(symbol);
-        this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Value (' + this.account.quotedCurrency.code + ' ' + symbol + ')' } });
+        this.updateTableColumn({ columnNo: 1, columnObj: { label: 'Balance (' + this.account.quotedCurrency.code + ' ' + symbol + ')' } });
         
         if (this.userDisplayCurrencyCode !== this.account.quotedCurrency.code) {
           symbol = this.getCurrencySymbol(this.userDisplayCurrencyCode);
