@@ -18,6 +18,11 @@ namespace backendDataAccess.Repositories
 
         public AccountValue Add(AccountValue value)
         {
+            if (value.AccountValueId > 0 && _dbContext.AccountValues.Any(x => x.AccountValueId == value.AccountValueId))
+            {
+                return null;
+            }
+
             if (value.Account != null)
             {
                 Account account = _dbContext.Accounts

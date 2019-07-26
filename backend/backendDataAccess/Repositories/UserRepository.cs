@@ -18,6 +18,11 @@ namespace backendDataAccess.Repositories
 
         public User Add(User user)
         {
+            if (user.UserId > 0 && _dbContext.Users.Any(x => x.UserId == user.UserId))
+            {
+                return null;
+            }
+
             Country country = _dbContext.Countries.FirstOrDefault(x => x.Iso2Code == user.Country.Iso2Code);
             user.Country = country;
 

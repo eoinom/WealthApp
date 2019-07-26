@@ -18,6 +18,11 @@ namespace backendDataAccess.Repositories
 
         public Loan Add(Loan loan)
         {
+            if (loan.LoanId > 0 && _dbContext.Loans.Any(x => x.LoanId == loan.LoanId))
+            {
+                return null;
+            }
+
             User user = _dbContext.Users
                             .Include(x => x.Country)
                             .Include(x => x.DisplayCurrency)

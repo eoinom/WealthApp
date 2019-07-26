@@ -18,6 +18,11 @@ namespace backendDataAccess.Repositories
 
         public Account Add(Account account)
         {
+            if (account.AccountId > 0 && _dbContext.Accounts.Any(x => x.AccountId == account.AccountId))
+            {
+                return null;
+            }
+
             User user = _dbContext.Users
                             .Include(x => x.Country)
                             .Include(x => x.DisplayCurrency)

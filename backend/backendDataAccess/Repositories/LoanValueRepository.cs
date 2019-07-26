@@ -18,6 +18,11 @@ namespace backendDataAccess.Repositories
 
         public LoanValue Add(LoanValue value)
         {
+            if (value.LoanValueId > 0 && _dbContext.LoanValues.Any(x => x.LoanValueId == value.LoanValueId))
+            {
+                return null;
+            }
+
             if (value.Loan != null)
             {
                 Loan loan = _dbContext.Loans
