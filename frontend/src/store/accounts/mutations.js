@@ -10,8 +10,18 @@ function resetState (state) {
 function addAccount (state, account) {
   // Add the account and store the accountId in a sorted array
   Vue.set(state.accounts, account.accountId, account)
-  Vue.set(state.accountIds, state.accountIds.length, account.accountId)
-  state.accountIds.sort(function(a, b){return a - b});
+
+  // Check if array already contains this accountId
+  var hasId = false
+  state.accountIds.forEach(id => {
+    if (id === account.accountId) {
+      hasId = true
+    }
+  });
+  if (!hasId) {
+    Vue.set(state.accountIds, state.accountIds.length, account.accountId)
+    state.accountIds.sort(function(a, b){return a - b});
+  }
 }
 
 function updateAccount (state, account) {    

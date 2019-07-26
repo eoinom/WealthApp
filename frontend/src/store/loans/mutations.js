@@ -10,8 +10,18 @@ function resetState (state) {
 function addLoan (state, loan) {   
   // Add the loan and store the loanId in a sorted array
   Vue.set(state.loans, loan.loanId, loan)
-  Vue.set(state.loanIds, state.loanIds.length, loan.loanId)
-  state.loanIds.sort(function(a, b){return a - b});
+  
+  // Check if array already contains this accountId
+  var hasId = false
+  state.loanIds.forEach(id => {
+    if (id === loan.loanId) {
+      hasId = true
+    }
+  });
+  if (!hasId) {
+    Vue.set(state.loanIds, state.loanIds.length, loan.loanId)
+    state.loanIds.sort(function(a, b){return a - b});
+  }
 }
 
 function updateLoan (state, loan) {    
