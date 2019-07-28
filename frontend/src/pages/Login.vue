@@ -71,6 +71,7 @@
                   label="First name *"
                   lazy-rules
                   :rules="[ val => val && val.length > 0 || 'Please type something']"
+                  id="register-firstname"
                 />
 
                 <q-input
@@ -80,6 +81,7 @@
                   label="Surname *"
                   lazy-rules
                   :rules="[ val => val && val.length > 0 || 'Please type something']"
+                  id="register-lastname"
                 />
 
                 <q-input
@@ -90,6 +92,7 @@
                   label="Email *"
                   lazy-rules
                   :rules="[ val => val && val.length > 0 || 'Please enter a valid email address']"
+                  id="register-email"
                 >
                   <template v-slot:prepend>
                     <q-icon name="mail" />
@@ -103,6 +106,7 @@
                   :type="isPwd ? 'password' : 'text'" 
                   lazy-rules
                   :rules="[ val => val && val.length > 6 || 'Please enter a password at least 7 characters long']"
+                  id="register-password"
                 >
                   <template v-slot:append>
                     <q-icon
@@ -120,6 +124,7 @@
                   :type="isPwd ? 'password' : 'text'" 
                   lazy-rules
                   :rules="[ val => val && val.length > 6 || 'Please enter a password at least 7 characters long']"
+                  id="register-confirmPassword"
                 >
                   <template v-slot:append>
                     <q-icon
@@ -135,23 +140,29 @@
                   :selectArr="countries"
                   :isFilled = true
                   label="Country"
-                  ref="modalUserCountry"/> 
+                  ref="modalUserCountry"
+                  id="register-country"
+                /> 
 
                 <modal-currency 
                   :currencyCode.sync = "userForm.displayCurrency"
                   :isFilled = true
-                  ref="modalUserDisplayCurrency"/>   
+                  ref="modalUserDisplayCurrency"
+                  id="register-currency"
+                />   
                 
                 <q-checkbox
                   v-model="userForm.newsletterSub"
                   color="secondary"
                   label="Do you wish to subscribe for updates?"
+                  id="register-newsletter"
                 />
 
                 <q-checkbox
                   v-model="userForm.agreeTerms"
                   color="secondary"
                   label="Do you agree with the terms & conditions?"
+                  id="register-agreeTerms"
                 />
 
                 <div>
