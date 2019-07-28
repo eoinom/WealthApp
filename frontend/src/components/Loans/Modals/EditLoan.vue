@@ -28,13 +28,13 @@
           ref="modalLoanType"/>   
 
         <modal-currency-select
-          :currencyCode.sync="loanToSubmit.currencyCode" 
+          :currencyCode.sync="loanToSubmit.quotedCurrency" 
           ref="modalLoanCurrency"/>  
 
         <modal-currency-value 
           :currencyValue.sync="loanToSubmit.startPrincipal" 
           v-model="loanToSubmit.startPrincipal"
-          :currencySymbol="getCurrencySymbol(loanToSubmit.currencyCode)"
+          :currencySymbol="getCurrencySymbol(loanToSubmit.quotedCurrency)"
           label="Starting Principal"
           ref="modalStartPrincipal"/>  
 
@@ -95,7 +95,7 @@
             step="0.01"         
             :decimals="2"      
             v-model="loanToSubmit.repaymentAmount"
-            :prefix="getCurrencySymbol(loanToSubmit.currencyCode)"
+            :prefix="getCurrencySymbol(loanToSubmit.quotedCurrency)"
             label="Repayment Amount"
             :rules="[val => !!val || 'Field is required', val => val >= 0 || 'Can not be negative']"
             ref="currencyValue"
@@ -150,7 +150,7 @@
           repaymentFrequency: '',
           repaymentAmount: 0.00,
           isActive: false,
-          currencyCode: '',          
+          quotedCurrency: ''
         }
       }
     },
@@ -195,8 +195,6 @@
       submitForm() {
         this.$refs.modalLoanName.$refs.name.validate()
         if (!this.$refs.modalLoanName.$refs.name.hasError) {
-          this.loanToSubmit.quotedCurrency = this.loanToSubmit.currencyCode
-          delete this.loanToSubmit.currencyCode
           this.loanToSubmit.aprRate /= 100
           this.formatDate_User2Iso(this.loanToSubmit.startDate).then(res=>
           {
@@ -227,10 +225,28 @@
       'modal-value-date':       require('components/SharedModals/ModalValueDate.vue').default
     },
 
-    mounted() {
-      this.loanToSubmit = Object.assign({}, this.loan) 
-      this.loanToSubmit.currencyCode = this.loan.quotedCurrency.code
-      delete this.loanToSubmit.quotedCurrency
+    mounted() {      
+      // NOTE: Can't use Object.assign as only copys by reference for nested objects      
+      // could use JSON.parse to do deep copy of object but this will also copy properties
+      // we don't want so we'd have to delete them but then will break again in future if
+      // we add more      
+      // this.loanToSubmit = JSON.parse(JSON.stringify(this.loan))
+
+      this.loanToSubmit.loanId = this.loan.loanId
+      this.loanToSubmit.loanName = this.loan.loanName 
+      this.loanToSubmit.description = this.loan.description
+      this.loanToSubmit.type = this.loan.type
+      this.loanToSubmit.startPrincipal = this.loan.startPrincipal
+      this.loanToSubmit.startDate = this.formatDate_Iso2User(this.loan.startDate)
+      this.loanToSubmit.totalTerm = this.loan.totalTerm
+      this.loanToSubmit.fixedTerm = this.loan.fixedTerm
+      this.loanToSubmit.rateType = this.loan.rateType
+      this.loanToSubmit.aprRate = this.loan.aprRate
+      this.loanToSubmit.repaymentFrequency = this.loan.repaymentFrequency
+      this.loanToSubmit.repaymentAmount = this.loan.repaymentAmount
+      this.loanToSubmit.institution = this.loan.institution
+      this.loanToSubmit.quotedCurrency = this.loan.quotedCurrency.code
+      this.loanToSubmit.isActive = this.loan.isActive          
     } 
   }
 </script>

@@ -96,14 +96,22 @@ async function updateLoan ({ commit, rootState }, loan) {
             updateLoan(loan: $loan) {
               loanId
               loanName
-              description
+              description      
               type
-              institution
+              startPrincipal
+              startDate
+              totalTerm
+              fixedTerm
+              rateType
+              aprRate
+              repaymentFrequency
+              repaymentAmount
               isActive
+              institution
               quotedCurrency {
                 code
-                nameLong
                 nameShort
+                nameLong        
               }
             }
           }

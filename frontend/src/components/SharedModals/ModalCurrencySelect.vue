@@ -19,13 +19,13 @@
 
   export default {
     props: ['currencyCode', 'isFilled'],
+    computed: {           
+      ...mapGetters('main', ['currencyCodes'])
+    },
     data () {
       return {
         model: null
       }
-    },
-    computed: {           
-      ...mapGetters('main', ['currencyCodes'])
     }
   }
 </script>

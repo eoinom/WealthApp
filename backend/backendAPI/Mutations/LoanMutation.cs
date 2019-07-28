@@ -86,8 +86,8 @@ namespace backendAPI.Mutations
 
                         StartPrincipal = (decimal)JToken.FromObject(loanArg).SelectToken("startPrincipal"),
                         StartDate = (System.DateTime)JToken.FromObject(loanArg).SelectToken("startDate"),
-                        TotalTerm = (int)JToken.FromObject(loanArg).SelectToken("termInMonths"),
-                        FixedTerm = (int)JToken.FromObject(loanArg).SelectToken("fixedTermInMonths"),
+                        TotalTerm = (int)JToken.FromObject(loanArg).SelectToken("totalTerm"),
+                        FixedTerm = (int)JToken.FromObject(loanArg).SelectToken("fixedTerm"),
                         RateType = (string)JToken.FromObject(loanArg).SelectToken("rateType"),
                         AprRate = (double)JToken.FromObject(loanArg).SelectToken("aprRate"),
                         RepaymentFrequency = (string)JToken.FromObject(loanArg).SelectToken("repaymentFrequency"),

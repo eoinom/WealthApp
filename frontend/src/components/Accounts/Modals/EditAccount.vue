@@ -28,7 +28,7 @@
           ref="modalAccountInstitution"/>  
 
         <modal-currency 
-          :currencyCode.sync="accountToSubmit.currencyCode" 
+          :currencyCode.sync="accountToSubmit.quotedCurrency" 
           ref="modalAccountCurrency"/>   
 
         <modal-active
@@ -60,7 +60,7 @@
           description: '',
           type: '',
           institution: '',
-          currencyCode: '',
+          quotedCurrency: '',
           isActive: false
         }
       }
@@ -98,13 +98,14 @@
     },
 
     mounted() {
+      // NOTE: Can't use Object.assign as only copys by reference for nested objects 
       // this.accountToSubmit = Object.assign({}, this.account) 
       this.accountToSubmit.accountId = this.account.accountId
       this.accountToSubmit.accountName = this.account.accountName 
       this.accountToSubmit.description = this.account.description
       this.accountToSubmit.type = this.account.type
       this.accountToSubmit.institution = this.account.institution
-      this.accountToSubmit.currencyCode = this.account.quotedCurrency.code
+      this.accountToSubmit.quotedCurrency = this.account.quotedCurrency.code
       this.accountToSubmit.isActive = this.account.isActive
     } 
   }

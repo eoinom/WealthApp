@@ -74,8 +74,6 @@ async function addAccount ({ commit, rootState }, account) {
 
 async function updateAccount ({ commit, rootState }, account) {
   account.userId = rootState.main.user.userId
-  account.quotedCurrency = account.currencyCode
-  delete account.currencyCode
   console.log('account to update:')
   console.log(account)
 
