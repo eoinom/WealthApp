@@ -1,9 +1,5 @@
-﻿using backendAPI.Types;
-using backendData.Models;
-using GraphQL.Common.Request;
-using Newtonsoft.Json;
+﻿using GraphQL.Common.Request;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
