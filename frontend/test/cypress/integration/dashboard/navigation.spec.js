@@ -5,7 +5,7 @@ import Chance from 'chance'
 const chance = new Chance()
 
 
-describe('Dashboard page tests for Existing User', () => {
+describe('Navigation tests from dashboard', () => {
 
   const existing_email = "eoinom@gmail.com"
   const existing_pass = "pass1234"

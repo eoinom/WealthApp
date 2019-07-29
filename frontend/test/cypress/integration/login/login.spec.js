@@ -71,6 +71,8 @@ describe('Login page tests', () => {
     cy.get('#register-country').click()
     cy.contains(new_country).click()
     cy.get('#register-currency').click().click()    // why two clicks needed? 
+    // cy.get('#register-currency').click()
+    cy.wait(500)
     cy.contains(new_currency).click()
     cy.get('#register-agreeTerms .q-checkbox__check').click()
     
